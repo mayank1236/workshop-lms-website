@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 const AdminController = require('../../Controller/Auth/Admin');
 const UserController = require('../../Controller/Auth/User');
 const UserProductController = require('../../Controller/User/Product');// added by anirbank-93
-const ServiceController = require('../../Controller/User/Service');    // added by anirbank-93
+const ServiceController = require('../../Controller/User/Service');// added by anirbank-93
 const middleware  = require('../../service/middleware').middleware;
 
 const AdminRoute = require('./admin');

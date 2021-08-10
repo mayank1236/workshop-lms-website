@@ -100,7 +100,7 @@ const update = async (req, res) => {
         // data = { ...req.body, ...data._doc };
         res.status(200).json({
           status: true,
-          message: "Product update successful",
+          message: "Subscription plan update successful",
           data: doc,
         });
       } else {
@@ -118,7 +118,7 @@ const update = async (req, res) => {
 
 const Delete = async (req, res) => {
   return Subsciption.remove({
-    _id: { $in: [mongoose.Types.ObjectId(req.parms.id)] },
+    _id: { $in: [mongoose.Types.ObjectId(req.params.id)] },
   })
     .then((data) => {
       return res.status(200).json({

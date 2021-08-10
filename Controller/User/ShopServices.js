@@ -5,7 +5,7 @@ var Subcategory = require('../../Models/subcategory')
 var Upload = require('../../service/upload')
 
 const { Validator } = require('node-input-validator')
-const service = require('../../Models/service')
+const service = require('../../Models/service_category')
 
 const register = async (req,res)=>{
     const v = new Validator(req.body,{

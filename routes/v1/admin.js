@@ -5,7 +5,7 @@ const ProductController = require('../../Controller/Admin/Product');
 const CategoryController = require('../../Controller/Admin/Category');
 const SubscriptionController = require('../../Controller/Admin/Subscription');
 const UserSellersController = require('../../Controller/Admin/UserSellers'); // added by anirbank-93
-const ServiceController = require('../../Controller/Admin/Service');         // added by anirbank-93
+const ServiceController = require('../../Controller/Admin/ServiceCategory'); // added by anirbank-93
 const ServiceSubCategoryController = require('../../Controller/Admin/SubCategory');// added by anirbank-93
 
 const multer = require('multer');

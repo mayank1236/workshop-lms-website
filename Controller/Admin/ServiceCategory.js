@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var uuidv1 = require('uuid').v1;
-var Service = require('../../Models/service');
+var Service = require('../../Models/service_category');
 var Upload = require("../../service/upload");
 
 const { Validator } = require('node-input-validator');

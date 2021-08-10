@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Service = require('../../Models/service');
+var Service = require('../../Models/service_category');
 var Shop = require('../../Models/shop');
 var Subcategory = require('../../Models/subcategory');
 var ShopService = require('../../Models/shop_service');
