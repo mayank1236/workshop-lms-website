@@ -4,7 +4,7 @@ var router = express.Router();
 const ProductController = require("../../Controller/User/Product");
 const UserSellerController=require('../../Controller/User/UserSellers');//added by anirbank-93
 const SubscriptionController = require("../../Controller/User/Subscription");// added by anirbank-93
-const ServiceController = require('../../Controller/User/Service');  // added by anirbank-93
+const ServiceController = require('../../Controller/User/ServiceCategory');  // added by anirbank-93
 const ShopController = require("../../Controller/User/Shop");      // added by anirbank-93
 const ShopServiceController = require("../../Controller/User/ShopServices"); // added by anirbank-93
 const CartController = require('../../Controller/User/Cart')
@@ -55,11 +55,11 @@ router.get('/seller/:id', UserSellerController.viewUser);   // added by anirbank
 router.get('/list-of-users', UserSellerController.viewUserList);// added by anirbank-93
 router.get('/list-of-sellers', UserSellerController.viewSellerList);// added by anirbank-93
 
-router.get('/service', ServiceController.viewAllServices); // added by anirbank-93
-router.get('/service/:id', ServiceController.viewService); // added by anirbank-93
+router.get('/service-category', ServiceController.viewAllServices); // added by anirbank-93
+router.get('/service-category/:id', ServiceController.viewService); // added by anirbank-93
 router.get('/service/subcategory/:id', ServiceController.viewServiceSubCategory);// added by anirbank-93
 // route to fetch all shop services available for a service category
-router.get('/service/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
+router.get('/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
 router.post('/shop', uploadMultiple, ShopController.createNUpdate);// added by anirbank-93
 router.get('/shop/:id', ShopController.viewShop);              // added by anirbank-93

@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 const AdminController = require('../../Controller/Auth/Admin');
 const UserController = require('../../Controller/Auth/User');
 const UserProductController = require('../../Controller/User/Product');// added by anirbank-93
-const ServiceController = require('../../Controller/User/Service');// added by anirbank-93
+const ServiceController = require('../../Controller/User/ServiceCategory');// added by anirbank-93
 const middleware  = require('../../service/middleware').middleware;
 
 const AdminRoute = require('./admin');
@@ -26,8 +26,8 @@ router.post('/user/login', UserController.login);
 router.get('/user/listProducts', UserController.viewProductList);
 router.get('/user/viewproduct/:id', UserProductController.viewSingleProduct);   // added by anirbank-93
 
-router.get('/user/service', ServiceController.viewAllServices);// added by anirbank-93
-router.get('/user/service/:id', ServiceController.viewService);// added by anirbank-93
+router.get('/user/service-category', ServiceController.viewAllServices);// added by anirbank-93
+router.get('/user/service-category/:id', ServiceController.viewService);// added by anirbank-93
 
 router.get('/user/service/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
