@@ -94,4 +94,4 @@ UserSchema.methods.comparePassword = function (candidatePassword) {
     return passwordHash.verify(candidatePassword, this.password);
 }
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("users", UserSchema);

@@ -34,21 +34,22 @@ router.get('/product/Product',ProductController.viewAll)
 router.put('/product/Product/:id',upload.single("image"),ProductController.update)
 router.delete('/product/Product/:id',ProductController.Delete)
 
-router.post('/subscription',SubscriptionController.create)
-router.get('/subscription',SubscriptionController.viewAll)
-router.put('/subscription/:id',SubscriptionController.update)
-router.delete('/subscription/:id',SubscriptionController.Delete)
-
-router.get('/subscription/purchasehistory',SubscriptionController.subscriptionHistory)
-
-
-
-
-
 router.post('/category/Category',CategoryController.create)
 router.get('/category/Category',CategoryController.viewAll)
 router.put('/category/Category/:id',CategoryController.update)
 router.delete('/category/Category/:id',CategoryController.Delete)
+
+router.post('/subscription',SubscriptionController.create)
+router.get('/subscription',SubscriptionController.viewAll)
+router.put('/subscription/:id',SubscriptionController.update)
+router.delete('/subscription/:id',SubscriptionController.Delete)
+// all users subscription purchase history
+router.post('/subscription/purchasehistory',SubscriptionController.allSubscriptionHistory) // added by anirbank-93
+// single user subscription purchase history
+router.get('/subscription/purchasehistory/:id', SubscriptionController.oneSubscriptionHistory) // added by anirbank-93
+
+
+
 
 router.get('/userlist', UserSellersController.viewUserList)     // added by anirbank-93
 router.get('/viewuser/:id', UserSellersController.viewUser)     // added by anirbank-93

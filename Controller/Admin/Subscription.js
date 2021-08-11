@@ -136,8 +136,63 @@ const Delete = async (req, res) => {
     });
 };
 
-const subscriptionHistory = async (req, res) => {
+const allSubscriptionHistory = async (req, res) => {
   return SubscribedBy.aggregate([
+    {
+      $project: {
+        _v: 0,
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "subscr_id",
+        foreignField: "_id",
+        as: "subscription_data",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userid",
+        foreignField: "_id",
+        as: "user_data",
+      },
+    },
+  ])
+    .then((data) => {
+      if (data != null && data != "") {
+        res.status(200).send({
+          status: true,
+          data: data,
+          error: null,
+          message: "Subscription History Data Get Successfully",
+        });
+      } else {
+        res.status(400).send({
+          status: false,
+          data: null,
+          error: "No Data",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        status: false,
+        data: null,
+        error: err,
+        message: "Server Error",
+      });
+    });
+};
+
+const oneSubscriptionHistory = async (req, res) => {
+  return SubscribedBy.aggregate([
+    {
+      $match: {
+        userid: mongoose.Types.ObjectId(req.params.id)
+      }
+    },
     {
       $project: {
         _v: 0,
@@ -191,5 +246,6 @@ module.exports = {
   viewAll,
   update,
   Delete,
-  subscriptionHistory,
+  allSubscriptionHistory,
+  oneSubscriptionHistory
 };
