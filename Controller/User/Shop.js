@@ -71,19 +71,13 @@ const createNUpdate = async (req,res)=>{
           }
           else {
               //b
-            Shop.findOneAndUpdate(
+            if (typeof (req.files) != "undefined" || req.files != null) {
+                req.body.banner_img = "uploads/shop_banner_n_image/"+"banner_"+req.files.banner_img[0].originalname
+                req.body.shop_img = "uploads/shop_banner_n_image/"+"shop_"+req.files.shop_img[0].originalname;
+            }
+            return Shop.findOneAndUpdate(
                 {userid: { $in : [mongoose.Types.ObjectId(req.body.userid)] } }, 
-                {
-                    banner_img: "uploads/shop_banner_n_image/"+"banner_"+req.files.banner_img[0].originalname,
-                    shop_img: "uploads/shop_banner_n_image/"+"shop_"+req.files.shop_img[0].originalname,
-                    name: req.body.name,
-                    title: req.body.title,
-                    tags: req.body.tags,
-                    description: req.body.description,
-                    personalization: req.body.personalization,
-                    userid: req.body.userid
-                },
-                // req.body,
+                req.body,
                 async (err,docs)=>{
                     if(err){
                         res.status(500).json({
@@ -106,7 +100,8 @@ const createNUpdate = async (req,res)=>{
       .catch((err)=>{
           res.status(500).json({
               status: false,
-              message: "Server error. Please provide images"
+              message: "Server error. Please provide images",
+              error: err
           });
       });
 }
@@ -147,25 +142,47 @@ const viewAllShops = async (req,res)=>{
 
 const viewShop = async (req,res)=>{
     let id = req.params.id
-    return Shop.findOne(
-        {userid: { $in : [mongoose.Types.ObjectId(id)] } }, 
-        async (err,docs)=>{
+    Shop.findOne(
+        {_id: { $in : [mongoose.Types.ObjectId(id)] } }, 
+        async (err,result)=>{
             if(err){
-                res.status(500).json({
+                return res.status(500).json({
                     status: false,
-                    message: "Server error. Data not available",
-                    error: err
-                });
+                    message: "Server error. Please try again.",
+                    error: "No data available."
+                })
             }
-            else{
-                res.status(200).json({
-                    status: true,
-                    message: "Shop get successfully",
-                    data: docs
-                });
+            else {
+                Shop.aggregate(
+                    [
+                        {
+                            $match:{
+                                _id: { $in : [mongoose.Types.ObjectId(id)] }
+                            }
+                        },
+                        {
+                            $lookup:{
+                                from: "users",
+                                localField: "userid",
+                                foreignField: "_id",
+                                as: "seller_data"
+                            }
+                        },
+                        {
+                            $project:{
+                                _v: 0
+                            }
+                        }
+                    ]
+                ).then((docs)=>{
+                    res.status(200).json({
+                        status: true,
+                        message: "Shop get successfully",
+                        data: docs
+                    })
+                })
             }
-        }
-    )
+        })
 }
 
 module.exports = {

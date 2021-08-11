@@ -62,7 +62,8 @@ router.get('/service/subcategory/:id', ServiceController.viewServiceSubCategory)
 router.get('/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
 router.post('/shop', uploadMultiple, ShopController.createNUpdate);// added by anirbank-93
-router.get('/shop/:id', ShopController.viewShop);              // added by anirbank-93
+router.get('/shop', ShopController.viewAllShops);   // added by anirbank-93
+router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
 
 router.post('/shop/services', upload1.single("image"), ShopServiceController.register);// added by anirbank-93
 // route to fetch all services of a shop

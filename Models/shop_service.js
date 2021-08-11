@@ -22,6 +22,8 @@ const ShopServiceSchema = new Schema({
     },
     category_id: mongoose.Schema.Types.ObjectId,
     subcategory_id: mongoose.Schema.Types.ObjectId,
+    shop_id: mongoose.Schema.Types.ObjectId,
+    user_id: mongoose.Schema.Types.ObjectId,
     hashtags:{
         type: String,
         required: false
@@ -30,7 +32,6 @@ const ShopServiceSchema = new Schema({
         type: String,
         required: false
     },
-    shop_id: mongoose.Schema.Types.ObjectId,
     status:{
         type: Boolean,
         default: true

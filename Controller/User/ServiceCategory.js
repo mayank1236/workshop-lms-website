@@ -89,6 +89,14 @@ const viewShopServicesPerService = async (req,res)=>{
                         }
                     },
                     {
+                        $lookup:{
+                            from: "users",
+                            localField: "userid",
+                            foreignField: "_id",
+                            as: "seller_details"
+                        }
+                    },
+                    {
                         $project:{
                             _v:0
                         }
