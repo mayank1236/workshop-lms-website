@@ -7,7 +7,7 @@ var Upload = require('../../service/upload')
 const { Validator } = require('node-input-validator')
 const service = require('../../Models/service_category')
 
-const register = async (req,res)=>{
+const create = async (req,res)=>{
     const v = new Validator(req.body,{
         name: "required",
         price: "required",
@@ -25,8 +25,7 @@ const register = async (req,res)=>{
         price: req.body.price,
         details: req.body.details,
         category_id: mongoose.Types.ObjectId(req.body.category_id),
-        subcategory_id: mongoose.Types.ObjectId(req.body.subcategory_id),
-        shop_id: mongoose.Types.ObjectId(req.body.shop_id)
+        user_id: mongoose.Types.ObjectId(req.body.user_id)
     }
     if(typeof(req.body.personalization)!='undefined' || req.body.personalization!=''){
         shopServiceData.personalization = req.body.personalization
@@ -134,8 +133,8 @@ const update = async (req,res)=>{
 }
 
 const viewShopServicesPerSeller = async (req,res)=>{
-    let id = req.params.id          // shop_id of shop_services
-    ShopService.find({shop_id: {$in: [mongoose.Types.ObjectId(id)]}})
+    let id = req.params.id          // user_id of shop_services
+    ShopService.find({user_id: {$in: [mongoose.Types.ObjectId(id)]}})
       .then((data)=>{
         if(data==null || data==''){
             res.status(200).json({
@@ -149,15 +148,15 @@ const viewShopServicesPerSeller = async (req,res)=>{
                 [
                     {
                         $match:{
-                            shop_id: {$in: [mongoose.Types.ObjectId(id)]}
+                            user_id: {$in: [mongoose.Types.ObjectId(id)]}
                         }
                     },
                     {
                         $lookup:{
-                            from: "shops",
-                            localField: "shop_id",
+                            from: "users",
+                            localField: "user_id",
                             foreignField: "_id",
-                            as: "shop_details"
+                            as: "seller_details"
                         }
                     },
                     {
@@ -213,10 +212,10 @@ const viewOneService = async (req,res)=>{
                         },
                         {
                             $lookup:{
-                                from: "shops",
-                                localField: "shop_id",
+                                from: "users",
+                                localField: "user_id",
                                 foreignField: "_id",
-                                as: "shop_details"
+                                as: "seller_details"
                             }
                         },
                         {
@@ -276,7 +275,7 @@ const viewOneService = async (req,res)=>{
 }
 
 module.exports = {
-    register,
+    create,
     update,
     viewShopServicesPerSeller,
     viewOneService

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-const shop = require('./shop')
+// const shop = require('./shop')
 var Schema = mongoose.Schema
 
 const ShopServiceSchema = new Schema({
@@ -21,8 +21,6 @@ const ShopServiceSchema = new Schema({
         required: false
     },
     category_id: mongoose.Schema.Types.ObjectId,
-    subcategory_id: mongoose.Schema.Types.ObjectId,
-    shop_id: mongoose.Schema.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
     hashtags:{
         type: String,

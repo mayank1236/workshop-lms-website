@@ -65,7 +65,7 @@ router.post('/shop', uploadMultiple, ShopController.createNUpdate);// added by a
 router.get('/shop', ShopController.viewAllShops);   // added by anirbank-93
 router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
 
-router.post('/shop/services', upload1.single("image"), ShopServiceController.register);// added by anirbank-93
+router.post('/shop/services', upload1.single("image"), ShopServiceController.create);// added by anirbank-93
 // route to fetch all services of a shop
 router.get('/shop/all-services/:id', ShopServiceController.viewShopServicesPerSeller); // added by anirbank-93
 // route to fetch one service of a shop
