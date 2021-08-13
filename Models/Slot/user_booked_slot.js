@@ -1,13 +1,16 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
+var SellerBookings = require('./seller_bookings')
+
 const userBookedSlot = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
+    seller_id: mongoose.Types.ObjectId,
     seller_timing_id: mongoose.Schema.Types.ObjectId,
     date: {
         type: Date,
-        default: Date.now()
+        default: Date()
     },
     day_name:{
         type: String,
@@ -19,6 +22,27 @@ const userBookedSlot = new Schema({
     }
 });
 
-userBookedSlot.methods.sellerAvailability = function (slot_book){}
+// userBookedSlot.methods.addToSellerBooking = function (slot_book){
+//     console.log('data_from_booking_controller', slot_book)
+//     let saveData = {
+//         _id: mongoose.Types.ObjectId(),
+//         seller_id: slot_book.seller_id,
+//         user_id: slot_book.user_id,
+//         user_booking_id: slot_book._id,
+//         date: slot_book.date,
+//         day_name: slot_book.day_name,
+//         duration: slot_book.duration
+//     }
+//     console.log('booking_data', saveData);
+//     let user_booking_data = new SellerBookings(saveData)
+
+//     var insert = user_booking_data.save().exec()
+//     if(insert){
+//         return true
+//     }
+//     else{
+//         return false
+//     }
+// }
 
 module.exports = mongoose.model('user_booked_slot', userBookedSlot)

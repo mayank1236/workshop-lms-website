@@ -7,7 +7,10 @@ const SubscriptionController = require("../../Controller/User/Subscription");// 
 const ServiceController = require('../../Controller/User/ServiceCategory');  // added by anirbank-93
 const ShopController = require("../../Controller/User/Shop");      // added by anirbank-93
 const ShopServiceController = require("../../Controller/User/ShopServices"); // added by anirbank-93
-const SellerTimingController = require('../../Controller/User/Slot/SellerTiming');// anirbank-93
+/* Service schedule section start */
+const SellerTimingController = require('../../Controller/User/Slot/SellerTiming');// added by anirbank-93
+const SlotBookingControllerr = require('../../Controller/User/Slot/SlotBooking');// added by anirbank-93
+/* Service schedule section end */
 const CartController = require('../../Controller/User/Cart')
 
 const multer = require('multer');
@@ -77,6 +80,8 @@ router.post('/shop-service/timing', SellerTimingController.createSlot); // added
 router.get('/shop-service/weekly-timings/:id', SellerTimingController.viewShopServiceTimings);// added by anirbank-93
 router.put('/shop-service/timing/:id', SellerTimingController.editSlot);// added by anirbank-93
 router.delete('/shop-service/timing/:id', SellerTimingController.deleteSlot);// added by anirbank-93
+
+router.post('/shop-service/book-slot', SlotBookingControllerr.bookSlot); // added by anirbank-93
 
 router.post('/add-to-cart', CartController.addToCart);
 router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
