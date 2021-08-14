@@ -6,6 +6,50 @@ var ShopServices = require('../../Models/shop_service');
 const { Validator } = require('node-input-validator');
 // const { stringify } = require('uuid');
 
+const sellerLogin = async (req,res)=>{
+    const v = new Validator(req.body,{
+        email: "required",
+        password: "required|minLength:8"
+    })
+    let matched = await v.check().then(val=>val)
+    if (!matched) {
+        return res.status(401).json({status: false, error: v.errors})
+    }
+
+    User.findOne({
+        email: req.body.email, 
+        type: "Seller"
+    }).then(user => {
+        if (user!=null && user!='' && user.length<1) {
+            res.status(500).json({
+                status: false,
+                message: "Server error. Please try again.",
+                error: "Invalid id."
+            })
+        }
+        else if(user!=null && user!='' && user.comparePassword(req.body.password)){
+            res.status(200).json({
+                status: true,
+                message: "Login successfull!",
+                data: user
+            })
+        }
+        else{
+            res.status(500).json({
+                status: false,
+                message: "Server error2. Please try again.",
+                error: "Not authorized seller."
+            })
+        }
+    }).catch(err => {
+        res.status(401).json({
+            status: false,
+            message: "Server error3. Please try again.",
+            error: err
+        })
+    })
+}
+
 const viewUser = async (req,res)=>{
     let id=req.params.id;
     User.findOne(
@@ -100,6 +144,7 @@ const viewSellerList = async (req,res)=>{
 }
 
 module.exports = {
+    sellerLogin,
     viewUser,
     viewUserList,
     viewSellerList
