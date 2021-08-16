@@ -48,7 +48,7 @@ var checkAvailability = async (req,res)=>{
             slot_durations: SELLER_TIMING.slot_duration
         })
     }
-    else if(available_remaining>=15 && available_remaining<30){
+    else if(available_remaining>=15 && available_remaining<30 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking){
         res.status(200).json({
             status: true,
             message: "10 or 15 minute slot available",
@@ -56,7 +56,7 @@ var checkAvailability = async (req,res)=>{
             slot2: SELLER_TIMING.slot_duration[1]
         })
     }
-    else if(available_remaining>=10 && available_remaining<15){
+    else if(available_remaining>=10 && available_remaining<15 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking){
         res.status(200).json({
             status: true,
             message: "10 minute slot available only",
