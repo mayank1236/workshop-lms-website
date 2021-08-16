@@ -51,7 +51,7 @@ const sellerLogin = async (req,res)=>{
 }
 
 const sellerTokenCheck = async(req,res)=>{
-    User.findOne({token: req.body.token})
+    User.findOne({token: req.params.token})
       .then(data => {
         if(data!=null && data!='' && data.type=='Seller'){
             res.status(200).json({

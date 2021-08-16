@@ -55,7 +55,7 @@ router.use((req, res, next) => {
 router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
 router.post("/subscription-purchase", SubscriptionController.newSubscription);// added by anirbank-93
 
-router.post('/seller-portal', UserSellerController.sellerTokenCheck);    // added by anirbank-93
+router.get('/seller-portal/:token', UserSellerController.sellerTokenCheck);    // added by anirbank-93
 // router.post('/seller-portal/login', UserSellerController.sellerLogin);// added by anirbank-93
 router.get('/seller/:id', UserSellerController.viewUser);   // added by anirbank-93
 router.get('/list-of-users', UserSellerController.viewUserList);// added by anirbank-93
