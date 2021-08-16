@@ -55,7 +55,7 @@ const sellerTokenCheck = async(req,res)=>{
       .then(data => {
         if(data!=null && data!='' && data.type=='Seller'){
             res.status(200).json({
-                status: false,
+                status: true,
                 message: "Seller successfully found.",
                 data: data
             })

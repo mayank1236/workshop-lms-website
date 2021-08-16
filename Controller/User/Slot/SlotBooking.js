@@ -41,25 +41,26 @@ var checkAvailability = async (req,res)=>{
     // else{
     //     console.log("False");
     // }
-    if(available_remaining>=30) {
+    if(available_remaining>=30 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking) {
         res.status(200).json({
             status: true,
             message: "Any duration slot available",
-            data: SELLER_TIMING.slot_duration
+            slot_durations: SELLER_TIMING.slot_duration
         })
     }
     else if(available_remaining>=15 && available_remaining<30){
         res.status(200).json({
             status: true,
             message: "10 or 15 minute slot available",
-            data: [10,15]
+            slot1: SELLER_TIMING.slot_duration[0],
+            slot2: SELLER_TIMING.slot_duration[1]
         })
     }
     else if(available_remaining>=10 && available_remaining<15){
         res.status(200).json({
             status: true,
             message: "10 minute slot available only",
-            data: 10
+            slot: SELLER_TIMING.slot_duration[0]
         })
     }
     else {
@@ -88,10 +89,10 @@ var bookAppointment = async (req,res,next)=>{
         user_id: req.body.user_id,
         seller_service_id: req.body.seller_service_id,
         seller_timing_id: req.body.seller_timing_id,
+        date_of_booking: req.body.date_of_booking,        // send date only in ISO format YYYY-MM-DD
         day_name_of_booking: req.body.day_name_of_booking,
         duration: req.body.duration
     }
-
     let slotBook = new UserBookedSlot(saveData1)
     
     return slotBook.save()
@@ -102,6 +103,7 @@ var bookAppointment = async (req,res,next)=>{
             seller_service_id: data.seller_service_id,
             user_id: data.user_id,
             user_booking_id: data._id,
+            date_of_booking: req.body.date_of_booking,
             date: data.date,
             day_name_of_booking: data.day_name_of_booking,
             duration: data.duration
@@ -171,6 +173,16 @@ var cancelAppointment = async (req,res)=>{
     })
 }
 
+// Only used to change date_of_booking and day_name_of_booking
+var editAppointment = async (req,res)=>{
+    // _id of user_booked_slots
+    UserBookedSlot.findByIdAndUpdate(
+        {_id: {$in:[mongoose.Types.ObjectId(req.params.id)]}},
+        req.body,
+        (err,result)=>{}
+    )
+}
+
 var completeAppointment = async(req,res)=>{
     // _id of user_booked_slots
     UserBookedSlot.findOneAndUpdate(
@@ -220,5 +232,6 @@ module.exports = {
     checkAvailability,
     bookAppointment,
     cancelAppointment,
+    editAppointment,
     completeAppointment
 }

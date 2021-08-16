@@ -86,6 +86,7 @@ router.delete('/shop-service/timing/:id', SellerTimingController.deleteSlot);// 
 router.post('/shop-service/availability', SlotBookingController.checkAvailability);// added by anirbank-93
 router.post('/shop-service/book-slot', SlotBookingController.bookAppointment); // added by anirbank-93
 router.put('/shop-service/cancel-slot/:id', SlotBookingController.cancelAppointment);// added by anirbank-93
+router.put('/shop-service/update-slot/:id', SlotBookingController.editAppointment);  // added by anirbank-93
 router.put('/shop-service/complete-slot/:id', SlotBookingController.completeAppointment);// added by anirbank-93
 
 router.post('/add-to-cart', CartController.addToCart);

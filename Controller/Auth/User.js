@@ -28,37 +28,50 @@ const register = async(req,res)=>{
     {
         return res.status(200).send({ status: false, error: v.errors });
     }
-    let userData = {
-        _id:mongoose.Types.ObjectId(),
-        firstName:req.body.firstName,
-        lastName:req.body.lastName,
-        email:req.body.email,
-        password:passwordHash.generate(req.body.password),
-        token:createToken(req.body)
-    }
-    // if (typeof (req.body.phone) !='undefined')
-    // {
-    //     userData.phone = Number(req.body.phone)
-    // }
-
-    const all_users = new User(userData)
-
-    return all_users.save().then((data)=>{
-        res.status(200).json({
-            status: true,
-            success: true,
-            message: 'New user created successfully',
-            data: data,
-        })
-    })
-    .catch((error)=>{
-        res.status(200).json({
-            status: false,
-            success: false,
-            message: 'Server error. Please try again.',
-            error: error,
-        });
-    });
+    User.findOne({email: req.body.email})
+      .then(data=>{
+          if (data==null || data=='') {
+            console.log("Data",data)
+            let userData = {
+              _id:mongoose.Types.ObjectId(),
+              firstName:req.body.firstName,
+              lastName:req.body.lastName,
+              email:req.body.email,
+              password:passwordHash.generate(req.body.password),
+              token:createToken(req.body)
+            }
+            // if (typeof (req.body.phone) !='undefined')
+            // {
+            //     userData.phone = Number(req.body.phone)
+            // }
+      
+            const all_users = new User(userData)
+      
+            return all_users.save().then((result)=>{
+                res.status(200).json({
+                  status: true,
+                  success: true,
+                  message: 'New user created successfully',
+                  data: result,
+              })
+          })
+          .catch((error)=>{
+              res.status(200).json({
+                  status: false,
+                  success: false,
+                  message: 'Server error. Please try again.',
+                  error: error,
+              });
+          });
+          }
+          else{
+            res.status(400).json({
+                status: false,
+                message: "Email is already registered.",
+                error: "Email exists."
+            })
+          }
+      })
 }
 
 // const signup = async (req,res)=>{}
@@ -78,35 +91,31 @@ const login = async(req,res) =>
         });
     }
 
-    User.findOne({email:req.body.email})
-          .then(user =>{
-                if(user!=null && user!='' && user.length < 1 )
-                {
-                    return res.status(401).json({
-                            status: false,
-                            message: 'Server error. Please try again.',
-                            error: 'Server Error',
-                        });
-                }
-                if(user!=null && user!='' && user.comparePassword(req.body.password))
-                {
-                    return res.status(200).json({
-                        status: true,
-                        message: 'Successfully logged in',
-                        data: user
-                    });
-                }
-                else
-                {
-                    return res.status(200).json({
-                        status: false,
-                        message: 'Server error. Please try again.',
-                        error: 'Server Error',
-                    });
-                }
-            }
-
-          )
+    User.findOne({email: req.body.email})
+      .then(data=>{
+          if (data==null || data=='') {
+              res.status(400).json({
+                  status: false,
+                  message: "Wrong email id.",
+                  error: "Wrong email id."
+              })
+          }
+          else if(data!=null && data!='' && data.comparePassword(req.body.password))
+          {
+              return res.status(200).json({
+                  status: true,
+                  message: 'Successfully logged in',
+                  data: user
+              });
+          }
+          else{
+              res.status(500).json({
+                  status: false,
+                  message: "Wrong password.",
+                  error: "Wrong password."
+              })
+          }
+      })
 }
 
 const viewProductList = async( req ,res )=>

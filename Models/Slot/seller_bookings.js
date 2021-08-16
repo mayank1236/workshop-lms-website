@@ -6,9 +6,10 @@ const sellerBookingSchema = new Schema({
     seller_service_id: mongoose.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
     user_booking_id: mongoose.Schema.Types.ObjectId,
-    date_of_apply:{
-        type: Date,
-        default: Date()
+    date_of_booking:{
+        type: String,
+        // default: Date()
+        required: true
     },
     day_name_of_booking:{
         type: String,
