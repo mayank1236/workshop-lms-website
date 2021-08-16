@@ -50,6 +50,33 @@ const sellerLogin = async (req,res)=>{
     })
 }
 
+const sellerTokenCheck = async(req,res)=>{
+    User.findOne({token: req.body.token})
+      .then(data => {
+        if(data!=null && data!='' && data.type=='Seller'){
+            res.status(200).json({
+                status: false,
+                message: "Seller successfully found.",
+                data: data
+            })
+        }
+        else{
+            res.status(400).json({
+                status: false,
+                message: "User not authorized as seller.",
+                error: "User not authorized."
+            })
+        }
+      })
+      .catch(err => {
+          res.status(500).json({
+              status: false,
+              message: "Server error. Seller not authorized.",
+              error: err
+          })
+      })
+}
+
 const viewUser = async (req,res)=>{
     let id=req.params.id;
     User.findOne(
@@ -145,6 +172,7 @@ const viewSellerList = async (req,res)=>{
 
 module.exports = {
     sellerLogin,
+    sellerTokenCheck,
     viewUser,
     viewUserList,
     viewSellerList

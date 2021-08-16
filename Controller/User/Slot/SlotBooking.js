@@ -1,10 +1,78 @@
 var mongoose = require('mongoose')
 var UserBookedSlot = require('../../../Models/Slot/user_booked_slot')
 var SellerBookings = require('../../../Models/Slot/seller_bookings')
+var SellerTimings = require('../../../Models/Slot/seller_timing')
 
 const { Validator } = require('node-input-validator')
 
-var bookSlot = async (req,res,next)=>{
+var checkAvailability = async (req,res)=>{
+    const USER_BOOKINGS = await UserBookedSlot.find(
+        {
+            seller_service_id: req.body.seller_service_id,
+            seller_timing_id: req.body.seller_timing_id
+        }).exec()
+
+    //console.log("1st User booking", USER_BOOKINGS[0]);
+    
+    var day_slot_total_time = []
+    
+    USER_BOOKINGS.forEach(element => {
+        day_slot_total_time.push(element.duration)
+    });
+    //console.log("Duration array", day_slot_total_time)
+    
+    // Getting sum of each
+    var sum = day_slot_total_time.reduce(function(a, b){
+        return a + b;
+    }, 0);
+    // console.log(sum);
+
+    const SELLER_TIMING = await SellerTimings.findOne({_id: req.body.seller_timing_id}).exec()
+    console.log("Seller timing", SELLER_TIMING);
+    var total_available_for = SELLER_TIMING.available_duration
+    console.log("Total available for", total_available_for);
+    
+    var available_remaining = total_available_for - sum
+    // var date_of_booking = new Date(req.body.date) 
+    // console.log(date_of_booking)
+    // if(USER_BOOKINGS[0].date == date_of_booking){
+    //     console.log("True");
+    // }
+    // else{
+    //     console.log("False");
+    // }
+    if(available_remaining>=30) {
+        res.status(200).json({
+            status: true,
+            message: "Any duration slot available",
+            data: SELLER_TIMING.slot_duration
+        })
+    }
+    else if(available_remaining>=15 && available_remaining<30){
+        res.status(200).json({
+            status: true,
+            message: "10 or 15 minute slot available",
+            data: [10,15]
+        })
+    }
+    else if(available_remaining>=10 && available_remaining<15){
+        res.status(200).json({
+            status: true,
+            message: "10 minute slot available only",
+            data: 10
+        })
+    }
+    else {
+        res.status(200).json({
+            status: true,
+            message: "Slots not available",
+            data: null
+        })
+    }
+    
+}
+
+var bookAppointment = async (req,res,next)=>{
     const v = new Validator(req.body,{
         day_name: "required",
         duration: "required"
@@ -18,9 +86,9 @@ var bookSlot = async (req,res,next)=>{
     let saveData1 = {
         _id: mongoose.Types.ObjectId(),
         user_id: req.body.user_id,
-        seller_id: req.body.seller_id,
+        seller_service_id: req.body.seller_service_id,
         seller_timing_id: req.body.seller_timing_id,
-        day_name: req.body.day_name,
+        day_name_of_booking: req.body.day_name_of_booking,
         duration: req.body.duration
     }
 
@@ -31,11 +99,11 @@ var bookSlot = async (req,res,next)=>{
           // console.log('user_booking_data', data);
           let saveData2 = {
             _id: mongoose.Types.ObjectId(),
-            seller_id: data.seller_id,
+            seller_service_id: data.seller_service_id,
             user_id: data.user_id,
             user_booking_id: data._id,
             date: data.date,
-            day_name: data.day_name,
+            day_name_of_booking: data.day_name_of_booking,
             duration: data.duration
         }
         console.log('booking_data', saveData2);
@@ -58,6 +126,99 @@ var bookSlot = async (req,res,next)=>{
       })
 }
 
+var cancelAppointment = async (req,res)=>{
+    // _id of user_booked_slots
+    UserBookedSlot.findOneAndUpdate(
+        {_id: {$in:[mongoose.Types.ObjectId(req.params.id)]}}, 
+        {
+            $set: { appointment: "Cancelled" },
+        },
+        {
+            returnNewDocument: true,
+        }
+    ).then(data => {
+        SellerBookings.findOneAndUpdate(
+            {user_booking_id: {$in:[mongoose.Types.ObjectId(req.params.id)]}},
+            {
+                $set: { appointment: "Cancelled" },
+            },
+            {
+                returnNewDocument: true,
+            },
+            (err,result)=>{
+                if(err){
+                    res.status(500).json({
+                        status: false,
+                        message: "Failed to cancel appointment. Server error.",
+                        error: err
+                    })
+                }
+                else{
+                    res.status(200).json({
+                        status: true,
+                        message: "Appointment cancelled successfully.",
+                        data: data
+                    })
+                }
+            }
+        )
+    }).catch(fault => {
+        res.status(500).json({
+            status: false,
+            message: "Server error. Please try again.",
+            error: fault
+        })
+    })
+}
+
+var completeAppointment = async(req,res)=>{
+    // _id of user_booked_slots
+    UserBookedSlot.findOneAndUpdate(
+        {_id: {$in:[mongoose.Types.ObjectId(req.params.id)]}}, 
+        {
+            $set: { appointment: "Completed" },
+        },
+        {
+            returnNewDocument: true,
+        }
+    ).then(data => {
+        SellerBookings.findOneAndUpdate(
+            {user_booking_id: {$in:[mongoose.Types.ObjectId(req.params.id)]}},
+            {
+                $set: { appointment: "Completed" },
+            },
+            {
+                returnNewDocument: true,
+            },
+            (err,result)=>{
+                if(err){
+                    res.status(500).json({
+                        status: false,
+                        message: "Failed to complete appointment. Server error.",
+                        error: err
+                    })
+                }
+                else{
+                    res.status(200).json({
+                        status: true,
+                        message: "Appointment completed successfully.",
+                        data: data
+                    })
+                }
+            }
+        )
+    }).catch(fault => {
+        res.status(500).json({
+            status: false,
+            message: "Server error. Please try again.",
+            error: fault
+        })
+    })
+}
+
 module.exports = {
-    bookSlot
+    checkAvailability,
+    bookAppointment,
+    cancelAppointment,
+    completeAppointment
 }

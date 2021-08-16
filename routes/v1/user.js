@@ -9,7 +9,7 @@ const ShopController = require("../../Controller/User/Shop");      // added by a
 const ShopServiceController = require("../../Controller/User/ShopServices"); // added by anirbank-93
 /* Service schedule section start */
 const SellerTimingController = require('../../Controller/User/Slot/SellerTiming');// added by anirbank-93
-const SlotBookingControllerr = require('../../Controller/User/Slot/SlotBooking');// added by anirbank-93
+const SlotBookingController = require('../../Controller/User/Slot/SlotBooking');// added by anirbank-93
 /* Service schedule section end */
 const CartController = require('../../Controller/User/Cart')
 
@@ -55,7 +55,8 @@ router.use((req, res, next) => {
 router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
 router.post("/subscription-purchase", SubscriptionController.newSubscription);// added by anirbank-93
 
-router.post('/seller-portal/login', UserSellerController.sellerLogin);// added by anirbank-93
+router.post('/seller-portal', UserSellerController.sellerTokenCheck);    // added by anirbank-93
+// router.post('/seller-portal/login', UserSellerController.sellerLogin);// added by anirbank-93
 router.get('/seller/:id', UserSellerController.viewUser);   // added by anirbank-93
 router.get('/list-of-users', UserSellerController.viewUserList);// added by anirbank-93
 router.get('/list-of-sellers', UserSellerController.viewSellerList);// added by anirbank-93
@@ -82,7 +83,10 @@ router.get('/shop-service/weekly-timings/:id', SellerTimingController.viewShopSe
 router.put('/shop-service/timing/:id', SellerTimingController.editSlot);// added by anirbank-93
 router.delete('/shop-service/timing/:id', SellerTimingController.deleteSlot);// added by anirbank-93
 
-router.post('/shop-service/book-slot', SlotBookingControllerr.bookSlot); // added by anirbank-93
+router.post('/shop-service/availability', SlotBookingController.checkAvailability);// added by anirbank-93
+router.post('/shop-service/book-slot', SlotBookingController.bookAppointment); // added by anirbank-93
+router.put('/shop-service/cancel-slot/:id', SlotBookingController.cancelAppointment);// added by anirbank-93
+router.put('/shop-service/complete-slot/:id', SlotBookingController.completeAppointment);// added by anirbank-93
 
 router.post('/add-to-cart', CartController.addToCart);
 router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
