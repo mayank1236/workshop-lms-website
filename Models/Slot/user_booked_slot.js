@@ -9,7 +9,7 @@ const userBookedSlot = new Schema({
     seller_service_id: mongoose.Types.ObjectId,
     seller_timing_id: mongoose.Schema.Types.ObjectId,
     date_of_booking: {
-        type: String,
+        type: Date,
         // default: Date()
         required: true
     },
