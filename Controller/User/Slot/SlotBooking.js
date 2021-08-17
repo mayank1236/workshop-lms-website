@@ -9,10 +9,11 @@ var checkAvailability = async (req,res)=>{
     const USER_BOOKINGS = await UserBookedSlot.find(
         {
             seller_service_id: req.body.seller_service_id,
-            seller_timing_id: req.body.seller_timing_id
+            seller_timing_id: req.body.seller_timing_id,
+            date_of_booking: req.body.date_of_booking
         }).exec()
 
-    //console.log("1st User booking", USER_BOOKINGS[0]);
+    console.log("User bookings", USER_BOOKINGS);
     
     var day_slot_total_time = []
     
