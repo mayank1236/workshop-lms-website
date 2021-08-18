@@ -80,18 +80,18 @@ const viewShopServicesPerService = async (req,res)=>{
                             category_id: {$in: [mongoose.Types.ObjectId(id)]}
                         }
                     },
-                    {
-                        $lookup:{
-                            from: "shops",
-                            localField: "shop_id",
-                            foreignField: "_id",
-                            as: "shop_details"
-                        }
-                    },
+                    // {
+                    //     $lookup:{
+                    //         from: "shops",
+                    //         localField: "shop_id",
+                    //         foreignField: "_id",
+                    //         as: "shop_details"
+                    //     }
+                    // },
                     {
                         $lookup:{
                             from: "users",
-                            localField: "userid",
+                            localField: "user_id",
                             foreignField: "_id",
                             as: "seller_details"
                         }
