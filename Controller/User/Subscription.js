@@ -52,6 +52,53 @@ const viewAllsubscription = async (req, res) => {
     });
 };
 
+var checkUserSubscription = async(req,res)=>{
+  let userid = req.params.id        // _id of 'users' table
+  SubscribedBy.aggregate([
+    {
+      $match:{
+        userid: {$in: [mongoose.Types.ObjectId(userid)]}
+      }
+    },
+    {
+      $lookup:{
+        from: "users",
+        localField: "userid",
+        foreignField: "_id",
+        as: "user_data"
+      }
+    },
+    {
+      $project:{
+        _v: 0
+      }
+    }
+  ]).
+  then(data=>{
+    if (data==null || data=='') {
+      res.status(200).json({
+        status: true,
+        message: "No subscription purchased by user.",
+        data: []
+      })
+    }
+    else {
+      res.status(200).json({
+        status: true,
+        message: "Subscription purchases by user.",
+        data: data
+      })
+    }
+  })
+  .catch(err => {
+    res.status(500).json({
+      status: false,
+      message: "Server error. Please try again.",
+      error: err
+    })
+  })
+}
+
 const newSubscription = async (req, res) => {
   let subData = await SubscribedBy.findOne({
     userid: mongoose.Types.ObjectId(req.body.userid),
@@ -115,5 +162,6 @@ const newSubscription = async (req, res) => {
 
 module.exports = {
   viewAllsubscription,
+  checkUserSubscription,
   newSubscription,
 };
