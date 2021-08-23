@@ -91,7 +91,7 @@ var viewShopServiceTimings = async (req,res)=>{
 var editSlot = async (req,res)=>{
     const v = new Validator(req.body,{
         day_name: "required",
-        timing: "required"
+        available_duration: "required"
     })
 
     let matched = v.check().then(val=>val)
