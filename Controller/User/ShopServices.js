@@ -134,11 +134,7 @@ const update = async (req,res)=>{
 
 const viewShopServicesPerSeller = async (req,res)=>{
     let user_id = req.params.user_id          // user_id of shop_services
-    let category_id = req.params.category_id
-    ShopService.find({
-        user_id: {$in: [mongoose.Types.ObjectId(user_id)]},
-        category_id: {$in: [mongoose.Types.ObjectId(category_id)]}
-      })
+    ShopService.find({user_id: {$in: [mongoose.Types.ObjectId(user_id)]}})
       .then((data)=>{
         if(data==null || data==''){
             res.status(200).json({
@@ -153,11 +149,6 @@ const viewShopServicesPerSeller = async (req,res)=>{
                     {
                         $match:{
                             user_id: {$in: [mongoose.Types.ObjectId(user_id)]}
-                        }
-                    },
-                    {
-                        $match:{
-                            category_id: {$in: [mongoose.Types.ObjectId(category_id)]}
                         }
                     },
                     {
@@ -201,13 +192,16 @@ const viewShopServicesPerSeller = async (req,res)=>{
 }
 
 const viewOneService = async (req,res)=>{
-    let id = req.params.id          // _id of shop_services
-    ShopService.findOne({_id: {$in: [mongoose.Types.ObjectId(id)]}})
+    let category_id = req.params.category_id          // category_id of shop_services
+    let user_id = req.params.user_id                  // user_id of shop_services
+    ShopService.findOne({
+        category_id: {$in: [mongoose.Types.ObjectId(category_id)]}, 
+        user_id: {$in: [mongoose.Types.ObjectId(user_id)]}})
         .then((data)=>{
             if(data==null || data==''){
                 res.status(200).json({
                     status: true,
-                    message: "Invalid id",
+                    message: "User has no service for this category",
                     data: []
                 })
             }
@@ -216,7 +210,12 @@ const viewOneService = async (req,res)=>{
                     [
                         {
                             $match:{
-                                _id: {$in: [mongoose.Types.ObjectId(id)]}
+                                category_id: {$in: [mongoose.Types.ObjectId(category_id)]}
+                            }
+                        },
+                        {
+                            $match:{
+                                user_id: {$in: [mongoose.Types.ObjectId(user_id)]}
                             }
                         },
                         {
