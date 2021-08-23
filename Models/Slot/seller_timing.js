@@ -5,8 +5,7 @@ const sellerTimingSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     day_name:{
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     from:{
         type: String,
