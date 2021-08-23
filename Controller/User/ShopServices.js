@@ -25,6 +25,7 @@ const create = async (req,res)=>{
         price: req.body.price,
         details: req.body.details,
         category_id: mongoose.Types.ObjectId(req.body.category_id),
+        category_name: req.body.category_name,
         user_id: mongoose.Types.ObjectId(req.body.user_id)
     }
     if(typeof(req.body.personalization)!='undefined' || req.body.personalization!=''){
@@ -282,9 +283,31 @@ const viewOneService = async (req,res)=>{
         })
 }
 
+const Delete = async(req,res)=>{
+    let id = req.params.id
+    // let category_id = req.params.category_id
+    ShopService.findOneAndDelete(
+        {_id: {$in: [mongoose.Types.ObjectId(id)]}}
+        // {category_id: {$in: [mongoose.Types.ObjectId(category_id)]}}
+    ).then(data=>{
+        res.status(200).json({
+            status: true,
+            message: "Successfully deleted the shop service.",
+            data: data
+        })
+    }).catch(err=>{
+        res.status(500).json({
+            status: false,
+            message: "Server error. Couldn't delete data",
+            error: err
+        })
+    })
+}
+
 module.exports = {
     create,
     update,
     viewShopServicesPerSeller,
-    viewOneService
+    viewOneService,
+    Delete
 }

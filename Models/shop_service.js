@@ -22,6 +22,10 @@ const ShopServiceSchema = new Schema({
         required: false
     },
     category_id: mongoose.Schema.Types.ObjectId,
+    category_name:{
+        type: String,
+        required: false
+    },
     user_id: mongoose.Schema.Types.ObjectId,
     hashtags:{
         type: String,

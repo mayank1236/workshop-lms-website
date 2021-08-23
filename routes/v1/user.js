@@ -78,6 +78,7 @@ router.get('/shop/all-services/:user_id', ShopServiceController.viewShopServices
 // route to fetch one service of a shop
 router.get('/shop/view-shopservice/:user_id/:category_id', ShopServiceController.viewOneService);// added by anirbank-93
 router.put('/shop/services/:id', upload1.single("image"), ShopServiceController.update);// added by anirbank-93
+router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
 
 router.post('/shop-service/timing', SellerTimingController.createSlot); // added by anirbank-93
 router.get('/shop-service/weekly-timings/:id', SellerTimingController.viewShopServiceTimings);// added by anirbank-93
