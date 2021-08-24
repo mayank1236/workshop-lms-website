@@ -283,6 +283,56 @@ const viewOneService = async (req,res)=>{
         })
 }
 
+const viewShopServiceDetails = async(req,res)=>{
+    let id = req.params.id
+    ShopService.findOne({_id: {$in: [mongoose.Types.ObjectId(id)]}})
+      .then(data=>{
+          ShopService.aggregate(
+              [
+                  {
+                      $match:{
+                        _id: {$in: [mongoose.Types.ObjectId(id)]}
+                      }
+                  },
+                  {
+                      $lookup:{
+                          from: "users",
+                          localField: "user_id",
+                          foreignField: "_id",
+                          as: "seller_details"
+                      }
+                  },
+                  {
+                      $project:{
+                          _v: 0
+                      }
+                  }
+              ]
+          )
+          .then(result=>{
+              res.status(200).json({
+                  status: true,
+                  message: "Shop service details successfully get.",
+                  data: result
+              })
+          })
+          .catch(fault=>{
+              res.status(500).json({
+                  status: false,
+                  message: "Server error. Please try again.",
+                  error: fault
+              })
+          })
+      })
+      .catch(err=>{
+        res.status(500).json({
+            status: false,
+            message: "Invalid id.",
+            error: err
+        })
+    })
+}
+
 const Delete = async(req,res)=>{
     let id = req.params.id
     // let category_id = req.params.category_id
@@ -309,5 +359,6 @@ module.exports = {
     update,
     viewShopServicesPerSeller,
     viewOneService,
+    viewShopServiceDetails,
     Delete
 }

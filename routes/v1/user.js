@@ -74,9 +74,10 @@ router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
 
 router.post('/shop/services', upload1.single("image"), ShopServiceController.create);// added by anirbank-93
 // route to fetch all services of a shop
-router.get('/shop/all-services/:user_id', ShopServiceController.viewShopServicesPerSeller); // added by anirbank-93
+router.get('/shop/all-services/:user_id', ShopServiceController.viewShopServicesPerSeller);// added by anirbank-93
 // route to fetch one service of a shop
 router.get('/shop/view-shopservice/:user_id/:category_id', ShopServiceController.viewOneService);// added by anirbank-93
+router.get('/shop/shopservice-details/:id', ShopServiceController.viewShopServiceDetails); // added by anirbank-93
 router.put('/shop/services/:id', upload1.single("image"), ShopServiceController.update);// added by anirbank-93
 router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
 
