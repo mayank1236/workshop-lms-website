@@ -89,11 +89,20 @@ var viewServiceTimingForADay = async (req,res)=>{
         day_name: req.body.day_name
     })
     .then(data=>{
-        res.status(200).json({
-            status: true,
-            message: "Service times for the day successfully get.",
-            data: data
-        })
+        if (data==null || data=='') {
+            res.status(200).json({
+                status: true,
+                message: "Seller doesn't provide service on this day.",
+                data: []
+            })
+        }
+        else {
+            res.status(200).json({
+                status: true,
+                message: "Service times for the day successfully get.",
+                data: data
+            })
+        }
     })
     .catch(err=>{
         res.status(500).json({
@@ -107,6 +116,8 @@ var viewServiceTimingForADay = async (req,res)=>{
 var bookAppointment = async (req,res,next)=>{
     const v = new Validator(req.body,{
         day_name: "required",
+        from: "required",
+        to: "required",
         duration: "required"
     })
 
@@ -122,7 +133,10 @@ var bookAppointment = async (req,res,next)=>{
         seller_timing_id: req.body.seller_timing_id,
         date_of_booking: req.body.date_of_booking,        // send date only in ISO format YYYY-MM-DD
         day_name_of_booking: req.body.day_name_of_booking,
-        duration: req.body.duration
+        from: req.body.from,
+        to: req.body.to,
+        duration: req.body.duration,
+        booked: req.body.booked
     }
     let slotBook = new UserBookedSlot(saveData1)
     
@@ -137,7 +151,10 @@ var bookAppointment = async (req,res,next)=>{
             date_of_booking: req.body.date_of_booking,
             date: data.date,
             day_name_of_booking: data.day_name_of_booking,
-            duration: data.duration
+            from: req.body.from,
+            to: req.body.to,
+            duration: data.duration,
+            booked: req.body.booked
         }
         console.log('booking_data', saveData2);
         let user_booking_data = new SellerBookings(saveData2)

@@ -6,12 +6,20 @@ const sellerBookingSchema = new Schema({
     seller_service_id: mongoose.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
     user_booking_id: mongoose.Schema.Types.ObjectId,
-    date_of_booking:{
+    // date_of_booking:{
+    //     type: String,
+    //     // default: Date()
+    //     required: true
+    // },
+    day_name_of_booking:{
         type: String,
-        // default: Date()
         required: true
     },
-    day_name_of_booking:{
+    from:{
+        type: String,
+        required: true
+    },
+    to:{
         type: String,
         required: true
     },
@@ -19,9 +27,8 @@ const sellerBookingSchema = new Schema({
         type: Number,
         required: true
     },
-    appointment:{
-        type: String,
-        default: 'Scheduled'
+    booked:{
+        type: Boolean
     }
 });
 

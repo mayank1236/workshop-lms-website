@@ -7,13 +7,21 @@ const userBookedSlot = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
     seller_service_id: mongoose.Types.ObjectId,
-    seller_timing_id: mongoose.Schema.Types.ObjectId,
-    date_of_booking: {
+    // seller_timing_id: mongoose.Schema.Types.ObjectId,
+    // date_of_booking: {
+    //     type: String,
+    //     // default: Date()
+    //     required: true
+    // },
+    day_name_of_booking:{
         type: String,
-        // default: Date()
         required: true
     },
-    day_name_of_booking:{
+    from:{
+        type: String,
+        required: true
+    },
+    to:{
         type: String,
         required: true
     },
@@ -21,9 +29,9 @@ const userBookedSlot = new Schema({
         type: Number,
         required: true
     },
-    appointment:{
-        type: String,
-        default: 'Scheduled'
+    booked:{
+        type: Boolean,
+        default: false
     }
 });
 

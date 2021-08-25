@@ -19,6 +19,10 @@ const sellerTimingSchema = new Schema({
         type: Number,
         required: true
     },
+    booked:{               // Can be changed in future
+        type: Boolean,
+        default: false
+    },
     slot_duration:{
         type: Array,
         required: false,
