@@ -42,36 +42,66 @@ var checkAvailability = async (req,res)=>{
     // else{
     //     console.log("False");
     // }
-    if(available_remaining>=30 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking) {
-        res.status(200).json({
+    if(USER_BOOKINGS=='') {
+        return res.status(200).json({
             status: true,
             message: "Any duration slot available",
             slot_durations: SELLER_TIMING.slot_duration
         })
     }
-    else if(available_remaining>=15 && available_remaining<30 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking){
-        res.status(200).json({
-            status: true,
-            message: "10 or 15 minute slot available",
-            slot1: SELLER_TIMING.slot_duration[0],
-            slot2: SELLER_TIMING.slot_duration[1]
-        })
-    }
-    else if(available_remaining>=10 && available_remaining<15 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking){
-        res.status(200).json({
-            status: true,
-            message: "10 minute slot available only",
-            slot: SELLER_TIMING.slot_duration[0]
-        })
-    }
     else {
+        if(available_remaining>=30 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking) {
+            res.status(200).json({
+                status: true,
+                message: "Any duration slot available(1)",
+                slot_durations: SELLER_TIMING.slot_duration
+            })
+        }
+        else if(available_remaining>=15 && available_remaining<30 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking){
+            res.status(200).json({
+                status: true,
+                message: "10 or 15 minute slot available",
+                slot1: SELLER_TIMING.slot_duration[0],
+                slot2: SELLER_TIMING.slot_duration[1]
+            })
+        }
+        else if(available_remaining>=10 && available_remaining<15 && USER_BOOKINGS[0].date_of_booking==req.body.date_of_booking){
+            res.status(200).json({
+                status: true,
+                message: "10 minute slot available only",
+                slot: SELLER_TIMING.slot_duration[0]
+            })
+        }
+        else {
+            res.status(200).json({
+                status: true,
+                message: "Slots not available",
+                data: null
+            })
+        }
+    }
+}
+
+var viewServiceTimingForADay = async (req,res)=>{
+    let service_id = req.body.service_id
+    SellerTimings.findOne({
+        shop_service_id: {$in: [mongoose.Types.ObjectId(service_id)]},
+        day_name: req.body.day_name
+    })
+    .then(data=>{
         res.status(200).json({
             status: true,
-            message: "Slots not available",
-            data: null
+            message: "Service times for the day successfully get.",
+            data: data
         })
-    }
-    
+    })
+    .catch(err=>{
+        res.status(500).json({
+            status: false,
+            message: "Failed to fetch timings. Server error.",
+            error: err
+        })
+    })
 }
 
 var bookAppointment = async (req,res,next)=>{
@@ -231,6 +261,7 @@ var completeAppointment = async(req,res)=>{
 
 module.exports = {
     checkAvailability,
+    viewServiceTimingForADay,
     bookAppointment,
     cancelAppointment,
     editAppointment,

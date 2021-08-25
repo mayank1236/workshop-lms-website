@@ -9,6 +9,7 @@ const ShopController = require("../../Controller/User/Shop");      // added by a
 const ShopServiceController = require("../../Controller/User/ShopServices"); // added by anirbank-93
 /* Service schedule section start */
 const SellerTimingController = require('../../Controller/User/Slot/SellerTiming');// added by anirbank-93
+const SellerSlots = require('../../Controller/User/Slot/SellerSlots');    // added by anirbank-93
 const SlotBookingController = require('../../Controller/User/Slot/SlotBooking');// added by anirbank-93
 /* Service schedule section end */
 const CartController = require('../../Controller/User/Cart')
@@ -74,19 +75,23 @@ router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
 
 router.post('/shop/services', upload1.single("image"), ShopServiceController.create);// added by anirbank-93
 // route to fetch all services of a shop
-router.get('/shop/all-services/:user_id', ShopServiceController.viewShopServicesPerSeller);// added by anirbank-93
+router.get('/shop/all-services/:seller_id', ShopServiceController.viewShopServicesPerSeller);// added by anirbank-93
 // route to fetch one service of a shop
-router.get('/shop/view-shopservice/:user_id/:category_id', ShopServiceController.viewOneService);// added by anirbank-93
+router.get('/shop/view-shopservice/:seller_id/:category_id', ShopServiceController.viewOneService);// added by anirbank-93
 router.get('/shop/shopservice-details/:id', ShopServiceController.viewShopServiceDetails); // added by anirbank-93
 router.put('/shop/services/:id', upload1.single("image"), ShopServiceController.update);// added by anirbank-93
 router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
 
+// Slot management section start
 router.post('/shop-service/timing', SellerTimingController.createSlot); // added by anirbank-93
 router.get('/shop-service/weekly-timings/:id', SellerTimingController.viewShopServiceTimings);// added by anirbank-93
 router.put('/shop-service/timing/:id', SellerTimingController.editSlot);// added by anirbank-93
 router.delete('/shop-service/timing/:id', SellerTimingController.deleteSlot);// added by anirbank-93
 
+router.post('/seller/slot', SellerSlots.addSellerServiceSlot);
+
 router.post('/shop-service/availability', SlotBookingController.checkAvailability);// added by anirbank-93
+router.post('/shop-service/day-timing', SlotBookingController.viewServiceTimingForADay);
 router.post('/shop-service/book-slot', SlotBookingController.bookAppointment); // added by anirbank-93
 router.put('/shop-service/cancel-slot/:id', SlotBookingController.cancelAppointment);// added by anirbank-93
 router.put('/shop-service/update-slot/:id', SlotBookingController.editAppointment);  // added by anirbank-93
@@ -96,6 +101,7 @@ router.post('/add-to-cart', CartController.addToCart);
 router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
 router.get('/get-cart/:user_id', CartController.getCart);
 router.delete('/cartDelete/:id',CartController.Delete)
+// Slot management section end
 /** ================================= with login url section end ================================ */
 
 module.exports = router;
