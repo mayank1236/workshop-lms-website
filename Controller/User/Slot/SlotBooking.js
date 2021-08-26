@@ -2,6 +2,7 @@ var mongoose = require('mongoose')
 var UserBookedSlot = require('../../../Models/Slot/user_booked_slot')
 var SellerBookings = require('../../../Models/Slot/seller_bookings')
 var SellerTimings = require('../../../Models/Slot/seller_timing')
+var ServiceSlots = require('../../../Models/Slot/seller_slots')
 
 const { Validator } = require('node-input-validator')
 
@@ -82,11 +83,11 @@ var checkAvailability = async (req,res)=>{
     }
 }
 
-var viewServiceTimingForADay = async (req,res)=>{
-    let service_id = req.body.service_id
-    SellerTimings.findOne({
-        shop_service_id: {$in: [mongoose.Types.ObjectId(service_id)]},
-        day_name: req.body.day_name
+var viewSlotsForADay = async (req,res)=>{
+    let shop_service_id = req.body.shop_service_id
+    ServiceSlots.find({
+        shop_service_id: {$in: [mongoose.Types.ObjectId(shop_service_id)]},
+        weekday_name: req.body.weekday_name
     })
     .then(data=>{
         if (data==null || data=='') {
@@ -278,7 +279,7 @@ var completeAppointment = async(req,res)=>{
 
 module.exports = {
     checkAvailability,
-    viewServiceTimingForADay,
+    viewSlotsForADay,
     bookAppointment,
     cancelAppointment,
     editAppointment,
