@@ -6,100 +6,115 @@ const { Validator } = require('node-input-validator')
 // const { find } = require('../../../Models/Slot/seller_timing')
 
 var createSlot = async (req,res)=>{
-    const V = new Validator(req.body, {
-        day_name: "required",
-        from: "required",
-        to: "required",
-        slot_duration: "required",
-        language: "required"
+    sellerTimings.findOne({
+        shop_service_id: {$in: [mongoose.Types.ObjectId(req.body.shop_service_id)]},
+        day_name: req.body.day_name
     })
-    let matched = V.check().then(val=>val)
-
-    if (!matched) {
-        res.status(200).json({ status: true, error: V.errors })
-    }
-    
-    var ranges = []           // start times array
-    var nietos = []           // array of objects with {starttime, endtime}
-    let single_slot = {}      // object with single slot start time, end time
-
-    var starttime = convertTime12to24(req.body.from)
-    var endtime = convertTime12to24(req.body.to)
-    var interval = req.body.slot_duration
-    var language = req.body.language
-
-    // console.log("Start time", starttime)
-    // console.log("End time", endtime)
-
-    var st_InMin4m12AM = convertH2M(starttime)
-    var et_InMin4m12AM = convertH2M(endtime)
-
-    console.log("Start time", st_InMin4m12AM)
-    console.log("End time", et_InMin4m12AM)
-
-    var timeRanges = getTimeRanges(ranges, st_InMin4m12AM, et_InMin4m12AM, interval, language)
-
-    console.log(timeRanges)
-
-    enterObjectsInArr(ranges,nietos)
-    console.log("Timings",nietos)
-
-    // nietos.forEach(element => {
-    //     let saveData2 = {
-    //         _id: mongoose.Types.ObjectId(),
-    //         category_id: mongoose.Types.ObjectId(req.body.category_id),
-    //         shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
-    //         weekday_name: req.body.day_name,
-    //         timing: element,
-    //         slot_duration: req.body.slot_duration
-    //     }
-    //     var seller_slots = new sellerSlots(saveData2);
-    //     seller_slots.save()
-    // })
-
-    let saveData1 = {
-        _id: mongoose.Types.ObjectId(),
-        day_name: req.body.day_name,
-        from: req.body.from,
-        to: req.body.to,
-        available_duration: req.body.available_duration,
-        slot_duration: req.body.slot_duration,
-        language: req.body.language,
-        shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
-        category_id: mongoose.Types.ObjectId(req.body.category_id),
-        seller_id: mongoose.Types.ObjectId(req.body.seller_id)
-    }
-
-    const SELLER_TIMINGS = new sellerTimings(saveData1)
-    
-    SELLER_TIMINGS.save()
-      .then(data=>{
-          console.log("Seller availability", data)
-          nietos.forEach(element => {
-              let saveData2 = {
-                  _id: mongoose.Types.ObjectId(),
-                  category_id: mongoose.Types.ObjectId(data.category_id),
-                  shop_service_id: mongoose.Types.ObjectId(data.shop_service_id),
-                  weekday_name: data.day_name,
-                  timing: element,
-                  slot_duration: data.slot_duration
-              }
-              data.addSlots(saveData2)
-          })
-          
-          res.status(200).json({
-              status: true,
-              message: "Slots created successfully for the day.",
-              data: data
-          })
-      })
-      .catch(err=>{
-          res.status(500).json({
-              status: false,
-              message: "Failed to add slot. Server error.",
-              error: err
-          })
-      })
+    .then(result=>{
+        if (result==null || result=='') {
+            const V = new Validator(req.body, {
+                day_name: "required",
+                from: "required",
+                to: "required",
+                slot_duration: "required",
+                language: "required"
+            })
+            let matched = V.check().then(val=>val)
+            
+            if (!matched) {
+                res.status(200).json({ status: true, error: V.errors })
+            }
+            
+            var ranges = []           // start times array
+            var nietos = []           // array of objects with {starttime, endtime}
+            let single_slot = {}      // object with single slot start time, end time
+            
+            var starttime = convertTime12to24(req.body.from)          // see below for utility functions
+            var endtime = convertTime12to24(req.body.to)              // see below for utility functions
+            var interval = req.body.slot_duration
+            var language = req.body.language
+            
+            // console.log("Start time", starttime)
+            // console.log("End time", endtime)
+            
+            var st_InMin4m12AM = convertH2M(starttime)         // see below for utility functions
+            var et_InMin4m12AM = convertH2M(endtime)           // see below for utility functions
+            
+            console.log("Start time", st_InMin4m12AM)
+            console.log("End time", et_InMin4m12AM)
+            
+            var timeRanges = getTimeRanges(ranges, st_InMin4m12AM, et_InMin4m12AM, interval, language)// see below for utility functions
+            
+            console.log(timeRanges)
+            
+            enterObjectsInArr(ranges,nietos)          // see below for utility functions
+            console.log("Timings",nietos)
+            
+            // nietos.forEach(element => {
+            //     let saveData2 = {
+            //         _id: mongoose.Types.ObjectId(),
+            //         category_id: mongoose.Types.ObjectId(req.body.category_id),
+            //         shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
+            //         weekday_name: req.body.day_name,
+            //         timing: element,
+            //         slot_duration: req.body.slot_duration
+            //     }
+            //     var seller_slots = new sellerSlots(saveData2);
+            //     seller_slots.save()
+            // })
+            
+            let saveData1 = {
+                _id: mongoose.Types.ObjectId(),
+                day_name: req.body.day_name,
+                from: req.body.from,
+                to: req.body.to,
+                available_duration: req.body.available_duration,
+                slot_duration: req.body.slot_duration,
+                language: req.body.language,
+                shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
+                category_id: mongoose.Types.ObjectId(req.body.category_id),
+                seller_id: mongoose.Types.ObjectId(req.body.seller_id)
+            }
+            
+            const SELLER_TIMINGS = new sellerTimings(saveData1)
+            
+            SELLER_TIMINGS.save()
+              .then(data=>{
+                  console.log("Seller availability", data)
+                  nietos.forEach(element => {
+                      let saveData2 = {
+                          _id: mongoose.Types.ObjectId(),
+                          category_id: mongoose.Types.ObjectId(data.category_id),
+                          shop_service_id: mongoose.Types.ObjectId(data.shop_service_id),
+                          weekday_name: data.day_name,
+                          timing: element,
+                          slot_duration: data.slot_duration
+                      }
+                      data.addSlots(saveData2)
+                  })
+                  
+                  res.status(200).json({
+                      status: true,
+                      message: "Slots created successfully for the day.",
+                      data: data
+                  })
+              })
+              .catch(err=>{
+                  res.status(500).json({
+                      status: false,
+                      message: "Failed to add slot. Server error.",
+                      error: err
+                  })
+              })
+        }
+        else {
+            res.status(500).json({
+                status: false,
+                message: "Slots for the day already exists.",
+                data: result
+            })
+        }
+    })
 }
 
 var viewShopServiceTimings = async (req,res)=>{

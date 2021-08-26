@@ -6,7 +6,8 @@ var SellerBookings = require('./seller_bookings')
 const userBookedSlot = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
-    seller_service_id: mongoose.Types.ObjectId,
+    slot_id: mongoose.Schema.Types.ObjectId,
+    shop_service_id: mongoose.Schema.Types.ObjectId,
     // seller_timing_id: mongoose.Schema.Types.ObjectId,
     // date_of_booking: {
     //     type: String,
@@ -29,7 +30,7 @@ const userBookedSlot = new Schema({
         type: Number,
         required: true
     },
-    booked:{
+    is_booked:{
         type: Boolean,
         default: false
     }
