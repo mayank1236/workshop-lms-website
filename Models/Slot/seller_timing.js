@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+var sellerSlotSchema = require('./seller_slots')
 var Schema = mongoose.Schema
 
 const sellerTimingSchema = new Schema({
@@ -16,17 +17,15 @@ const sellerTimingSchema = new Schema({
         required: true
     },
     available_duration:{
+        type: Number
+    },
+    slot_duration:{
         type: Number,
         required: true
     },
-    booked:{               // Can be changed in future
-        type: Boolean,
-        default: false
-    },
-    slot_duration:{
-        type: Array,
-        required: false,
-        default: [10,15,30]
+    language:{
+        type: String,
+        required: true
     },
     shop_service_id: mongoose.Schema.Types.ObjectId,
     category_id: mongoose.Schema.Types.ObjectId,
@@ -36,5 +35,10 @@ const sellerTimingSchema = new Schema({
 // sellerTimingSchema.methods.checkDayName = function(seller_day){
 //     let availabilty = this.available_on
 // }
+
+sellerTimingSchema.methods.addSlots = function(data) {
+    const SELLER_SLOTS = new sellerSlotSchema(data)
+    return SELLER_SLOTS.save()
+}
 
 module.exports = mongoose.model('seller_timings', sellerTimingSchema)

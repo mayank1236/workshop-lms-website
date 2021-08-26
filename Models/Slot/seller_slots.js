@@ -9,13 +9,23 @@ const SELLER_SLOT_SCHEMA = new Schema({
         type: String,
         required: true
     },
-    from:{
-        type: String,
-        required: true
-    },
-    to:{
-        type: String,
-        required: true
+    // from:{
+    //     type: String,
+    //     required: true
+    // },
+    // to:{
+    //     type: String,
+    //     required: true
+    // },
+    timing:{
+        from:{
+            type: String,
+            required: true
+        },
+        to:{
+            type: String,
+            required: true
+        } 
     },
     slot_duration:{
         type: Number

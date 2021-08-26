@@ -193,94 +193,96 @@ const viewShopServicesPerSeller = async (req,res)=>{
 }
 
 const viewOneService = async (req,res)=>{
+    let seller_id = req.params.seller_id              // user_id of shop_services
     let category_id = req.params.category_id          // category_id of shop_services
-    let seller_id = req.params.user_id                  // user_id of shop_services
-    ShopService.findOne({
-        category_id: {$in: [mongoose.Types.ObjectId(category_id)]}, 
-        user_id: {$in: [mongoose.Types.ObjectId(seller_id)]}})
-        .then((data)=>{
-            if(data==null || data==''){
-                res.status(200).json({
-                    status: true,
-                    message: "User has no service for this category",
-                    data: []
-                })
-            }
-            else{
-                ShopService.aggregate(
-                    [
-                        {
-                            $match:{
-                                category_id: {$in: [mongoose.Types.ObjectId(category_id)]}
-                            }
-                        },
-                        {
-                            $match:{
-                                user_id: {$in: [mongoose.Types.ObjectId(seller_id)]}
-                            }
-                        },
-                        {
-                            $lookup:{
-                                from: "users",
-                                localField: "user_id",
-                                foreignField: "_id",
-                                as: "seller_details"
-                            }
-                        },
-                        {
-                            $project:{
-                                _v:0
-                            }
-                        }
-                    ]
-                  )
-                  .then((docs)=>{
-                      res.status(200).json({
-                          status: true,
-                          message: "This shop service get successfully",
-                          data: docs
-                      })
-                  })
-                  .catch((fault)=>{
-                      res.status(500).json({
-                          status: false,
-                          message: "Server error2. Please try again.",
-                          error: fault
-                      })
-                  })
-                //   ShopService.aggregate(
-                //       [
-                //           {
-                //               $addFields:{
-                //                   shop_details:{
-                //                     $match: {
-                //                         _id: {$in: [mongoose.Types.ObjectId(id)]}
-                //                     },
-                //                     $lookup:{
-                //                         from: "shops",
-                //                         localField: "shop_id",
-                //                         foreignField: "_id"
-                //                     },
-                //                     $project:{
-                //                             _v: 0
-                //                         }
-                //                   }
-                //               }
-                //           }
-                //       ]
-                //   )//
-                //   .then((docs)=>{
-                //       res.status(200).json()
-                //   })
-            }
-        })
-        .catch((err)=>{
-            res.status(500).json({
-                status: false,
-                message: "Server error. Please try again.",
-                error: err
+    ShopService.find({
+        user_id: {$in: [mongoose.Types.ObjectId(seller_id)]},
+        category_id: {$in: [mongoose.Types.ObjectId(category_id)]}
+    })
+    .then((data)=>{
+        console.log(data)
+        if(data==null || data==''){
+            res.status(200).json({
+                status: true,
+                message: "User has no service for this category",
+                data: []
             })
+        }
+        else{
+            ShopService.aggregate(
+                [
+                    {
+                        $match:{
+                            category_id: {$in: [mongoose.Types.ObjectId(category_id)]}
+                        }
+                    },
+                    {
+                        $match:{
+                            user_id: {$in: [mongoose.Types.ObjectId(seller_id)]}
+                        }
+                    },
+                    {
+                        $lookup:{
+                            from: "users",
+                            localField: "user_id",
+                            foreignField: "_id",
+                            as: "seller_details"
+                        }
+                    },
+                    {
+                        $project:{
+                            _v:0
+                        }
+                    }
+                ]
+              )
+              .then((docs)=>{
+                  res.status(200).json({
+                      status: true,
+                      message: "This shop service get successfully",
+                      data: docs
+                  })
+              })
+              .catch((fault)=>{
+                  res.status(500).json({
+                      status: false,
+                      message: "Server error2. Please try again.",
+                      error: fault
+                  })
+              })
+            //   ShopService.aggregate(
+            //       [
+            //           {
+            //               $addFields:{
+            //                   shop_details:{
+            //                     $match: {
+            //                         _id: {$in: [mongoose.Types.ObjectId(id)]}
+            //                     },
+            //                     $lookup:{
+            //                         from: "shops",
+            //                         localField: "shop_id",
+            //                         foreignField: "_id"
+            //                     },
+            //                     $project:{
+            //                             _v: 0
+            //                         }
+            //                   }
+            //               }
+            //           }
+            //       ]
+            //   )//
+            //   .then((docs)=>{
+            //       res.status(200).json()
+            //   })
+        }
+    })
+    .catch((err)=>{
+        res.status(500).json({
+            status: false,
+            message: "Server error. Please try again.",
+            error: err
         })
+    })
 }
 
 const viewShopServiceDetails = async(req,res)=>{
