@@ -32,7 +32,7 @@ const userBookedSlot = new Schema({
     },
     is_booked:{
         type: Boolean,
-        default: false
+        default: true
     }
 });
 

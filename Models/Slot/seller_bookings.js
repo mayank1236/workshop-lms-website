@@ -3,9 +3,10 @@ var Schema = mongoose.Schema
 
 const sellerBookingSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    seller_service_id: mongoose.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
     user_booking_id: mongoose.Schema.Types.ObjectId,
+    slot_id: mongoose.Schema.Types.ObjectId,
+    shop_service_id: mongoose.Schema.Types.ObjectId,
     // date_of_booking:{
     //     type: String,
     //     // default: Date()
@@ -27,8 +28,9 @@ const sellerBookingSchema = new Schema({
         type: Number,
         required: true
     },
-    booked:{
-        type: Boolean
+    is_booked:{
+        type: Boolean,
+        default: false
     }
 });
 

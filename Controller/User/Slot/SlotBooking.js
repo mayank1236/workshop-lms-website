@@ -114,69 +114,6 @@ var viewSlotsForADay = async (req,res)=>{
     })
 }
 
-// var bookAppointment = async (req,res,next)=>{
-//     const v = new Validator(req.body,{
-//         day_name: "required",
-//         from: "required",
-//         to: "required",
-//         duration: "required"
-//     })
-
-//     let matched = v.check().then(val=>val)
-//     if(!matched){
-//         return res.status(400).json({ status: false, message: v.errors })
-//     }
-
-//     let saveData1 = {
-//         _id: mongoose.Types.ObjectId(),
-//         user_id: req.body.user_id,
-//         seller_service_id: req.body.seller_service_id,
-//         seller_timing_id: req.body.seller_timing_id,
-//         date_of_booking: req.body.date_of_booking,        // send date only in ISO format YYYY-MM-DD
-//         day_name_of_booking: req.body.day_name_of_booking,
-//         from: req.body.from,
-//         to: req.body.to,
-//         duration: req.body.duration,
-//         booked: req.body.booked
-//     }
-//     let slotBook = new UserBookedSlot(saveData1)
-    
-//     return slotBook.save()
-//       .then(data => {
-//           // console.log('user_booking_data', data);
-//           let saveData2 = {
-//             _id: mongoose.Types.ObjectId(),
-//             seller_service_id: data.seller_service_id,
-//             user_id: data.user_id,
-//             user_booking_id: data._id,
-//             date_of_booking: req.body.date_of_booking,
-//             date: data.date,
-//             day_name_of_booking: data.day_name_of_booking,
-//             from: req.body.from,
-//             to: req.body.to,
-//             duration: data.duration,
-//             booked: req.body.booked
-//         }
-//         console.log('booking_data', saveData2);
-//         let user_booking_data = new SellerBookings(saveData2)
-//         user_booking_data.save()
-//           .then(result => {
-//             res.status(200).json({
-//                 status: true,
-//                 message: "Service slot booked successfully",
-//                 data: data
-//             })
-//           })
-//           .catch(err => {
-//             res.status(500).json({
-//                 status: false,
-//                 message: "Server error. Please try again.",
-//                 error: err
-//             })
-//           })
-//       })
-// }
-
 var bookAppointment = async (req,res,next)=>{
     const V = new Validator(req.body, {
         day_name_of_booking: "required",
@@ -198,50 +135,75 @@ var bookAppointment = async (req,res,next)=>{
         day_name_of_booking: req.body.day_name_of_booking,
         from: req.body.from,
         to: req.body.to,
-        duration: req.body.duration,
-        is_booked: req.body.is_booked
+        duration: req.body.duration
+        // is_booked: req.body.is_booked
     }
 
     const USER_BOOKED_SLOT = new UserBookedSlot(saveData1);
 
-    USER_BOOKED_SLOT.save()
-      .then(data=>{
-        ServiceSlots.findOneAndUpdate(
-            {
-                shop_service_id: {$in: [mongoose.Types.ObjectId(req.body.shop_service_id)]},
-                weekday_name: req.body.day_name_of_booking
-            },
-            {
-                $set: { booking_status: true },
-            },
-            {
-                returnNewDocument: true,
-            },
-            (err,result)=>{
-                if (!err) {
-                    res.status(200).json({
-                        status: true,
-                        message: "Slot booked successfully",
-                        data: data
-                    })
+    USER_BOOKED_SLOT.save((err,docs)=>{
+        if (!err) {
+            ServiceSlots.findOneAndUpdate(
+                {
+                    _id: {$in: [mongoose.Types.ObjectId(req.body.slot_id)]},
+                    // weekday_name: req.body.day_name_of_booking
+                },
+                {
+                    $set: { booking_status: true },
+                },
+                {
+                    returnNewDocument: true,
                 }
-                else {
-                    res.status(500).json({
-                        status: false,
-                        message: "Slot could't be booked. Server error.",
-                        error: err
-                    })
+            )
+            .then(()=>{
+                console.log(docs)
+                let saveData2 = {
+                    _id: mongoose.Types.ObjectId(),
+                    user_id: docs.user_id,
+                    user_booking_id: docs._id,
+                    slot_id: docs.slot_id,
+                    shop_service_id: docs.shop_service_id,
+                    day_name_of_booking: docs.day_name_of_booking,
+                    from: docs.from,
+                    to: docs.to,
+                    duration: docs.duration,
+                    is_booked: docs.is_booked
                 }
-            }
-        )
-      })
-      .catch(fault=>{
-          res.status(500).json({
-              status: false,
-              message: "Server error. Please try again.",
-              error: fault
-          })
-      })
+                const sellerBookingData = new SellerBookings(saveData2)
+
+                sellerBookingData.save((err,result)=>{
+                    if (!err) {
+                        res.status(200).json({
+                            status: true,
+                            message: "Slot booked successfully",
+                            data: docs
+                        })
+                    }
+                    else {
+                        res.status(500).json({
+                            status: false,
+                            message: "Slot could't be booked. Server error.",
+                            error: err
+                        })
+                    }
+                })
+            })
+            .catch(fault=>{
+                res.status(500).json({
+                status: false,
+                message: "Server error. Please try again.",
+                error: fault
+                })
+            })
+        }
+        else{
+            res.send({
+                status: false, 
+                message: "Couldn't update user slot status", 
+                error: err
+            })
+        }
+    })
 }
 
 var cancelAppointment = async (req,res)=>{
