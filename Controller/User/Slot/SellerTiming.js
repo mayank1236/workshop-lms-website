@@ -195,7 +195,7 @@ var deleteSlot = async (req,res)=>{
       })
 }
 
-/**=========================Utility functions==============================**/
+/**=============Utility functions section start==================**/
 // Convert timestamp to 24-hour format
 const convertTime12to24 = function(time12h) {
     const [time, modifier] = time12h.split(' ');
@@ -251,6 +251,7 @@ const enterObjectsInArr = function(data_arr,emp_arr){
         }     
       }
 }
+/**=============Utility functions section end==================**/
 
 module.exports = {
     createSlot,

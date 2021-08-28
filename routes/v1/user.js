@@ -13,6 +13,7 @@ const SellerSlots = require('../../Controller/User/Slot/SellerSlots');    // add
 const SlotBookingController = require('../../Controller/User/Slot/SlotBooking');// added by anirbank-93
 /* Service schedule section end */
 const CartController = require('../../Controller/User/Cart')
+const ServiceCart = require('../../Controller/User/ServiceCart')
 
 const multer = require('multer');
 
@@ -82,7 +83,7 @@ router.get('/shop/shopservice-details/:id', ShopServiceController.viewShopServic
 router.put('/shop/services/:id', upload1.single("image"), ShopServiceController.update);// added by anirbank-93
 router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
 
-// Slot management section start
+// ----------------->Slot management section start
 router.post('/shop-service/timing', SellerTimingController.createSlot); // added by anirbank-93
 router.get('/shop-service/weekly-timings/:id', SellerTimingController.viewShopServiceTimings);// added by anirbank-93
 router.put('/shop-service/timing/:id', SellerTimingController.editSlot);// added by anirbank-93
@@ -96,12 +97,19 @@ router.post('/shop-service/book-slot', SlotBookingController.bookAppointment); /
 router.put('/shop-service/cancel-slot/:id', SlotBookingController.cancelAppointment);// added by anirbank-93
 router.put('/shop-service/update-slot/:id', SlotBookingController.editAppointment);  // added by anirbank-93
 router.put('/shop-service/complete-slot/:id', SlotBookingController.completeAppointment);// added by anirbank-93
+// ------------------>Slot management section end
 
+/**====================Product cart api's======================= */
 router.post('/add-to-cart', CartController.addToCart);
 router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
 router.get('/get-cart/:user_id', CartController.getCart);
 router.delete('/cartDelete/:id',CartController.Delete)
-// Slot management section end
+/**=================Product cart api's end======================= */
+
+/**====================Service cart api's======================== */
+router.post('/to-service-cart', ServiceCart.addToServiceCart)
+router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart)
+/**================Service cart api's end======================== */
 /** ================================= with login url section end ================================ */
 
 module.exports = router;
