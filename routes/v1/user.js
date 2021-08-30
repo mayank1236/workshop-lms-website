@@ -14,8 +14,10 @@ const SlotBookingController = require('../../Controller/User/Slot/SlotBooking');
 /* Service schedule section end */
 const CartController = require('../../Controller/User/Cart')
 const ServiceCart = require('../../Controller/User/ServiceCart')
+const Checkout = require('../../Controller/User/Checkout')
 
 const multer = require('multer');
+const { route } = require("./admin");
 
 var storage1 = multer.memoryStorage();
 var upload1 = multer({storage: storage1});
@@ -109,7 +111,12 @@ router.delete('/cartDelete/:id',CartController.Delete)
 /**====================Service cart api's======================== */
 router.post('/to-service-cart', ServiceCart.addToServiceCart)
 router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart)
+router.delete('/delete-cart/:id', ServiceCart.DeleteCart)
 /**================Service cart api's end======================== */
+
+/**====================Checkout api's============================ */
+router.post('/shop-service/checkout', Checkout.create)
+/**================Checkout api's end============================ */
 /** ================================= with login url section end ================================ */
 
 module.exports = router;
