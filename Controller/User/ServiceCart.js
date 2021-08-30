@@ -21,18 +21,17 @@ var addToServiceCart = async (req,res)=>{
 
     // let image_url = await Upload.uploadFile(req.file, "service_cart")
     let cartData = await ServiceCart.findOne({
-        user_id: mongoose.Types.ObjectId(req.body.seller_id),
-        service_id: mongoose.Types.ObjectId(req.body.service_id),
+        user_id: {$in: [mongoose.Types.ObjectId(req.body.seller_id)]},
+        service_id: {$in: [mongoose.Types.ObjectId(req.body.service_id)]},
         status: true
     }).exec()
     if(cartData==null || cartData=='') {
 
         let saveData = {
             _id: mongoose.Types.ObjectId(),
-            user_id: req.body.user_id,
-            seller_id: req.body.seller_id,
-            service_id: req.body.service_id,
-            order_id: req.body.order_id,
+            user_id: mongoose.Types.ObjectId(req.body.user_id),
+            seller_id: mongoose.Types.ObjectId(req.body.seller_id),
+            service_id: mongoose.Types.ObjectId(req.body.service_id),
             service_name: req.body.service_name,
             price: req.body.price,
             image: req.body.image

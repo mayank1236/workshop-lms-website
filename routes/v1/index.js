@@ -29,7 +29,7 @@ router.get('/user/viewproduct/:id', UserProductController.viewSingleProduct);   
 router.get('/user/service-category', ServiceController.viewAllServices);// added by anirbank-93
 router.get('/user/service-category/:id', ServiceController.viewService);// added by anirbank-93
 
-router.get('/user/service/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
+router.get('/user/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
 
 /** ================================= without login url section end ================================ */

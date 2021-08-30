@@ -8,12 +8,16 @@ const userBookedSlot = new Schema({
     user_id: mongoose.Schema.Types.ObjectId,
     slot_id: mongoose.Schema.Types.ObjectId,
     shop_service_id: mongoose.Schema.Types.ObjectId,
+    seller_id: mongoose.Schema.Types.ObjectId,
     // seller_timing_id: mongoose.Schema.Types.ObjectId,
     // date_of_booking: {
     //     type: String,
     //     // default: Date()
     //     required: true
     // },
+    shop_service_name:{
+        type: String
+    },
     day_name_of_booking:{
         type: String,
         required: true

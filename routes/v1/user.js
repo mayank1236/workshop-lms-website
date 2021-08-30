@@ -12,12 +12,11 @@ const SellerTimingController = require('../../Controller/User/Slot/SellerTiming'
 const SellerSlots = require('../../Controller/User/Slot/SellerSlots');    // added by anirbank-93
 const SlotBookingController = require('../../Controller/User/Slot/SlotBooking');// added by anirbank-93
 /* Service schedule section end */
-const CartController = require('../../Controller/User/Cart')
-const ServiceCart = require('../../Controller/User/ServiceCart')
-const Checkout = require('../../Controller/User/Checkout')
+const CartController = require('../../Controller/User/Cart');
+const ServiceCart = require('../../Controller/User/ServiceCart');
+const Checkout = require('../../Controller/User/Checkout');
 
 const multer = require('multer');
-const { route } = require("./admin");
 
 var storage1 = multer.memoryStorage();
 var upload1 = multer({storage: storage1});

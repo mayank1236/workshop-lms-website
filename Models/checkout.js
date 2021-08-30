@@ -12,8 +12,7 @@ const CHECKOUT_SCHEMA = new Schema({
     },
     order_id:
     {
-        type:Number,
-        required: true
+        type:Number
     },
     booking_date:{
         type: Date,

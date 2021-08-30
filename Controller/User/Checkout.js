@@ -28,7 +28,12 @@ var create = async (req,res)=>{
     let saveData = {
         _id: mongoose.Types.ObjectId(),
         user_id: mongoose.Types.ObjectId(req.body.user_id),
-        service_ids: req.body.service_ids
+        service_ids: req.body.service_ids,
+        order_id: Number(
+            `${new Date().getDate()}${new Date().getHours()}${new Date().getSeconds()}${new Date().getMilliseconds()}`
+        ),
+        subtotal: req.body.subtotal,
+        total: req.body.total
     }
 }
 
