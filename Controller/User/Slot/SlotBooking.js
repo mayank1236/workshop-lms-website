@@ -177,6 +177,7 @@ var bookAppointment = async (req,res,next)=>{
                             user_id: docs.user_id,
                             seller_id: docs.seller_id,
                             service_id: docs.shop_service_id,
+                            slot_id: docs.slot_id,
                             service_name: docs.shop_service_name,
                             price: docs.price,
                             image: docs.image
@@ -201,7 +202,7 @@ var bookAppointment = async (req,res,next)=>{
                         })
                     }
                     else {
-                        res.status(400).json({
+                        res.status(500).json({
                             status: false,
                             message: "Slot has already been booked for this request.",
                             data: null

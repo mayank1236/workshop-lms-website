@@ -6,6 +6,7 @@ const SERVICE_CART_SCHEMA = new Schema({
     user_id: mongoose.Types.ObjectId,
     seller_id: mongoose.Schema.Types.ObjectId,
     service_id: mongoose.Schema.Types.ObjectId,
+    slot_id: mongoose.Schema.Types.ObjectId,
     order_id:{
         type:Number
     },

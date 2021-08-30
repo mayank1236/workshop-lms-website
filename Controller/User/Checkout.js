@@ -149,7 +149,10 @@ var create = async (req,res)=>{
         ServiceCart.updateMany(
             {user_id: mongoose.Types.ObjectId(req.body.user_id), status: true},
             {$set: { status: false, order_id: data.order_id } },
-            {multi: true}
+            {multi: true},
+            (err, writeResult)=>{
+                console.log(err);
+            }
         )
         
         res.status(200).json({
