@@ -18,6 +18,12 @@ const userBookedSlot = new Schema({
     shop_service_name:{
         type: String
     },
+    price:{
+        type: Number
+    },
+    image:{
+        type: String,
+    },
     day_name_of_booking:{
         type: String,
         required: true
