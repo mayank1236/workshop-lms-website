@@ -31,6 +31,10 @@ const CHECKOUT_SCHEMA = new Schema({
         type:Number,
         required:true
     },
+    coupon_id:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:false
+    },
     firstname:{
         type:String,
         required:true
@@ -65,7 +69,8 @@ const CHECKOUT_SCHEMA = new Schema({
     },
     payment_type:{
         type:String,
-        required:true
+        required:false,
+        default: "COD"
     },
     card_name:{
         type:String,
@@ -75,7 +80,7 @@ const CHECKOUT_SCHEMA = new Schema({
         type:Number,
         required:false
     },
-    expdate:{
+    exp_date:{
         type:String,
         required:false
     },

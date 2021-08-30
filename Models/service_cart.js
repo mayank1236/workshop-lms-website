@@ -6,9 +6,9 @@ const SERVICE_CART_SCHEMA = new Schema({
     user_id: mongoose.Types.ObjectId,
     seller_id: mongoose.Schema.Types.ObjectId,
     service_id: mongoose.Schema.Types.ObjectId,
-    // order_id:{
-    //     type:Number
-    // },
+    order_id:{
+        type:Number
+    },
     service_name:{
         type:String,
         required:true
@@ -28,4 +28,4 @@ const SERVICE_CART_SCHEMA = new Schema({
     }
 })
 
-module.exports = mongoose.model("service_cart", SERVICE_CART_SCHEMA)
+module.exports = mongoose.model("service_carts", SERVICE_CART_SCHEMA)

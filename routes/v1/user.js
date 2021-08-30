@@ -93,8 +93,10 @@ router.delete('/shop-service/timing/:id', SellerTimingController.deleteSlot);// 
 router.post('/seller/slot', SellerSlots.addSellerServiceSlot);
 
 router.post('/shop-service/availability', SlotBookingController.checkAvailability);// added by anirbank-93
-router.post('/shop-service/day-timing', SlotBookingController.viewSlotsForADay);
+router.post('/shop-service/day-timing', SlotBookingController.viewSlotsForADay);   // added by anirbank-93
+/** Below api for both book service slot and add to service cart */
 router.post('/shop-service/book-slot', SlotBookingController.bookAppointment); // added by anirbank-93
+/**------------------------------------------------------------- */
 router.put('/shop-service/cancel-slot/:id', SlotBookingController.cancelAppointment);// added by anirbank-93
 router.put('/shop-service/update-slot/:id', SlotBookingController.editAppointment);  // added by anirbank-93
 router.put('/shop-service/complete-slot/:id', SlotBookingController.completeAppointment);// added by anirbank-93
@@ -104,11 +106,10 @@ router.put('/shop-service/complete-slot/:id', SlotBookingController.completeAppo
 router.post('/add-to-cart', CartController.addToCart);
 router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
 router.get('/get-cart/:user_id', CartController.getCart);
-router.delete('/cartDelete/:id',CartController.Delete)
+router.delete('/cartDelete/:id',CartController.Delete);
 /**=================Product cart api's end======================= */
 
 /**====================Service cart api's======================== */
-router.post('/to-service-cart', ServiceCart.addToServiceCart)
 router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart)
 router.delete('/delete-cart/:id', ServiceCart.DeleteCart)
 /**================Service cart api's end======================== */

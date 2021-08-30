@@ -115,6 +115,7 @@ var viewSlotsForADay = async (req,res)=>{
     })
 }
 
+/** Api for both slot booking and add to cart */
 var bookAppointment = async (req,res,next)=>{
     const V = new Validator(req.body, {
         day_name_of_booking: "required",

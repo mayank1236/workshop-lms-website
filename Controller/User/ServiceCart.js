@@ -6,65 +6,6 @@ const Upload = require('../../service/upload')
 
 const { Validator } = require('node-input-validator')
 
-var addToServiceCart = async (req,res)=>{
-    const V = new Validator(req.body, {
-        seller_id: "required",
-        service_id: "required",
-        service_name: "required",
-        price: "required",
-        image: "required"
-    })
-    let matched = V.check().then(val=>val)
-    if (!matched) {
-        res.status(400).json({ status: false, error: V.errors })
-    }
-
-    // let image_url = await Upload.uploadFile(req.file, "service_cart")
-    let cartData = await ServiceCart.findOne({
-        user_id: {$in: [mongoose.Types.ObjectId(req.body.seller_id)]},
-        service_id: {$in: [mongoose.Types.ObjectId(req.body.service_id)]},
-        status: true
-    }).exec()
-    if(cartData==null || cartData=='') {
-
-        let saveData = {
-            _id: mongoose.Types.ObjectId(),
-            user_id: mongoose.Types.ObjectId(req.body.user_id),
-            seller_id: mongoose.Types.ObjectId(req.body.seller_id),
-            service_id: mongoose.Types.ObjectId(req.body.service_id),
-            service_name: req.body.service_name,
-            price: req.body.price,
-            image: req.body.image
-        }
-
-        const SERVICE_CART = new ServiceCart(saveData)
-
-        return SERVICE_CART
-          .save()
-          .then(data=>{
-              res.status(200).json({
-                  status: true,
-                  message: "Service request successfully added to cart",
-                  data: data
-              })
-          })
-          .catch(err=>{
-              res.status(500).json({
-                  status: false,
-                  message: "Couldn't add service request to cart. Server error",
-                  error: err
-              })
-          })
-    }
-    else {
-        res.status(400).json({
-            status: false,
-            message: "Service request has already been added to cart.",
-            data: null
-        })
-    }
-}
-
 var  getServiceCart = async (req,res)=>{
     return ServiceCart.aggregate([
         {
@@ -128,7 +69,6 @@ var DeleteCart = async (req,res)=>{
 }
 
 module.exports = {
-    addToServiceCart,
     getServiceCart,
     DeleteCart
 }
