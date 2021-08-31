@@ -6,6 +6,7 @@ const CategoryController = require('../../Controller/Admin/Category');
 const SubscriptionController = require('../../Controller/Admin/Subscription');
 const UserSellersController = require('../../Controller/Admin/UserSellers'); // added by anirbank-93
 const ServiceController = require('../../Controller/Admin/ServiceCategory'); // added by anirbank-93
+const OrderHistory = require('../../Controller/Admin/Orderhistory')
 const ServiceSubCategoryController = require('../../Controller/Admin/SubCategory');// added by anirbank-93
 
 const multer = require('multer');
@@ -60,6 +61,8 @@ router.post('/service-category',upload.single("image"),ServiceController.create)
 router.get('/service-category', ServiceController.viewAllServices)              // added by anirbank-93
 router.put('/service-category/:id',upload.single("image"),ServiceController.update)// added by anirbank-93
 router.delete('/service-category/:id', ServiceController.Delete)                   // added by anirbank-93
+
+router.post('/service-order-history', OrderHistory.viewAll)   // added by anirbank-93
 
 router.post('/service/subcategory',ServiceSubCategoryController.create)    // added by anirbank-93
 router.get('/service/subcategory', ServiceSubCategoryController.viewAll)   // added by anirbank-93

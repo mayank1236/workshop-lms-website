@@ -9,9 +9,11 @@ const ShopController = require("../../Controller/User/Shop");      // added by a
 const ShopServiceController = require("../../Controller/User/ShopServices"); // added by anirbank-93
 /* Service schedule section start */
 const SellerTimingController = require('../../Controller/User/Slot/SellerTiming');// added by anirbank-93
-const SellerSlots = require('../../Controller/User/Slot/SellerSlots');    // added by anirbank-93
+const SellerAccount = require('../../Controller/User/SellerMyaccount');   // added by anirbank-93
 const SlotBookingController = require('../../Controller/User/Slot/SlotBooking');// added by anirbank-93
 /* Service schedule section end */
+const SellerSlots = require('../../Controller/User/Slot/SellerSlots');// added by anirbank-93
+const UserAccount = require('../../Controller/User/Myaccount');       // added by anirbank-93
 const CartController = require('../../Controller/User/Cart');
 const ServiceCart = require('../../Controller/User/ServiceCart');
 const Checkout = require('../../Controller/User/Checkout');
@@ -91,6 +93,8 @@ router.put('/shop-service/timing/:id', SellerTimingController.editSlot);// added
 router.delete('/shop-service/timing/:id', SellerTimingController.deleteSlot);// added by anirbank-93
 
 router.post('/seller/slot', SellerSlots.addSellerServiceSlot);
+router.get('/seller/service-order-history/:seller_id', SellerAccount.viewAll);
+router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll)
 
 router.post('/shop-service/availability', SlotBookingController.checkAvailability);// added by anirbank-93
 router.post('/shop-service/day-timing', SlotBookingController.viewSlotsForADay);   // added by anirbank-93
