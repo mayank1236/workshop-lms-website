@@ -7,7 +7,8 @@ const { Validator } = require('node-input-validator')
 var create = async (req,res)=>{
     const V = new Validator(req.body,{
         user_id: "required",
-        service_ids: "required",
+        user_booking_id: "required",
+        service_id: "required",
         subtotal: "required",
         total: "required",
         firstname: "required",
@@ -27,7 +28,8 @@ var create = async (req,res)=>{
     let saveData = {
         _id: mongoose.Types.ObjectId(),
         user_id: mongoose.Types.ObjectId(req.body.user_id),
-        service_ids: req.body.service_ids,
+        user_booking_id: mongoose.Types.ObjectId(req.body.user_booking_id),
+        service_id: mongoose.Types.ObjectId(req.body.service_id),
         order_id: Number(
             `${new Date().getDate()}${new Date().getHours()}${new Date().getSeconds()}${new Date().getMilliseconds()}`
         ),

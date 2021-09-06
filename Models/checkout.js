@@ -6,10 +6,8 @@ var Schema = mongoose.Schema
 const CHECKOUT_SCHEMA = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
-    service_ids:{
-        type: Array,
-        required: true
-    },
+    user_booking_id: mongoose.Schema.Types.ObjectId,
+    service_id: mongoose.Schema.Types.ObjectId,
     order_id:
     {
         type:Number

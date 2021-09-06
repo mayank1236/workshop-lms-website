@@ -135,93 +135,117 @@ var bookAppointment = async (req,res,next)=>{
         slot_id: mongoose.Types.ObjectId(req.body.slot_id),
         shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
         seller_id: mongoose.Types.ObjectId(req.body.seller_id),
-        shop_service_name: req.body.shop_service_name,
-        price: Number(req.body.price),
-        image: req.body.image,
         day_name_of_booking: req.body.day_name_of_booking,
         from: req.body.from,
         to: req.body.to,
         duration: req.body.duration
-        // is_booked: req.body.is_booked
+    }
+    if (
+        req.body.shop_service_name!="" && 
+        req.body.shop_service_name!=null && 
+        typeof req.body.shop_service_name!="undefined"
+        ) {
+        saveData1.shop_service_name = req.body.shop_service_name
+    }
+    if (
+        req.body.price!="" && 
+        req.body.price!=null && 
+        typeof req.body.price!="undefined"
+        ) {
+        saveData1.price = req.body.price
+    }
+    if (
+        req.body.image!="" && 
+        req.body.image!=null && 
+        typeof req.body.image!="undefined"
+        ) {
+        saveData1.image = req.body.image
     }
     
     const USER_BOOKED_SLOT = new UserBookedSlot(saveData1);
     
-    USER_BOOKED_SLOT.save((err,docs)=>{
+    USER_BOOKED_SLOT.save(async (err,docs)=>{
         if (!err) {
-            ServiceCart.findOne({
+            console.log("User booking info: ", docs)
+            var service_cart = await ServiceCart.find({
                 user_id: docs.user_id,
                 service_id: docs.shop_service_id,
                 status: true
-            })
-            .then(result=>{
-                console.log("Slot booking data", docs)
-                console.log("Service cart", result)
-                if (result==null || result=='') {
-                    let cartData = {
-                        _id: mongoose.Types.ObjectId(),
-                        user_id: docs.user_id,
-                        seller_id: docs.seller_id,
-                        service_id: docs.shop_service_id,
-                        slot_id: docs.slot_id,
-                        service_name: docs.shop_service_name,
-                        price: docs.price,
-                        image: docs.image
-                    }
-        
-                    const SERVICE_CART = new ServiceCart(cartData)
-        
-                    SERVICE_CART.save()
-                    .then(data2=>{
-                        var updateSlotBookingStatus = ServiceSlots.findOneAndUpdate(
-                            { 
-                                _id: {$in: [mongoose.Types.ObjectId(req.body.slot_id)]},
-                                // weekday_name: req.body.day_name_of_booking
-                            },
-                            { $set: { booking_status: true } },
-                            { returnNewDocument: true }
-                        ).exec()
-        
-                        res.status(200).json({
-                            status: true,
-                            message: "Slot booking successfull.",
-                            data: docs
-                        })
-                    })
-                    .catch(fault=>{
-                        res.status(500).json({
-                            status: false,
-                            message: "Couldn't book slot. Server error",
-                            error: fault
-                        })
-                    })
-                }
-                else {
-                    res.status(500).json({
-                        status: false,
-                        message: "Slot has already been booked for this request.",
-                        data: null
-                    })
-                }
-            })
-            .catch(err2=>{
+            }).exec()
+            console.log("User's service cart: ", service_cart)
+
+            if (service_cart.length>0) {
                 res.status(500).json({
                     status: false,
-                    message: "Server error2. Please try again.",
-                    error: err2
+                    message: "Slot has already been booked for this request.",
+                    data: service_cart
                 })
-            })
+            }
+            else {
+                let sellerBookingData = {
+                    _id: mongoose.Types.ObjectId(),
+                    seller_id: docs.seller_id,
+                    user_booking_id: docs._id,
+                    slot_id: docs.slot_id,
+                    shop_service_id: docs.shop_service_id,
+                    day_name_of_booking: docs.day_name_of_booking,
+                    from: docs.from,
+                    to: docs.to,
+                    duration: docs.duration
+                }
+
+                let cartData = {
+                    _id: mongoose.Types.ObjectId(),
+                    user_id: docs.user_id,
+                    user_booking_id: docs._id,
+                    seller_id: docs.seller_id,
+                    service_id: docs.shop_service_id,
+                    slot_id: docs.slot_id,
+                    service_name: docs.shop_service_name,
+                    price: docs.price,
+                    image: docs.image
+                }
+
+                const SELLER_BOOKING = new SellerBookings(sellerBookingData)
+                const SERVICE_CART = new ServiceCart(cartData)
+
+                var saveInSellerBookings = await SELLER_BOOKING.save()
+
+                SERVICE_CART.save()
+                  .then(data2=>{
+                      var updateSlotBookingStatus = ServiceSlots.findOneAndUpdate(
+                          {
+                              _id: {$in: [mongoose.Types.ObjectId(req.body.slot_id)]},
+                              // weekday_name: req.body.day_name_of_booking
+                          },
+                          { $set: { booking_status: true } },
+                          { returnNewDocument: true }
+                      ).exec()
+                      
+                      res.status(200).json({
+                          status: true,
+                          message: "Slot booking successfull. Awaiting seller confirmation.",
+                          data: docs
+                        })
+                  })
+                  .catch(fault=>{
+                      res.status(500).json({
+                          status: false,
+                          message: "Couldn't book slot. Server error",
+                          error: fault
+                        })
+                  })
+            }
         }
         else {
             res.send({
                 status: false,
-                msg: "Server error1. Please try again",
+                msg: "Server error. Please try again",
                 error: err
             })
         }
     })
 }
-
 
 var cancelAppointment = async (req,res)=>{
     // _id of user_booked_slots

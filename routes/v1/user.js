@@ -8,11 +8,11 @@ const ServiceController = require('../../Controller/User/ServiceCategory');  // 
 const ShopController = require("../../Controller/User/Shop");      // added by anirbank-93
 const ShopServiceController = require("../../Controller/User/ShopServices"); // added by anirbank-93
 /* Service schedule section start */
-const SellerTimingController = require('../../Controller/User/Slot/SellerTiming');// added by anirbank-93
+const SellerTimingsController = require('../../Controller/User/Slot/SellerTimingsNSlots');// added by anirbank-93
 const SellerAccount = require('../../Controller/User/SellerMyaccount');   // added by anirbank-93
-const SlotBookingController = require('../../Controller/User/Slot/SlotBooking');// added by anirbank-93
+const UserBookingActions = require('../../Controller/User/Slot/UserBookingActions');// added by anirbank-93
 /* Service schedule section end */
-const SellerSlots = require('../../Controller/User/Slot/SellerSlots');// added by anirbank-93
+const SellerBookingActions = require('../../Controller/User/Slot/SellerBookingActions');// added by anirbank-93
 const UserAccount = require('../../Controller/User/Myaccount');       // added by anirbank-93
 const CartController = require('../../Controller/User/Cart');
 const ServiceCart = require('../../Controller/User/ServiceCart');
@@ -73,6 +73,8 @@ router.get('/service/subcategory/:id', ServiceController.viewServiceSubCategory)
 // route to fetch all shop services available for a service category
 router.get('/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
+router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
+
 router.post('/shop', uploadMultiple, ShopController.createNUpdate);// added by anirbank-93
 router.get('/shop', ShopController.viewAllShops);   // added by anirbank-93
 router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
@@ -86,24 +88,26 @@ router.get('/shop/shopservice-details/:id', ShopServiceController.viewShopServic
 router.put('/shop/services/:id', upload1.single("image"), ShopServiceController.update);// added by anirbank-93
 router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
 
+router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
+
 // ----------------->Slot management section start
-router.post('/shop-service/timing', SellerTimingController.createSlot); // added by anirbank-93
-router.get('/shop-service/weekly-timings/:id', SellerTimingController.viewShopServiceTimings);// added by anirbank-93
-router.put('/shop-service/timing/:id', SellerTimingController.editSlot);// added by anirbank-93
-router.delete('/shop-service/timing/:id', SellerTimingController.deleteSlot);// added by anirbank-93
+router.post('/shop-service/timing', SellerTimingsController.createSlot); // added by anirbank-93
+router.get('/shop-service/weekly-timings/:id', SellerTimingsController.viewShopServiceTimings);// added by anirbank-93
+router.put('/shop-service/timing/:id', SellerTimingsController.editSlot);// added by anirbank-93
+router.delete('/shop-service/timing/:id', SellerTimingsController.deleteSlot);// added by anirbank-93
 
-router.post('/seller/slot', SellerSlots.addSellerServiceSlot);
-router.get('/seller/service-order-history/:seller_id', SellerAccount.viewAll);
-router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll)
-
-router.post('/shop-service/availability', SlotBookingController.checkAvailability);// added by anirbank-93
-router.post('/shop-service/day-timing', SlotBookingController.viewSlotsForADay);   // added by anirbank-93
+router.post('/shop-service/availability', UserBookingActions.checkAvailability);// added by anirbank-93
+router.post('/shop-service/day-timing', UserBookingActions.viewSlotsForADay);   // added by anirbank-93
 /** Below api for both book service slot and add to service cart */
-router.post('/shop-service/book-slot', SlotBookingController.bookAppointment); // added by anirbank-93
+router.post('/shop-service/book-slot', UserBookingActions.bookAppointment); // added by anirbank-93
 /**------------------------------------------------------------- */
-router.put('/shop-service/cancel-slot/:id', SlotBookingController.cancelAppointment);// added by anirbank-93
-router.put('/shop-service/update-slot/:id', SlotBookingController.editAppointment);  // added by anirbank-93
-router.put('/shop-service/complete-slot/:id', SlotBookingController.completeAppointment);// added by anirbank-93
+router.put('/shop-service/cancel-slot/:id', UserBookingActions.cancelAppointment);// added by anirbank-93
+router.put('/shop-service/update-slot/:id', UserBookingActions.editAppointment);  // added by anirbank-93
+router.put('/shop-service/complete-slot/:id', UserBookingActions.completeAppointment);// added by anirbank-93
+
+router.get('/seller-service/new-bookings/:shop_service_id', SellerBookingActions.newBookings);// added by anirbank-93
+router.put('/seller-service/accept-booking/:id', SellerBookingActions.acceptNewBooking);      // added by anirbank-93
+router.put('/seller-service/reject-booking/:id', SellerBookingActions.rejectNewBooking);      // added by anirbank-93
 // ------------------>Slot management section end
 
 /**====================Product cart api's======================= */
