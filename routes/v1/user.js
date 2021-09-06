@@ -74,6 +74,7 @@ router.get('/service/subcategory/:id', ServiceController.viewServiceSubCategory)
 router.get('/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
 router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
+router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
 
 router.post('/shop', uploadMultiple, ShopController.createNUpdate);// added by anirbank-93
 router.get('/shop', ShopController.viewAllShops);   // added by anirbank-93

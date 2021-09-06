@@ -8,7 +8,7 @@ var Checkout = require('../../../Models/checkout');
 const { Validator } = require('node-input-validator');
 
 var newBookings = async (req,res)=>{
-    var new_bookings = sellerBookings.find({
+    var new_bookings = await sellerBookings.find({
         shop_service_id: req.params.shop_service_id,
         new_booking: true,
         booking_accept: false
