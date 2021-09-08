@@ -48,15 +48,6 @@ var acceptNewBooking = async (req,res)=>{
         },
         (err,docs)=>{
             if (!err) {
-                var serviceCartData = userServiceCart.findOneAndUpdate(
-                    { 
-                        user_booking_id: docs.user_booking_id, 
-                        slot_id: docs.slot_id
-                    }, 
-                    { $set:{ seller_confirmed: true } }, 
-                    { returnNewDocument: true }
-                ).exec();
-
                 var userBookedSlotData = userBookedSlot.findOneAndUpdate(
                     {
                         _id: docs.user_booking_id, 
@@ -66,6 +57,16 @@ var acceptNewBooking = async (req,res)=>{
                     { returnNewDocument: true }
                 ).exec();
 
+                var serviceCartData = userServiceCart.findOneAndUpdate(
+                    { 
+                        user_booking_id: docs.user_booking_id, 
+                        slot_id: docs.slot_id
+                    }, 
+                    { $set:{ seller_confirmed: true } }, 
+                    { returnNewDocument: true }
+                ).exec();
+
+                //
                 res.status(200).json({
                     status: true,
                     message: "Booking accepted.",
@@ -99,7 +100,7 @@ var rejectNewBooking = async (req,res)=>{
         {
             returnNewDocument: true
         },
-        (err,docs)=>{
+        async (err,docs)=>{
             if (!err) {
                 console.log("Seller booking", docs);
                 // cancel seller slot booking
@@ -111,16 +112,43 @@ var rejectNewBooking = async (req,res)=>{
                     { $set:{ booking_status: false } },
                     { returnNewDocument: true }
                 ).exec();
+                
+                var serviceCartData = await userServiceCart.findOne(
+                    {
+                        user_booking_id: docs.user_booking_id,
+                        status: true
+                    }
+                ).exec();
 
-                // refund the booked session's amount
-                var checkoutData = Checkout.findOneAndUpdate(
+                var checkoutData = await Checkout.findOne(
                     {
                         user_booking_id: docs.user_booking_id,
                         service_id: docs.shop_service_id
-                    },
-                    { $set:{ status: 'cancel' } },
-                    { returnNewDocument: true }
+                    }
                 ).exec();
+
+                // if booked service is still in service cart
+                if (serviceCartData!=null && checkoutData==null) {
+                    var cartStatusEdit = userServiceCart.findOneAndUpdate(
+                        {
+                            user_booking_id: docs.user_booking_id,
+                            status: true
+                        }, 
+                        { $set:{ status: false } },
+                        { returnNewDocument: true }
+                    ).exec();
+                }
+                else if (serviceCartData==null && checkoutData!=null) {
+                    // refund the booked session's amount
+                    var checkoutStatusEdit = Checkout.findOneAndUpdate(
+                        {
+                            user_booking_id: docs.user_booking_id,
+                            service_id: docs.shop_service_id
+                        },
+                        { $set:{ status: 'cancel' } },
+                        { returnNewDocument: true }
+                    ).exec();
+                }
 
                 res.status(200).json({
                     status: true,
