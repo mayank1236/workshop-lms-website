@@ -129,7 +129,8 @@ router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
 router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
 
 /**=================Service review api's========================= */
-router.post('/seller-service/reviews', ServiceReview.giveReview);
+router.post('/seller-service/reviews', ServiceReview.giveOrderReview); // rating of a successfully completed order
+//
 router.get('/seller-service/reviews/:serv_id', ServiceReview.getReviews);
 /**===============Service review api end========================= */
 /** ================================= with login url section end ================================ */
