@@ -113,6 +113,7 @@ var rejectNewBooking = async (req,res)=>{
                     { returnNewDocument: true }
                 ).exec();
                 
+                // if booked service is still in service cart
                 var serviceCartData = await userServiceCart.findOne(
                     {
                         user_booking_id: docs.user_booking_id,
@@ -127,7 +128,6 @@ var rejectNewBooking = async (req,res)=>{
                     }
                 ).exec();
 
-                // if booked service is still in service cart
                 if (serviceCartData!=null && checkoutData==null) {
                     var cartStatusEdit = userServiceCart.findOneAndUpdate(
                         {

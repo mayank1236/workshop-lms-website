@@ -17,6 +17,7 @@ const UserAccount = require('../../Controller/User/Myaccount');       // added b
 const CartController = require('../../Controller/User/Cart');
 const ServiceCart = require('../../Controller/User/ServiceCart');
 const Checkout = require('../../Controller/User/Checkout');
+const ServiceReview = require('../../Controller/User/ServiceReview');
 
 const multer = require('multer');
 
@@ -67,14 +68,18 @@ router.get('/seller/:id', UserSellerController.viewUser);   // added by anirbank
 router.get('/list-of-users', UserSellerController.viewUserList);// added by anirbank-93
 router.get('/list-of-sellers', UserSellerController.viewSellerList);// added by anirbank-93
 
+/**====================Product cart api's======================= */
+router.post('/add-to-cart', CartController.addToCart);
+router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
+router.get('/get-cart/:user_id', CartController.getCart);
+router.delete('/cartDelete/:id',CartController.Delete);
+/**=================Product cart api's end======================= */
+
 router.get('/service-category', ServiceController.viewAllServices); // added by anirbank-93
 router.get('/service-category/:id', ServiceController.viewService); // added by anirbank-93
 router.get('/service/subcategory/:id', ServiceController.viewServiceSubCategory);// added by anirbank-93
 // route to fetch all shop services available for a service category
 router.get('/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
-
-router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
-router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
 
 router.post('/shop', uploadMultiple, ShopController.createNUpdate);// added by anirbank-93
 router.get('/shop', ShopController.viewAllShops);   // added by anirbank-93
@@ -97,6 +102,11 @@ router.get('/shop-service/weekly-timings/:id', SellerTimingsController.viewShopS
 router.put('/shop-service/timing/:id', SellerTimingsController.editSlot);// added by anirbank-93
 router.delete('/shop-service/timing/:id', SellerTimingsController.deleteSlot);// added by anirbank-93
 
+router.get('/seller-service/new-bookings/:shop_service_id', SellerBookingActions.newBookings);// added by anirbank-93
+router.put('/seller-service/accept-booking/:id', SellerBookingActions.acceptNewBooking);      // added by anirbank-93
+router.put('/seller-service/reject-booking/:id', SellerBookingActions.rejectNewBooking);      // added by anirbank-93
+// ------------------>Slot management section end
+
 router.post('/shop-service/availability', UserBookingActions.checkAvailability);// added by anirbank-93
 router.post('/shop-service/day-timing', UserBookingActions.viewSlotsForADay);   // added by anirbank-93
 /** Below api for both book service slot and add to service cart */
@@ -106,18 +116,6 @@ router.put('/shop-service/cancel-slot/:id', UserBookingActions.cancelAppointment
 router.put('/shop-service/update-slot/:id', UserBookingActions.editAppointment);  // added by anirbank-93
 router.put('/shop-service/complete-slot/:id', UserBookingActions.completeAppointment);// added by anirbank-93
 
-router.get('/seller-service/new-bookings/:shop_service_id', SellerBookingActions.newBookings);// added by anirbank-93
-router.put('/seller-service/accept-booking/:id', SellerBookingActions.acceptNewBooking);      // added by anirbank-93
-router.put('/seller-service/reject-booking/:id', SellerBookingActions.rejectNewBooking);      // added by anirbank-93
-// ------------------>Slot management section end
-
-/**====================Product cart api's======================= */
-router.post('/add-to-cart', CartController.addToCart);
-router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
-router.get('/get-cart/:user_id', CartController.getCart);
-router.delete('/cartDelete/:id',CartController.Delete);
-/**=================Product cart api's end======================= */
-
 /**====================Service cart api's======================== */
 router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart)
 router.delete('/delete-cart/:id', ServiceCart.DeleteCart)
@@ -126,6 +124,14 @@ router.delete('/delete-cart/:id', ServiceCart.DeleteCart)
 /**====================Checkout api's============================ */
 router.post('/shop-service/checkout', Checkout.create)
 /**================Checkout api's end============================ */
+
+router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
+router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
+
+/**=================Service review api's========================= */
+router.post('/seller-service/reviews', ServiceReview.giveReview);
+router.get('/seller-service/reviews/:serv_id', ServiceReview.getReviews);
+/**===============Service review api end========================= */
 /** ================================= with login url section end ================================ */
 
 module.exports = router;

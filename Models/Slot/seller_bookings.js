@@ -10,7 +10,7 @@ const sellerBookingSchema = new Schema({
     shop_service_id: mongoose.Schema.Types.ObjectId,
     date_of_booking:{
         type: Date,
-        default: moment.tz(Date(), "Asia/Kolkata"),
+        default: moment.tz(Date.now(), "Asia/Kolkata"),
         // required: true
     },
     day_name_of_booking:{
