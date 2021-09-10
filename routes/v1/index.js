@@ -10,6 +10,8 @@ const AdminController = require('../../Controller/Auth/Admin');
 const UserController = require('../../Controller/Auth/User');
 const UserProductController = require('../../Controller/User/Product');// added by anirbank-93
 const ServiceController = require('../../Controller/User/ServiceCategory');// added by anirbank-93
+const SearchController = require('../../Controller/User/Search');  // added by anirbank-93
+
 const middleware  = require('../../service/middleware').middleware;
 
 const AdminRoute = require('./admin');
@@ -31,6 +33,7 @@ router.get('/user/service-category/:id', ServiceController.viewService);// added
 
 router.get('/user/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
+router.post('/user/search-service', SearchController.serviceSearch);   // added by anirbank-93
 
 /** ================================= without login url section end ================================ */
 

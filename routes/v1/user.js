@@ -18,6 +18,7 @@ const CartController = require('../../Controller/User/Cart');
 const ServiceCart = require('../../Controller/User/ServiceCart');
 const Checkout = require('../../Controller/User/Checkout');
 const ServiceReview = require('../../Controller/User/ServiceReview');
+const SearchController = require('../../Controller/User/Search');
 
 const multer = require('multer');
 
@@ -102,7 +103,7 @@ router.get('/shop-service/weekly-timings/:id', SellerTimingsController.viewShopS
 router.put('/shop-service/timing/:id', SellerTimingsController.editSlot);// added by anirbank-93
 router.delete('/shop-service/timing/:id', SellerTimingsController.deleteSlot);// added by anirbank-93
 
-router.get('/seller-service/new-bookings/:shop_service_id', SellerBookingActions.newBookings);// added by anirbank-93
+router.get('/seller-service/new-bookings/:seller_id', SellerBookingActions.newBookings);// added by anirbank-93
 router.put('/seller-service/accept-booking/:id', SellerBookingActions.acceptNewBooking);      // added by anirbank-93
 router.put('/seller-service/reject-booking/:id', SellerBookingActions.rejectNewBooking);      // added by anirbank-93
 // ------------------>Slot management section end
@@ -133,6 +134,10 @@ router.post('/seller-service/reviews', ServiceReview.giveOrderReview); // rating
 //
 router.get('/seller-service/reviews/:serv_id', ServiceReview.getReviews);
 /**===============Service review api end========================= */
+
+/**=======================Service search========================= */
+router.post('/search-service', SearchController.serviceSearch);
+/**=====================Service search end======================= */
 /** ================================= with login url section end ================================ */
 
 module.exports = router;

@@ -9,7 +9,7 @@ const { Validator } = require('node-input-validator');
 
 var newBookings = async (req,res)=>{
     var new_bookings = await sellerBookings.find({
-        shop_service_id: req.params.shop_service_id,
+        seller_id: req.params.seller_id,
         new_booking: true,
         booking_accept: false
     }).exec();
