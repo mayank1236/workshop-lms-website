@@ -4,10 +4,11 @@ var Schema = mongoose.Schema
 
 const sellerBookingSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    seller_id: mongoose.Schema.Types.ObjectId,
     user_booking_id: mongoose.Schema.Types.ObjectId,
+    user_id: mongoose.Schema.Types.ObjectId,
     slot_id: mongoose.Schema.Types.ObjectId,
     shop_service_id: mongoose.Schema.Types.ObjectId,
+    seller_id: mongoose.Schema.Types.ObjectId,
     date_of_booking:{
         type: Date,
         default: moment.tz(Date.now(), "Asia/Kolkata"),

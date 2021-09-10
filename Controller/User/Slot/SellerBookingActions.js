@@ -8,23 +8,50 @@ var Checkout = require('../../../Models/checkout');
 const { Validator } = require('node-input-validator');
 
 var newBookings = async (req,res)=>{
-    var new_bookings = await sellerBookings.find({
-        seller_id: req.params.seller_id,
-        new_booking: true,
-        booking_accept: false
-    }).exec();
-    console.log("New bookings: ", new_bookings);
-    if (new_bookings==null || new_bookings=="") {
+    var new_bookings = await sellerBookings.aggregate(
+        [
+            {
+                $match:{
+                    seller_id: mongoose.Types.ObjectId(req.params.seller_id),
+                    new_booking: true,
+                    booking_accept: false
+                }
+            },
+            {
+                $lookup:{
+                    from: "users",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "user_data"
+                }
+            },
+            {
+                $lookup:{
+                    from: "shop_services",
+                    localField: "shop_service_id",
+                    foreignField: "_id",
+                    as: "shopservice_data"
+                }
+            },
+            {
+                $project:{
+                    __v: 0
+                }
+            }
+        ]
+    ).exec();
+    
+    if (new_bookings.length>0) {
         return res.status(200).json({
             status: true,
-            message: "No new bookings.",
+            message: "New bookings successfully get.",
             data: new_bookings
         });
     }
     else {
-        return res.status(200).json({
+        res.status(200).json({
             status: true,
-            message: "New bookings successfully get.",
+            message: "No new bookings",
             data: new_bookings
         });
     }

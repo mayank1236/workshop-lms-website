@@ -184,10 +184,11 @@ var bookAppointment = async (req,res,next)=>{
             else {
                 let sellerBookingData = {
                     _id: mongoose.Types.ObjectId(),
-                    seller_id: docs.seller_id,
                     user_booking_id: docs._id,
+                    user_id: docs.user_id,
                     slot_id: docs.slot_id,
                     shop_service_id: docs.shop_service_id,
+                    seller_id: docs.seller_id,
                     day_name_of_booking: docs.day_name_of_booking,
                     from: docs.from,
                     to: docs.to,
