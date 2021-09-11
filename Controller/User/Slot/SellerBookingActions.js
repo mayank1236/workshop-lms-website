@@ -111,6 +111,56 @@ var acceptNewBooking = async (req,res)=>{
     );
 };
 
+var viewAcceptedBookings = async (req,res)=>{
+    var accepted_bookings = await sellerBookings.aggregate(
+        [
+            {
+                $match:{
+                    seller_id: mongoose.Types.ObjectId(req.params.seller_id),
+                    new_booking: false,
+                    booking_accept: true
+                }
+            },
+            {
+                $lookup:{
+                    from: "users",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "user_data"
+                }
+            },
+            {
+                $lookup:{
+                    from: "shop_services",
+                    localField: "shop_service_id",
+                    foreignField: "_id",
+                    as: "shopservice_data"
+                }
+            },
+            {
+                $project:{
+                    __v: 0
+                }
+            }
+        ]
+    ).exec();
+
+    if (accepted_bookings.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "All accepted bookings successfully get.",
+            data: accepted_bookings
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No bookings accepted till date.",
+            data: accepted_bookings
+        });
+    }
+};
+
 var rejectNewBooking = async (req,res)=>{
     return sellerBookings.findOneAndUpdate(
         {
@@ -194,8 +244,60 @@ var rejectNewBooking = async (req,res)=>{
     );
 };
 
+var viewRejectedBookings = async (req,res)=>{
+    var accepted_bookings = await sellerBookings.aggregate(
+        [
+            {
+                $match:{
+                    seller_id: mongoose.Types.ObjectId(req.params.seller_id),
+                    new_booking: false,
+                    booking_accept: false
+                }
+            },
+            {
+                $lookup:{
+                    from: "users",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "user_data"
+                }
+            },
+            {
+                $lookup:{
+                    from: "shop_services",
+                    localField: "shop_service_id",
+                    foreignField: "_id",
+                    as: "shopservice_data"
+                }
+            },
+            {
+                $project:{
+                    __v: 0
+                }
+            }
+        ]
+    ).exec();
+
+    if (accepted_bookings.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "All rejected bookings successfully get.",
+            data: accepted_bookings
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No bookings rejected till date.",
+            data: accepted_bookings
+        });
+    }
+};
+
 module.exports = {
     newBookings,
     acceptNewBooking,
-    rejectNewBooking
+    viewAcceptedBookings,
+    rejectNewBooking,
+    viewRejectedBookings
 }

@@ -105,7 +105,9 @@ router.delete('/shop-service/timing/:id', SellerTimingsController.deleteSlot);//
 
 router.get('/seller-service/new-bookings/:seller_id', SellerBookingActions.newBookings);// added by anirbank-93
 router.put('/seller-service/accept-booking/:id', SellerBookingActions.acceptNewBooking);      // added by anirbank-93
+router.get('/seller-service/accepted-bookings/:seller_id', SellerBookingActions.viewAcceptedBookings);
 router.put('/seller-service/reject-booking/:id', SellerBookingActions.rejectNewBooking);      // added by anirbank-93
+router.get('/seller-service/rejected-bookings/:seller_id', SellerBookingActions.viewRejectedBookings);
 // ------------------>Slot management section end
 
 router.post('/shop-service/availability', UserBookingActions.checkAvailability);// added by anirbank-93
@@ -113,9 +115,6 @@ router.post('/shop-service/day-timing', UserBookingActions.viewSlotsForADay);   
 /** Below api for both book service slot and add to service cart */
 router.post('/shop-service/book-slot', UserBookingActions.bookAppointment); // added by anirbank-93
 /**------------------------------------------------------------- */
-router.put('/shop-service/cancel-slot/:id', UserBookingActions.cancelAppointment);// added by anirbank-93
-router.put('/shop-service/update-slot/:id', UserBookingActions.editAppointment);  // added by anirbank-93
-router.put('/shop-service/complete-slot/:id', UserBookingActions.completeAppointment);// added by anirbank-93
 
 /**====================Service cart api's======================== */
 router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart)
@@ -136,7 +135,7 @@ router.get('/seller-service/reviews/:serv_id', ServiceReview.getReviews);
 /**===============Service review api end========================= */
 
 /**=======================Service search========================= */
-router.post('/search-service', SearchController.serviceSearch);
+router.post('/search-service', SearchController.allServicesSearch);
 /**=====================Service search end======================= */
 /** ================================= with login url section end ================================ */
 

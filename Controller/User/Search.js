@@ -3,7 +3,7 @@ var serviceCategory = require('../../Models/service_category');
 var shopService = require('../../Models/shop_service');
 var serviceReview = require('../../Models/service_review');
 
-const serviceSearch = async (req, res) => {
+var serviceSearch = async (req, res) => {
     return shopService.aggregate([
       req.body.servicename != "" && typeof req.body.servicename != "undefined"
         ? {
@@ -131,8 +131,31 @@ const serviceSearch = async (req, res) => {
           err,
         });
       });
-  };
+};
+
+const allServicesSearch = async (req,res)=>{
+    var searchField = req.body.categoryname;
+    // const REGEX = new RegExp(req.body.categoryname, 'i');
+    // shopService.find({ category_name: REGEX });
+    
+    return shopService.find({ category_name: {$regex: searchField, $options: '$i'} })
+      .then(data=>{
+          res.status(200).json({
+              status: true,
+              message: "All related shop services.",
+              data: data
+          });
+      })
+      .catch(err=>{
+        res.status(500).json({
+            status: false,
+            message: "Server error. Please try again.",
+            error: err
+        });
+    });
+};
 
 module.exports = {
-    serviceSearch
+    serviceSearch,
+    allServicesSearch
 }
