@@ -4,7 +4,10 @@ const Schema = mongoose.Schema
 const SERVICE_CART_SCHEMA = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
-    user_booking_id: mongoose.Schema.Types.ObjectId,
+    user_booking_id:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     seller_id: mongoose.Schema.Types.ObjectId,
     service_id: mongoose.Schema.Types.ObjectId,
     slot_id: mongoose.Schema.Types.ObjectId,
@@ -25,7 +28,7 @@ const SERVICE_CART_SCHEMA = new Schema({
         required:true
     },
     seller_confirmed:{
-        type: Boolean,
+        type: String,
         default: false
     },
     status:{

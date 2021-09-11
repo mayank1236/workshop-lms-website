@@ -6,8 +6,8 @@ var Schema = mongoose.Schema
 const CHECKOUT_SCHEMA = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     user_id: mongoose.Schema.Types.ObjectId,
-    user_booking_id: mongoose.Schema.Types.ObjectId,
-    service_id: mongoose.Schema.Types.ObjectId,
+    // user_booking_id: mongoose.Schema.Types.ObjectId,
+    // service_id: mongoose.Schema.Types.ObjectId,
     order_id:
     {
         type:Number
@@ -32,6 +32,10 @@ const CHECKOUT_SCHEMA = new Schema({
     coupon_id:{
         type:mongoose.Schema.Types.ObjectId,
         required:false
+    },
+    coupon:{
+        type:String,
+        required:false,
     },
     firstname:{
         type:String,

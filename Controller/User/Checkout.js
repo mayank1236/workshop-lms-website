@@ -7,8 +7,6 @@ const { Validator } = require('node-input-validator')
 var create = async (req,res)=>{
     const V = new Validator(req.body,{
         user_id: "required",
-        user_booking_id: "required",
-        service_id: "required",
         subtotal: "required",
         total: "required",
         firstname: "required",
@@ -28,8 +26,6 @@ var create = async (req,res)=>{
     let saveData = {
         _id: mongoose.Types.ObjectId(),
         user_id: mongoose.Types.ObjectId(req.body.user_id),
-        user_booking_id: mongoose.Types.ObjectId(req.body.user_booking_id),
-        service_id: mongoose.Types.ObjectId(req.body.service_id),
         order_id: Number(
             `${new Date().getDate()}${new Date().getHours()}${new Date().getSeconds()}${new Date().getMilliseconds()}`
         ),
@@ -56,6 +52,13 @@ var create = async (req,res)=>{
         typeof(req.body.coupon_id) != undefined
       ) {
         saveData.coupon_id = mongoose.Types.ObjectId(req.body.coupon_id);
+    }
+    if (
+        req.body.coupon != "" &&
+        req.body.coupon != null &&
+        typeof(req.body.coupon) != undefined
+      ) {
+        saveData.coupon = req.body.coupon;
     }
     if (
         req.body.email != "" && 
@@ -116,38 +119,10 @@ var create = async (req,res)=>{
 
     console.log("Checkout data", saveData);
 
-    // if (
-    //     req.body.coupon_id != "" &&
-    //     req.body.coupon_id != null &&
-    //     typeof req.body.coupon_id != undefined
-    //   ) {
-    //     let coupData = await Coupon.findOne({
-    //       _id: mongoose.Types.ObjectId(req.body.coupon_id),
-    //       status: true,
-    //     }).exec();
-    //     let coupLimit = parseInt(coupData.times) - parseInt(1);
-    //     Coupon.updateMany(
-    //       { _id: mongoose.Types.ObjectId(req.body.coupon_id) },
-    //       { $set: { times: coupLimit } },
-    //       { multi: true },
-    //       (err, writeResult) => {
-    //         // console.log(err);
-    //       }
-    //     );
-    // }
-
     const checkout = new Checkout(saveData)
     return checkout
       .save()
-      .then(data=>{
-        // ServiceCart.find({
-        //     user_id: mongoose.Types.ObjectId(req.body.user_id),
-        //     status: true
-        // })
-        // .then(result=>{
-        //     console.log("Service cart", result);
-        // })
-        
+      .then(data=>{        
         ServiceCart.updateMany(
             {user_id: mongoose.Types.ObjectId(req.body.user_id), status: true},
             {$set: { status: false, order_id: data.order_id } },
@@ -155,7 +130,7 @@ var create = async (req,res)=>{
             (err, writeResult)=>{
                 console.log(err);
             }
-        )
+        );
         
         res.status(200).json({
             status: true,

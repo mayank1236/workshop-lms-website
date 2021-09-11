@@ -54,40 +54,6 @@ const create = async (req,res)=>{
               errors: err
           })
       })
-
-    // ShopService.find({subcategory_id: {$in: [mongoose.Types.ObjectId(req.body.subcategory_id)]}})
-    //   .then(async (data)=>{
-    //       if(data==null || data==''){}
-    //       else{
-    //           ShopService.findOneAndUpdate(
-    //             {subcategory_id: {$in: [mongoose.Types.ObjectId(req.body.subcategory_id)]}}, 
-    //             // {
-    //             //   name: req.body.name,
-    //             //   price: req.body.price,
-    //             //   details: req.body.details,
-    //             //   personalization: req.body.personalization,
-    //             //   hashtags: req.body.hashtags
-    //             // },
-    //             req.body, 
-    //             async (err,docs)=>{
-    //                 if(err){
-    //                     res.status(500).json({
-    //                         status: false,
-    //                         message: "Server error. Please try again.",
-    //                         error: err
-    //                     });
-    //                 }
-    //                 else{
-    //                     res.status(200).json({
-    //                         status: true,
-    //                         message: "Shop service updated successfully!",
-    //                         data: docs
-    //                     });
-    //                 }
-    //             }
-    //           )
-    //       }
-    // })
 }
 
 const update = async (req,res)=>{

@@ -3,7 +3,6 @@ var sellerSlots = require('../../../Models/Slot/seller_slots');
 var sellerBookings = require('../../../Models/Slot/seller_bookings');
 var userBookedSlot = require('../../../Models/Slot/user_booked_slot');
 var userServiceCart = require('../../../Models/service_cart');
-var Checkout = require('../../../Models/checkout');
 
 const { Validator } = require('node-input-validator');
 
@@ -58,57 +57,78 @@ var newBookings = async (req,res)=>{
 };
 
 var acceptNewBooking = async (req,res)=>{
-    return sellerBookings.findOneAndUpdate(
-        {
-            _id: mongoose.Types.ObjectId(req.params.id), 
-            new_booking: true, 
-            booking_accept: false
-        }, 
-        {
-            $set:{
-                new_booking: false,
-                booking_accept: true
-            }
-        },
-        {
-            returnNewDocument: true
-        },
-        (err,docs)=>{
-            if (!err) {
-                var userBookedSlotData = userBookedSlot.findOneAndUpdate(
-                    {
-                        _id: docs.user_booking_id, 
-                        slot_id: docs.slot_id
-                    }, 
-                    { $set:{ seller_confirmed: true } }, 
-                    { returnNewDocument: true }
-                ).exec();
+    sellerBookings.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
+      .then(async (data)=>{
+          console.log("Seller booking details ", data);
+          var payment_status = await userServiceCart.findOne(
+              {
+                  user_booking_id: data.user_booking_id,
+                  status: false
+              }
+          ).exec();
+          console.log("Service cart data ", payment_status);
 
-                var serviceCartData = userServiceCart.findOneAndUpdate(
-                    { 
-                        user_booking_id: docs.user_booking_id, 
-                        slot_id: docs.slot_id
-                    }, 
-                    { $set:{ seller_confirmed: true } }, 
-                    { returnNewDocument: true }
-                ).exec();
-
-                //
-                res.status(200).json({
-                    status: true,
-                    message: "Booking accepted.",
-                    data: docs
-                });
-            }
-            else {
-                res.status(500).json({
-                    status: false,
-                    message: "Failed to accept booking. Server error.",
-                    error: err
-                });
-            }
-        }
-    );
+          if (payment_status==null || payment_status=="") {
+            return res.status(200).json({
+                status: true,
+                message: "Payment not yet made. Can't accept booking.",
+                data: "Item still in cart. Order not placed."
+            });
+          }
+          else {
+            return sellerBookings.findOneAndUpdate(
+                {
+                    _id: mongoose.Types.ObjectId(req.params.id), 
+                    new_booking: true, 
+                    booking_accept: false
+                }, 
+                {
+                    $set:{
+                        new_booking: false,
+                        booking_accept: true
+                    }
+                },
+                {
+                    returnNewDocument: true
+                },
+                (err,docs)=>{
+                    if (!err) {
+                        var userBookedSlotData = userBookedSlot.findOneAndUpdate(
+                            {
+                                _id: docs.user_booking_id, 
+                                slot_id: docs.slot_id
+                            }, 
+                            { $set:{ seller_confirmed: true } }, 
+                            { returnNewDocument: true }
+                        ).exec();
+        
+                        var serviceCartData = userServiceCart.findOneAndUpdate(
+                            { 
+                                user_booking_id: docs.user_booking_id, 
+                                slot_id: docs.slot_id
+                            }, 
+                            { $set:{ seller_confirmed: true } }, 
+                            { returnNewDocument: true }
+                        ).exec();
+        
+                        //
+                        res.status(200).json({
+                            status: true,
+                            message: "Booking accepted.",
+                            data: docs
+                        });
+                    }
+                    else {
+                        res.status(500).json({
+                            status: false,
+                            message: "Failed to accept booking. Server error.",
+                            error: err
+                        });
+                    }
+                }
+            );
+          }
+      })
 };
 
 var viewAcceptedBookings = async (req,res)=>{
@@ -191,38 +211,45 @@ var rejectNewBooking = async (req,res)=>{
                 ).exec();
                 
                 // if booked service is still in service cart
-                var serviceCartData = await userServiceCart.findOne(
+                var inServiceCart = await userServiceCart.findOne(
                     {
                         user_booking_id: docs.user_booking_id,
                         status: true
                     }
                 ).exec();
-
-                var checkoutData = await Checkout.findOne(
+                // if booked service has been checked out
+                var checkedOut = await userServiceCart.findOne(
                     {
                         user_booking_id: docs.user_booking_id,
-                        service_id: docs.shop_service_id
+                        status: false
                     }
                 ).exec();
 
-                if (serviceCartData!=null && checkoutData==null) {
-                    var cartStatusEdit = userServiceCart.findOneAndUpdate(
+                // var checkoutData = await Checkout.findOne(
+                //     {
+                //         user_booking_id: docs.user_booking_id,
+                //         service_id: docs.shop_service_id
+                //     }
+                // ).exec();
+
+                if (inServiceCart!=null && checkedOut==null) {
+                    var bookingStatus = userServiceCart.findOneAndUpdate(
                         {
                             user_booking_id: docs.user_booking_id,
                             status: true
                         }, 
-                        { $set:{ status: false } },
+                        { $set:{ status: false, seller_confirmed: 'cancelled' } },
                         { returnNewDocument: true }
                     ).exec();
                 }
-                else if (serviceCartData==null && checkoutData!=null) {
+                else if (inServiceCart==null && checkedOut!=null) {
                     // refund the booked session's amount
-                    var checkoutStatusEdit = Checkout.findOneAndUpdate(
+                    var bookingStatus = userServiceCart.findOneAndUpdate(
                         {
                             user_booking_id: docs.user_booking_id,
-                            service_id: docs.shop_service_id
+                            status: false
                         },
-                        { $set:{ status: 'cancel' } },
+                        { $set:{ seller_confirmed: 'cancelled' } },
                         { returnNewDocument: true }
                     ).exec();
                 }

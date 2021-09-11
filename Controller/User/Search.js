@@ -133,29 +133,85 @@ var serviceSearch = async (req, res) => {
       });
 };
 
-const allServicesSearch = async (req,res)=>{
+var allServicesSearch = async (req,res)=>{
     var searchField = req.body.categoryname;
     // const REGEX = new RegExp(req.body.categoryname, 'i');
     // shopService.find({ category_name: REGEX });
+    // find({ category_name: {$regex: searchField, $options: '$i'} })
+    return shopService.aggregate(
+      [
+        {
+          $match:{
+            category_name: {$regex: searchField, $options: '$i'}
+          }
+        },
+        {
+          $lookup:{
+            from: "users",
+            localField: "user_id",
+            foreignField: "_id",
+            as: "seller_data"
+          }
+        },
+        { $unwind: "$seller_data" },
+        {
+          $project:{
+            __v: 0
+          }
+        }
+      ]
+    )
+    .then(data=>{
+      res.status(200).json({
+        status: true,
+        message: "All related shop services.",
+        data: data
+      });
+    })
+    .catch(err=>{
+      res.status(500).json({
+        status: false,
+        message: "Server error. Please try again.",
+        error: err
+      });
+    });
+};
+
+var Search = async (req,res)=>{
+  shopService.createIndexes(
+    { 
+      name: 'text', 
+      details: 'text', 
+      category_name: 'text' 
+    }
+  );
     
-    return shopService.find({ category_name: {$regex: searchField, $options: '$i'} })
-      .then(data=>{
-          res.status(200).json({
-              status: true,
-              message: "All related shop services.",
-              data: data
-          });
-      })
-      .catch(err=>{
-        res.status(500).json({
-            status: false,
-            message: "Server error. Please try again.",
-            error: err
-        });
+  shopService.find(
+    {
+      $text:{
+        $search: req.body.categoryname
+      }
+    }
+  )
+    .then(data=>{
+      res.status(200).json({
+        status: true,
+        message: "All related shop services.",
+        data: data
+      });
+    })
+    .catch(err=>{
+      console.log(err);
+      res.status(500).json({
+        status: false,
+        message: "Server error. Please try again.",
+        error: err
+      });
     });
 };
 
 module.exports = {
     serviceSearch,
-    allServicesSearch
+    allServicesSearch,
+    Search
 }
