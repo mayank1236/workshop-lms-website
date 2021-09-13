@@ -7,7 +7,7 @@ const { Validator } = require('node-input-validator');
 // user provides ratings in the order list of 'My account' section based on the last order
 var giveOrderReview = async (req,res)=>{
     const V = new Validator(req.body, {
-        rating: "required"
+      rating: "required"
     });
     let matched = V.check().then(val=>val);
 
@@ -25,8 +25,8 @@ var giveOrderReview = async (req,res)=>{
         serviceData.comment = req.body.comment;
     }
     let subData = await serviceReview.findOne({
-        // service_id: mongoose.Types.ObjectId(req.body.service_id),
-        // user_id: mongoose.Types.ObjectId(req.body.user_id),
+        service_id: mongoose.Types.ObjectId(req.body.service_id),
+        user_id: mongoose.Types.ObjectId(req.body.user_id),
         order_id: req.body.order_id
     }).exec();
     if (subData == null || subData == "") {
