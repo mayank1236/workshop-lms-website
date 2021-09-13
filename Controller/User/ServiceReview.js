@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var serviceReview = require('../../Models/service_review');
+var serviceCart = require('../../Models/service_cart');
 
 const { Validator } = require('node-input-validator');
 
@@ -33,6 +34,19 @@ var giveOrderReview = async (req,res)=>{
         review
           .save()
           .then((docs) => {
+            serviceCart.updateMany(
+              {
+                service_id: docs.service_id, 
+                user_id: docs.user_id, 
+                order_id: docs.order_id
+              },
+              {$set: { rating: docs.rating }},
+              {multi: true},
+              (fault,result)=>{
+                console.log(fault);
+              }
+            );
+
             res.status(200).json({
               status: true,
               message: "Review Saved sucessfully!",

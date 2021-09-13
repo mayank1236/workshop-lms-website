@@ -14,11 +14,13 @@ const SERVICE_CART_SCHEMA = new Schema({
     order_id:{
         type:Number
     },
+    rating:{
+        type: Number
+    },
     service_name:{
         type:String,
         required:true
     },
-    
     price:{
         type:Number,
         required:true

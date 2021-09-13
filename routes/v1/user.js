@@ -135,7 +135,7 @@ router.get('/seller-service/reviews/:serv_id', ServiceReview.getReviews);
 /**===============Service review api end========================= */
 
 /**=======================Service search========================= */
-router.post('/search-service', SearchController.allServicesSearch);
+router.post('/search-service', SearchController.serviceSearch);
 /**=====================Service search end======================= */
 /** ================================= with login url section end ================================ */
 
