@@ -13,7 +13,7 @@ const userBookedSlot = new Schema({
     // seller_timing_id: mongoose.Schema.Types.ObjectId,
     date_of_booking: {
         type: Date,
-        default: moment.tz(Date.now(),"Asia/Kolkata"),
+        default: moment.tz(new Date(),"Asia/Kolkata"),//Date.now()
         required: true
     },
     shop_service_name:{
