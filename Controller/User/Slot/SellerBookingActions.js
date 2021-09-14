@@ -69,8 +69,8 @@ var acceptNewBooking = async (req,res)=>{
           console.log("Service cart data ", payment_status);
 
           if (payment_status==null || payment_status=="") {
-            return res.status(200).json({
-                status: true,
+            return res.status(500).json({
+                status: false,
                 message: "Payment not yet made. Can't accept booking.",
                 data: "Item still in cart. Order not placed."
             });
