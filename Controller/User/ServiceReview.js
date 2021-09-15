@@ -7,30 +7,32 @@ const { Validator } = require('node-input-validator');
 // user provides ratings in the order list of 'My account' section based on the last order
 var giveOrderReview = async (req,res)=>{
     const V = new Validator(req.body, {
-      rating: "required"
+      rating: "required",
+      seller_id: "required"
     });
     let matched = V.check().then(val=>val);
 
     if (!matched) {
         return res.status(400).json({ status: false, errors: V.errors });
     }
-    let serviceData = {
+    let reviewData = {
         _id: mongoose.Types.ObjectId(),
-        service_id: mongoose.Types.ObjectId(req.body.service_id),
         user_id: mongoose.Types.ObjectId(req.body.user_id),
+        service_id: mongoose.Types.ObjectId(req.body.service_id),
+        seller_id: mongoose.Types.ObjectId(req.body.seller_id),
         rating: Number(req.body.rating),
         order_id: req.body.order_id,
     };
     if (typeof req.body.comment != "undefined" || req.body.comment != "") {
-        serviceData.comment = req.body.comment;
+        reviewData.comment = req.body.comment;
     }
     let subData = await serviceReview.findOne({
-        service_id: mongoose.Types.ObjectId(req.body.service_id),
         user_id: mongoose.Types.ObjectId(req.body.user_id),
+        service_id: mongoose.Types.ObjectId(req.body.service_id),
         order_id: req.body.order_id
     }).exec();
     if (subData == null || subData == "") {
-        let review = new serviceReview(serviceData);
+        let review = new serviceReview(reviewData);
         review
           .save()
           .then((docs) => {
@@ -80,7 +82,7 @@ var getReviews = async (req,res)=>{
     [
       {
         $match:{
-          service_id: mongoose.Types.ObjectId(req.params.serv_id)
+          seller_id: mongoose.Types.ObjectId(req.params.seller_id)
         }
       },
       {

@@ -33,7 +33,7 @@ router.get('/user/service-category/:id', ServiceController.viewService);// added
 
 router.get('/user/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
-router.post('/user/search-service', SearchController.serviceSearch);   // added by anirbank-93
+router.post('/user/search-service', SearchController.allServicesSearch);   // added by anirbank-93
 
 /** ================================= without login url section end ================================ */
 

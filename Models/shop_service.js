@@ -24,6 +24,7 @@ const ShopServiceSchema = new Schema({
     category_id: mongoose.Schema.Types.ObjectId,
     category_name:{
         type: String,
+        index: true,
         required: false
     },
     user_id: mongoose.Schema.Types.ObjectId,
@@ -39,6 +40,12 @@ const ShopServiceSchema = new Schema({
         type: Boolean,
         default: true
     }
+})
+
+ShopServiceSchema.indexes({ 
+    name: 'text', 
+    details: 'text', 
+    category_name: 'text' 
 })
 
 module.exports = mongoose.model("shop_services", ShopServiceSchema);

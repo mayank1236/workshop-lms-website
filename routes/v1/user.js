@@ -131,11 +131,11 @@ router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
 /**=================Service review api's========================= */
 router.post('/seller-service/reviews', ServiceReview.giveOrderReview); // rating of a successfully completed order
 //
-router.get('/seller-service/reviews/:serv_id', ServiceReview.getReviews);
+router.get('/seller-service/reviews/:seller_id', ServiceReview.getReviews);
 /**===============Service review api end========================= */
 
 /**=======================Service search========================= */
-router.post('/search-service', SearchController.serviceSearch);
+router.post('/search-service', SearchController.allServicesSearch);
 /**=====================Service search end======================= */
 /** ================================= with login url section end ================================ */
 

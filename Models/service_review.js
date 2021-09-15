@@ -4,22 +4,21 @@ var Schema = mongoose.Schema;
 
 const SERVICE_REVIEW_SCHEMA = new Schema({
     _id:mongoose.Schema.Types.ObjectId,
-    service_id:mongoose.Schema.Types.ObjectId,
     user_id:mongoose.Schema.Types.ObjectId,
-    seller_id:mongoose.Schema.Types.ObjectId,
+    service_id:mongoose.Schema.Types.ObjectId,
+    seller_id:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true
+    },
     rating:{
         type:Number,
         required: true
     }, 
-    comment:{
-        type:String,
-    },
-    order_id:{
-        type:Number
-    },
+    comment: String,
+    order_id: Number,
     rev_date:{
         type: Date,
-		default: moment.tz(Date.now(), "Asia/Kolkata"),
+		default: moment.tz(new Date(), "Asia/Kolkata"),//Date.now()
 		required: false
     }
 });
