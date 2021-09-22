@@ -7,7 +7,8 @@ const ShopServiceSchema = new Schema({
     name:{
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        index: true
     },
     price:{
         type: Number,
@@ -15,7 +16,8 @@ const ShopServiceSchema = new Schema({
     },
     details:{
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     personalization:{
         type: String,

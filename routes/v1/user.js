@@ -94,6 +94,7 @@ router.get('/shop/view-shopservice/:seller_id/:category_id', ShopServiceControll
 router.get('/shop/shopservice-details/:id', ShopServiceController.viewShopServiceDetails); // added by anirbank-93
 router.put('/shop/services/:id', upload1.single("image"), ShopServiceController.update);// added by anirbank-93
 router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
+router.post('/image-uploadurl', upload1.single("image"), ShopServiceController.imageurlApi);// added by anirbank-93
 
 router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
 
@@ -135,7 +136,7 @@ router.get('/seller-service/reviews/:seller_id', ServiceReview.getReviews);
 /**===============Service review api end========================= */
 
 /**=======================Service search========================= */
-router.post('/search-service', SearchController.allServicesSearch);
+router.post('/search-service', SearchController.Search);
 /**=====================Service search end======================= */
 /** ================================= with login url section end ================================ */
 

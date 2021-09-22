@@ -322,11 +322,26 @@ const Delete = async(req,res)=>{
     })
 }
 
+const imageurlApi = async(req,res)=>{
+    let imagUrl = '';
+    let image_url = await Upload.uploadFile(req, "chat")
+    if(typeof(req.file)!='undefined' || req.file!='' || req.file!=null){
+        imagUrl = image_url
+    }
+
+    return res.status(200).send({
+        status : true,
+        data : imagUrl,
+        error : null
+    })
+}
+
 module.exports = {
     create,
     update,
     viewShopServicesPerSeller,
     viewOneService,
     viewShopServiceDetails,
-    Delete
+    Delete,
+    imageurlApi
 }

@@ -7,7 +7,12 @@ var serviceSearch = async (req, res) => {
     return shopService.aggregate([
       req.body.servicename != "" && typeof req.body.servicename != "undefined"
         ? {
-            $match: { name: { $in: [req.body.servicename.toString()] } },
+            $match: { 
+              name: { 
+                $in: [req.body.servicename.toString()]
+                // $options: "$i"
+              }
+            },  
           }
         : { $project: { __v: 0 } },
       req.body.category_id != "" && typeof req.body.category_id != "undefined"
@@ -140,9 +145,18 @@ var allServicesSearch = async (req,res)=>{
     // find({ category_name: {$regex: searchField, $options: '$i'} })
     return shopService.aggregate(
       [
-        {
-          $match:{
-            category_name: {$regex: searchField, $options: '$i'}
+        searchField!="" && typeof searchField!="undefined"
+        ? {
+          $match: {
+            category_name: {
+              $regex: searchField, 
+              $options: "$i"
+            }
+          }
+        } 
+        : {
+          $project: {
+            __v: 0
           }
         },
         {
@@ -178,36 +192,59 @@ var allServicesSearch = async (req,res)=>{
 };
 
 var Search = async (req,res)=>{
-  shopService.createIndexes(
-    { 
-      name: 'text', 
-      details: 'text', 
-      category_name: 'text' 
-    }
-  );
-    
-  shopService.find(
-    {
-      $text:{
-        $search: req.body.categoryname
+  // shopService.find({ $text: { $search: req.body.categoryname }},
+  //   { score: {$meta: "textScore"} }
+  // )
+  return shopService.aggregate(
+    [
+      {
+        $match:{
+          $expr:{
+            $text: req.body.categoryname, 
+            // $options: "$i"
+          }
+        }
+      },
+      {
+        $lookup:{
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "seller_data"
+        }
+      },
+      { $unwind: "$seller_data" },
+      {
+        $project:{
+          __v: 0
+        }
       }
-    }
+    ]
   )
-    .then(data=>{
+  .sort({ score: {$meta: "textScore"} })
+  .then(data=>{
+    if (data==null || data=="") {
       res.status(200).json({
         status: true,
-        message: "All related shop services.",
+        message: "No result for this search.",
+        data: data
+      })
+    }
+    else {
+      res.status(200).json({
+        status: true,
+        message: "All related shop services",
         data: data
       });
-    })
-    .catch(err=>{
-      console.log(err);
-      res.status(500).json({
-        status: false,
-        message: "Server error. Please try again.",
-        error: err
-      });
+    }
+  })
+  .catch(err=>{
+    res.status(500).json({
+      status:false,
+      message:"Server error. Please try again.",
+      error: err
     });
+  });
 };
 
 module.exports = {
