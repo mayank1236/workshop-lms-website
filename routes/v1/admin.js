@@ -8,6 +8,11 @@ const UserSellersController = require('../../Controller/Admin/UserSellers'); // 
 const ServiceController = require('../../Controller/Admin/ServiceCategory'); // added by anirbank-93
 const OrderHistory = require('../../Controller/Admin/Orderhistory')
 const ServiceSubCategoryController = require('../../Controller/Admin/SubCategory');// added by anirbank-93
+const ReportController = require('../../Controller/Admin/Report');
+
+/** ----------------utility modules--------------- */
+const csv_reports = require('../../service/csv_reports');
+/**-------------utility modules end--------------- */
 
 const multer = require('multer');
  
@@ -68,5 +73,8 @@ router.post('/service/subcategory',ServiceSubCategoryController.create)    // ad
 router.get('/service/subcategory', ServiceSubCategoryController.viewAll)   // added by anirbank-93
 router.put('/service/subcategory/:id', ServiceSubCategoryController.update)// added by anirbank-93
 router.delete('/service/subcategory/:id', ServiceSubCategoryController.Delete)// added by anirbank-93
+
+router.post('/add-report', upload.single("report"), csv_reports.reportAdd);
+router.post('/user-subscriptions', ReportController.allUserSubscriptions);
 
 module.exports = router;

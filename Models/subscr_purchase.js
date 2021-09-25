@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 var moment = require("moment-timezone");
 var dateKolkata = moment.tz(Date.now(), "Asia/Kolkata");
 
-const UserSubsriptionSchema = new mongoose.Schema({
+var userSubsriptionSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   userid: {
     type: mongoose.Schema.Types.ObjectId,
@@ -35,4 +35,4 @@ const UserSubsriptionSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("UserSubscription", UserSubsriptionSchema);
+module.exports = mongoose.model("usersubscriptions", userSubsriptionSchema);
