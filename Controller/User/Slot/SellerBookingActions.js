@@ -4,8 +4,6 @@ var sellerBookings = require('../../../Models/Slot/seller_bookings');
 var userBookedSlot = require('../../../Models/Slot/user_booked_slot');
 var userServiceCart = require('../../../Models/service_cart');
 
-const { Validator } = require('node-input-validator');
-
 var newBookings = async (req,res)=>{
     var new_bookings = await sellerBookings.aggregate(
         [
