@@ -8,6 +8,7 @@ const UserSellersController = require('../../Controller/Admin/UserSellers'); // 
 const ServiceController = require('../../Controller/Admin/ServiceCategory'); // added by anirbank-93
 const OrderHistory = require('../../Controller/Admin/Orderhistory')
 const ServiceSubCategoryController = require('../../Controller/Admin/SubCategory');// added by anirbank-93
+const SellerBookingController = require('../../Controller/Admin/Slot/SellerBooking');//added by anirbank-93
 const ReportController = require('../../Controller/Admin/Report');
 
 /** ----------------utility modules--------------- */
@@ -73,6 +74,12 @@ router.post('/service/subcategory',ServiceSubCategoryController.create)    // ad
 router.get('/service/subcategory', ServiceSubCategoryController.viewAll)   // added by anirbank-93
 router.put('/service/subcategory/:id', ServiceSubCategoryController.update)// added by anirbank-93
 router.delete('/service/subcategory/:id', ServiceSubCategoryController.Delete)// added by anirbank-93
+
+// ----------------->Slot management section start
+router.get('/seller-service/new-bookings', SellerBookingController.newBookings);
+router.get('/seller-service/accepted-bookings', SellerBookingController.viewAcceptedBookings);
+router.get('/seller-service/rejected-bookings', SellerBookingController.viewRejectedBookings);
+// ------------------>Slot management section end
 
 router.post('/add-report', upload.single("report"), csv_reports.reportAdd);
 router.post('/user-subscriptions', ReportController.allUserSubscriptions);
