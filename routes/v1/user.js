@@ -57,17 +57,18 @@ router.use((req, res, next) => {
   }
 });
 
-/** ================================= with login url ================================= */
-// router.get('/product/viewall',ProductController.viewProductList)
-router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
-router.get("/subscription/check-subscription/:id", SubscriptionController.checkUserSubscription);
-router.post("/subscription-purchase", SubscriptionController.newSubscription);// added by anirbank-93
-
+/** ================================= WITH LOGIN URL ================================= */
+router.put('/update-profile/:id', UserSellerController.profileUpate); // added by anirbank-93
 router.get('/seller-portal/:token', UserSellerController.sellerTokenCheck);    // added by anirbank-93
 // router.post('/seller-portal/login', UserSellerController.sellerLogin);// added by anirbank-93
 router.get('/seller/:id', UserSellerController.viewUser);   // added by anirbank-93
 router.get('/list-of-users', UserSellerController.viewUserList);// added by anirbank-93
 router.get('/list-of-sellers', UserSellerController.viewSellerList);// added by anirbank-93
+
+// router.get('/product/viewall',ProductController.viewProductList)
+router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
+router.get("/subscription/check-subscription/:id", SubscriptionController.checkUserSubscription);
+router.post("/subscription-purchase", SubscriptionController.newSubscription);// added by anirbank-93
 
 /**====================Product cart api's======================= */
 router.post('/add-to-cart', CartController.addToCart);

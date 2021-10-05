@@ -11,15 +11,17 @@ let UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    userName: {
+        type: String, 
+        unique: true
+    },
     email:{
         type: String,
         required: true,
         unique: true
     },
-    password:{
-        type: String,
-        required: true
-    },
+    mobile: Number,
+    password: String,
     token:{
         type:String,
         required:false,
@@ -45,19 +47,19 @@ let UserSchema = new mongoose.Schema({
             prod_id:{
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'product',
-                required: true
+                required: false//
             },
             prod_name:{
                 type: String,
-                required: true
+                required: false//
             },
             prod_price:{
                 type: Number,
-                required: true
+                required: false//
             },
             qty:{
                 type: Number,
-                required: true
+                required: false//
             }
         }],
         totalPrice: Number
