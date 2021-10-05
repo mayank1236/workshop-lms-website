@@ -58,17 +58,16 @@ router.use((req, res, next) => {
 });
 
 /** ================================= WITH LOGIN URL ================================= */
-router.put('/update-profile/:id', UserSellerController.profileUpate); // added by anirbank-93
+// router.get('/product/viewall',ProductController.viewProductList)
+router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
+router.get("/subscription/check-subscription/:id", SubscriptionController.checkUserSubscription);
+router.post("/subscription-purchase", SubscriptionController.newSubscription);// added by anirbank-93
+
 router.get('/seller-portal/:token', UserSellerController.sellerTokenCheck);    // added by anirbank-93
 // router.post('/seller-portal/login', UserSellerController.sellerLogin);// added by anirbank-93
 router.get('/seller/:id', UserSellerController.viewUser);   // added by anirbank-93
 router.get('/list-of-users', UserSellerController.viewUserList);// added by anirbank-93
 router.get('/list-of-sellers', UserSellerController.viewSellerList);// added by anirbank-93
-
-// router.get('/product/viewall',ProductController.viewProductList)
-router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
-router.get("/subscription/check-subscription/:id", SubscriptionController.checkUserSubscription);
-router.post("/subscription-purchase", SubscriptionController.newSubscription);// added by anirbank-93
 
 /**====================Product cart api's======================= */
 router.post('/add-to-cart', CartController.addToCart);
@@ -129,7 +128,8 @@ router.post('/shop-service/checkout', Checkout.create)
 
 router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
 router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
-
+router.put('/myaccount/update-profile/:id', UserAccount.updateProfile);
+router.put('/myaccount/update-password/:id', UserAccount.updatePassword);
 /**=================Service review api's========================= */
 router.post('/seller-service/reviews', ServiceReview.giveOrderReview); // rating of a successfully completed order
 //
