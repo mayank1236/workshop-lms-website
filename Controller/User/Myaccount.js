@@ -249,10 +249,10 @@ const imageurlApi = async (req, res) => {
   if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
     imagUrl = image_url
   }
-
+  
   return User.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(req.params.id) },
-    { profile: imagUrl },
+    { profile: imagUrl },    // 'profile' attribute name for image in collection
     { new: true },
     (err, docs) => {
       if (!err) {

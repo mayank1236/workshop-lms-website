@@ -37,7 +37,7 @@ let UserSchema = new mongoose.Schema({
 		default: Date.now,
 		required: false
 	},
-    profile: {        // image attribute
+    profile: {        // single image attribute
         type: String,
         default: ''
     },

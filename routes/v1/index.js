@@ -26,7 +26,7 @@ const UserRoute = require('./user');
 router.post('/admin/register', AdminController.register);
 router.post('/admin/login', AdminController.login);
 
-router.post('/user/register', UserController.register);
+router.post('/user/register', UserController.register); // add upload image option in future
 router.post('/user/login', UserController.login);
 
 router.get('/user/listProducts', UserController.viewProductList);
