@@ -242,6 +242,7 @@ const updatePassword = async (req, res) => {
   }
 }
 
+// Api to return the destination of image uploaded
 const imageurlApi = async (req, res) => {
   let imagUrl = '';
   let image_url = await Upload.uploadFile(req, "profile_images")
