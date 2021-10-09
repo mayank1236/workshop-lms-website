@@ -252,7 +252,7 @@ const imageurlApi = async (req, res) => {
   
   return User.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(req.params.id) },
-    { profile: imagUrl },    // 'profile' attribute name for image in collection
+    { profile: imagUrl },    // 'profile' is attribute name for profile image in collection
     { new: true },
     (err, docs) => {
       if (!err) {
