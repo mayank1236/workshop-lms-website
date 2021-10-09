@@ -37,6 +37,10 @@ let UserSchema = new mongoose.Schema({
 		default: Date.now,
 		required: false
 	},
+    profile: {        // image attribute
+        type: String,
+        default: ''
+    },
     status: {
         type: Boolean,
         required: false,

@@ -250,11 +250,27 @@ const imageurlApi = async (req, res) => {
     imagUrl = image_url
   }
 
-  return res.status(200).send({
-    status: true,
-    data: imagUrl,
-    error: null
-  })
+  return User.findOneAndUpdate(
+    { _id: mongoose.Types.ObjectId(req.params.id) },
+    { profile: imagUrl },
+    { new: true },
+    (err, docs) => {
+      if (!err) {
+        res.status(200).json({
+          status: true,
+          data: imagUrl,
+          error: null
+        });
+      }
+      else {
+        res.status(500).json({
+          status: false,
+          message: "Invalid id. Couldn't upload file.",
+          error: err
+        });
+      }
+    }
+  );
 }
 
 module.exports = {

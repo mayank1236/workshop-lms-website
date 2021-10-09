@@ -130,7 +130,7 @@ router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
 router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
 router.put('/myaccount/update-profile/:id', UserAccount.updateProfile);
 router.put('/myaccount/update-password/:id', UserAccount.updatePassword);
-router.post('/myaccount/image-upload', upload1.single("image"), UserAccount.imageurlApi);
+router.put('/myaccount/image-upload/:id', upload1.single("profile"), UserAccount.imageurlApi);
 /**=================Service review api's========================= */
 router.post('/seller-service/reviews', ServiceReview.giveOrderReview); // rating of a successfully completed order
 //
