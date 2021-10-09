@@ -130,6 +130,7 @@ router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
 router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
 router.put('/myaccount/update-profile/:id', UserAccount.updateProfile);
 router.put('/myaccount/update-password/:id', UserAccount.updatePassword);
+router.delete('/myaccount/delete-profile/:id', UserAccount.deleteProfile);
 router.put('/myaccount/image-upload/:id', upload1.single("profile"), UserAccount.imageurlApi);
 
 /**=================Service review api's========================= */

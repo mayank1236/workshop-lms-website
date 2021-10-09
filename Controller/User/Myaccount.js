@@ -1,8 +1,9 @@
-var mongoose = require('mongoose')
-var Checkout = require('../../Models/checkout')
-var User = require('../../Models/user')
-var userBookedSlot = require('../../Models/Slot/user_booked_slot')
-var sellerSlots = require('../../Models/Slot/seller_slots')
+var mongoose = require('mongoose');
+var Checkout = require('../../Models/checkout');
+var User = require('../../Models/user');
+var userBookedSlot = require('../../Models/Slot/user_booked_slot');
+var sellerSlots = require('../../Models/Slot/seller_slots');
+var shopServices = require('../../Models/shop_service');
 var Upload = require('../../service/upload');
 
 var passwordHash = require('password-hash');
@@ -88,7 +89,7 @@ var cancelBooking = async (req, res) => {
   )
 }
 
-const updateProfile = async (req, res) => {
+var updateProfile = async (req, res) => {
   const V = new Validator(req.body, {
     // email, password should be made unable for edit in frontend
     firstName: "required",
@@ -162,7 +163,7 @@ const updateProfile = async (req, res) => {
   }
 }
 
-const updatePassword = async (req, res) => {
+var updatePassword = async (req, res) => {
   const V = new Validator(req.body, {
     old_password: 'required',
     new_password: 'required',// |minLength:8
@@ -242,14 +243,68 @@ const updatePassword = async (req, res) => {
   }
 }
 
+var deleteProfile = async (req, res) => {
+  var id = req.params.id;
+
+  var profile = await User.findOne({ _id: mongoose.Types.ObjectId(id) }).exec();
+
+  if (profile.type == "User") {
+    return User.findOneAndDelete(
+      { _id: mongoose.Types.ObjectId(id) },
+      (err, docs) => {
+        if (!err) {
+          res.status(200).json({
+            status: true,
+            message: "Profile deleted successfully.",
+            data: docs
+          });
+        }
+        else {
+          res.status(500).json({
+            status: false,
+            message: "Invalid id1.",
+            error: err
+          });
+        }
+      }
+    );
+  }
+  else {
+    return User.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
+      .then(data => {
+        shopServices.updateMany(
+          { user_id: mongoose.Types.ObjectId(data._id) },
+          { $set: { status: false } },
+          { multi: true },
+          (fault, docs) => {
+            console.log(fault);
+          }
+        );
+
+        res.status(200).json({
+          status: true,
+          message: "Profile deleted successfully. Related shop services deactivated.",
+          data: docs
+        });
+      })
+      .catch(err => {
+        res.status(500).json({
+          status: false,
+          message: "Invalid id2.",
+          error: err
+        });
+      })
+  }
+}
+
 // Api to return the destination of image uploaded
-const imageurlApi = async (req, res) => {
+var imageurlApi = async (req, res) => {
   let imagUrl = '';
   let image_url = await Upload.uploadFile(req, "profile_images")
   if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
     imagUrl = image_url
   }
-  
+
   return User.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(req.params.id) },
     { profile: imagUrl },    // 'profile' is attribute name for profile image in collection
@@ -278,5 +333,6 @@ module.exports = {
   cancelBooking,
   updateProfile,
   updatePassword,
+  deleteProfile,
   imageurlApi
 }
