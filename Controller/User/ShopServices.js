@@ -440,7 +440,7 @@ const viewTopServiceProvider = async (req,res)=>{
     )
     .then(data=>{
         res.status(200).json({
-            status: false,
+            status: true,
             message: "Popular services get successfully",
             data: data
         })
