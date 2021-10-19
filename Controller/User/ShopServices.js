@@ -27,11 +27,22 @@ const create = async (req, res) => {
         category_name: req.body.category_name,
         user_id: mongoose.Types.ObjectId(req.body.user_id)
     }
-    if (typeof (req.body.personalization) != 'undefined' || req.body.personalization != '') {
+    if (
+        typeof (req.body.personalization) != 'undefined' || 
+        req.body.personalization != '' || 
+        req.body.personalization != null
+        ) {
         shopServiceData.personalization = req.body.personalization
     }
-    if (typeof (req.body.hashtags) != 'undefined' || req.body.hashtags != '') {
-        shopServiceData.hashtags = req.body.hashtags
+    if (
+        typeof (req.body.hashtags) == 'undefined' || 
+        req.body.hashtags == '' || 
+        req.body.hashtags == null
+        ) {
+        shopServiceData.hashtags = null
+    }
+    else {
+        shopServiceData.hashtags = JSON.parse(req.body.hashtags)
     }
     if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
         shopServiceData.image = image_url
@@ -421,7 +432,8 @@ const viewTopServiceProvider = async (req,res)=>{
                     from:"service_reviews",
                     localField:"service_data._id",
                     foreignField: "service_id",
-                    as:"rev_data",
+                    // pipeline:[ {$limit: 0} ],
+                    as:"rev_data"
                 }
             },
             {

@@ -30,10 +30,7 @@ const ShopServiceSchema = new Schema({
         required: false
     },
     user_id: mongoose.Schema.Types.ObjectId,
-    hashtags:{
-        type: String,
-        required: false
-    },
+    hashtags:[],
     image:{
         type: String,
         required: false
@@ -43,6 +40,11 @@ const ShopServiceSchema = new Schema({
         default: true
     }
 })
+
+// {
+//     id: Number,
+//     name: String
+// }
 
 ShopServiceSchema.indexes({ 
     name: 'text', 
