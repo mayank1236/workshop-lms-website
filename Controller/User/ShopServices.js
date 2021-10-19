@@ -99,12 +99,20 @@ const update = async (req, res) => {
         let image_url = await Upload.uploadFile(req, "shop_services");
         req.body.image = image_url;
     }
+    if (
+        typeof (req.body.hashtags) != 'undefined' || 
+        req.body.hashtags != '' || 
+        req.body.hashtags != null
+        ) {
+        req.body.hashtags = JSON.parse(req.body.hashtags)
+    }
 
     let id = req.params.id
     return ShopService.findOneAndUpdate(
         { _id: { $in: [mongoose.Types.ObjectId(id)] } },
         req.body,
-        async (err, docs) => {
+        { new: true },
+        (err, docs) => {
             if (err) {
                 res.status(500).json({
                     status: false,
