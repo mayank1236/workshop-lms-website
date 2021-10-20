@@ -44,7 +44,9 @@ const create = async (req, res) => {
     else {
         shopServiceData.hashtags = JSON.parse(req.body.hashtags)
     }
-    if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
+    if (typeof (req.file) == 'undefined' || req.file == '' || req.file == null) {
+        shopServiceData.image = null
+    } else {
         shopServiceData.image = image_url
     }
 

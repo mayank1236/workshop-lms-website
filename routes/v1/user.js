@@ -97,6 +97,7 @@ router.delete('/shop/services/:id', ShopServiceController.Delete);    // added b
 router.post('/image-uploadurl', upload1.single("image"), ShopServiceController.imageurlApi);// added by anirbank-93
 
 router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
+router.get('/seller_account/booking-stat/:seller_id', SellerAccount.serviceBookingStat);
 
 // ----------------->Slot management section start
 router.post('/shop-service/timing', SellerTimingsController.createSlot); // added by anirbank-93

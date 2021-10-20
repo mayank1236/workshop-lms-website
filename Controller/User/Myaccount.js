@@ -57,7 +57,7 @@ var cancelBooking = async (req, res) => {
       if (!err) {
         userBookedSlot.findOne({ _id: { $in: docs.user_booking_id } })
           .then(data => {
-            console.log("User booking data", data)
+            console.log("User booking data", data);
             var sellerSlotData = sellerSlots.findOneAndUpdate(
               { _id: { $in: data.slot_id } },
               { $set: { booking_status: false } },
