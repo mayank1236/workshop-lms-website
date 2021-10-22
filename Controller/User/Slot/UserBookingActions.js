@@ -147,6 +147,13 @@ var bookAppointment = async (req,res,next)=>{
         ) {
         saveData1.shop_service_name = req.body.shop_service_name
     }
+    // if (
+    //     req.body.shop_service_category!="" && 
+    //     req.body.shop_service_category!=null && 
+    //     typeof req.body.shop_service_category!="undefined"
+    //     ) {
+    //     saveData1.shop_service_category = req.body.shop_service_category
+    // }
     if (
         req.body.price!="" && 
         req.body.price!=null && 
@@ -206,6 +213,13 @@ var bookAppointment = async (req,res,next)=>{
                     price: docs.price,
                     image: docs.image
                 }
+                // if (
+                //     docs.shop_service_category!="" && 
+                //     docs.shop_service_category!=null && 
+                //     typeof docs.shop_service_category!="undefined"
+                //     ) {
+                //     cartData.service_category = docs.shop_service_category
+                // }
 
                 const SELLER_BOOKING = new SellerBookings(sellerBookingData)
                 const SERVICE_CART = new ServiceCart(cartData)

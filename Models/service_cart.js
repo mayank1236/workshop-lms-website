@@ -18,16 +18,17 @@ const SERVICE_CART_SCHEMA = new Schema({
         type: Number
     },
     service_name:{
-        type:String,
-        required:true
+        type: String,
+        required: true
     },
+    // service_category:String,
     price:{
-        type:Number,
-        required:true
+        type: Number,
+        required: true
     },
     image:{
-        type:String,
-        required:true
+        type: String,
+        required: true
     },
     seller_confirmed:{
         type: String,

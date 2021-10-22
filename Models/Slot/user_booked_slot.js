@@ -19,6 +19,7 @@ const userBookedSlot = new Schema({
     shop_service_name:{
         type: String
     },
+    // shop_service_category: String,
     price:{
         type: Number
     },
