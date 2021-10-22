@@ -27,6 +27,14 @@ var viewAll = async (req, res) => {
                 }
             },
             {
+                $lookup: {
+                    from: "admin_commissions",
+                    localField: "service_id",
+                    foreignField: "service_id",
+                    as: "admin_commission"
+                }
+            },
+            {
                 $project: {
                     __v: 0
                 }
