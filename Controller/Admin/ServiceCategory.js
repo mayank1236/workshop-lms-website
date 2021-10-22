@@ -142,7 +142,7 @@ const Delete = async (req, res) => {
 }
 
 const shopServicePerCategory = async (req, res) => {
-    var id = req.params.id;
+    var id = req.params.cat_id;
 
     return ShopService.aggregate(
         [
@@ -159,6 +159,17 @@ const shopServicePerCategory = async (req, res) => {
             },
             {
                 $unwind: "$seller_data"
+            },
+            {
+                $lookup: {
+                    from: "admin_commissions",
+                    localField: "_id",
+                    foreignField: "service_id",
+                    as: "admin_commission_data"
+                }
+            },
+            {
+                $unwind: "$admin_commission_data"
             }
         ]
     ).then(data=>{
