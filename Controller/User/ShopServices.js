@@ -1,7 +1,8 @@
 var mongoose = require('mongoose')
+
 var ShopService = require('../../Models/shop_service')
-var Checkout = require('../../Models/checkout');
-var Cart = require('../../Models/service_cart');
+var AdminCommission = require('../../Models/admin_commission')
+var Checkout = require('../../Models/checkout')
 var Upload = require('../../service/upload')
 
 const { Validator } = require('node-input-validator')
@@ -52,7 +53,17 @@ const create = async (req, res) => {
 
     let shop_service = new ShopService(shopServiceData)
     shop_service.save()
-        .then((docs) => {
+        .then(async (docs) => {
+            let commissionData = {
+                _id: mongoose.Types.ObjectId(),
+                service_id: docs._id,
+                category_id: docs.category_id
+            }
+            
+            const ADMIN_COMMISSION = new AdminCommission(commissionData)
+
+            var save_admin_commission = await ADMIN_COMMISSION.save()
+
             res.status(200).json({
                 status: true,
                 message: "Shop's service created sucessfully!",

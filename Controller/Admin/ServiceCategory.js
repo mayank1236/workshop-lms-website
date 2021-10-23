@@ -167,10 +167,10 @@ const shopServicePerCategory = async (req, res) => {
                     foreignField: "service_id",
                     as: "admin_commission_data"
                 }
-            },
-            {
-                $unwind: "$admin_commission_data"
             }
+            // {
+            //     $unwind: "$admin_commission_data"
+            // }
         ]
     ).then(data=>{
         res.status(200).json({
