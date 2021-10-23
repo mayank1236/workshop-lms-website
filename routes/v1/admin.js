@@ -1,4 +1,6 @@
 var express = require('express');
+const multer = require('multer');
+
 var router = express.Router();
 
 const ProductController = require('../../Controller/Admin/Product');
@@ -12,12 +14,11 @@ const SellerBookingController = require('../../Controller/Admin/Slot/SellerBooki
 const MyAccountController = require('../../Controller/Admin/Myaccount');
 const AdminCommission = require('../../Controller/Admin/AdminCommision');
 const ReportController = require('../../Controller/Admin/Report');
-
 /** ----------------utility modules--------------- */
 const csv_reports = require('../../service/csv_reports');
 /**-------------utility modules end--------------- */
 
-const multer = require('multer');
+const AboutUs = require('../../Controller/Admin/Website_info/AboutUs');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -91,5 +92,11 @@ router.post('/service-commision', AdminCommission.addNEditCommission);
 
 router.post('/add-report', upload.single("report"), csv_reports.reportAdd);
 router.post('/user-subscriptions', ReportController.allUserSubscriptions);
+
+router.post('/about-us', AboutUs.addSegment);
+router.get('/about-us', AboutUs.viewAllSegments);
+router.get('/about-us/:id', AboutUs.viewSegmentById);
+router.put('/about-us/:id', AboutUs.editSegment);
+router.delete('/about-us/:id', AboutUs.deleteSegment);
 
 module.exports = router;
