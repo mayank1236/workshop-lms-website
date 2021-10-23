@@ -34,48 +34,50 @@ var addNEditCommission = async (req, res) => {
         .exec();
     console.log(commissionData);
 
-    if (commissionData != "" || commissionData != null) {
+    if (commissionData == "" || commissionData == null) {
+        const SERVICE_COMMISION = new adminCommission(saveData);
+
+        return SERVICE_COMMISION.save((err, result) => {
+            if (!err) {
+                res.status(200).json({
+                    status: true,
+                    message: "Commission percentage added successfully",
+                    data: result
+                });
+            }
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Failed to add commission. Server error.",
+                    error: err.message
+                });
+            }
+        });
+    }
+    else {
+
         return adminCommission.findOneAndUpdate(
             { service_id: mongoose.Types.ObjectId(req.body.service_id) },
-            saveData,
+            { percentage: req.body.percentage },
             { new: true },
             (err, docs) => {
                 if (!err) {
                     res.status(200).json({
                         status: true,
-                        message: "Commission percentage added successfully",
+                        message: "Commission percentage updated successfully",
                         data: docs
                     });
                 }
                 else {
                     res.status(500).json({
                         status: false,
-                        message: "Failed to add commission. Server error.",
+                        message: "Invalid id.",
                         error: err.message
                     });
                 }
             }
         );
     }
-
-    const SERVICE_COMMISION = new adminCommission(saveData);
-
-    return SERVICE_COMMISION.save((err, docs) => {
-        if (!err) {
-            res.status(200).json({
-                status: true,
-                message: "Commission percentage added successfully",
-                data: docs
-            });
-        }
-        else {
-            res.status(500).json({
-                status: false,
-                message: "Failed to add commission. Server error.",
-                error: err.message
-            });
-        }
-    });
 }
 
 module.exports = {
