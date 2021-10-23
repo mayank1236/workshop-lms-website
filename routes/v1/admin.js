@@ -9,6 +9,7 @@ const ServiceController = require('../../Controller/Admin/ServiceCategory'); // 
 const OrderHistory = require('../../Controller/Admin/Orderhistory')
 const ServiceSubCategoryController = require('../../Controller/Admin/SubCategory');// added by anirbank-93
 const SellerBookingController = require('../../Controller/Admin/Slot/SellerBooking');//added by anirbank-93
+const MyAccountController = require('../../Controller/Admin/Myaccount');
 const AdminCommission = require('../../Controller/Admin/AdminCommision');
 const ReportController = require('../../Controller/Admin/Report');
 
@@ -84,7 +85,9 @@ router.get('/seller-service/accepted-bookings', SellerBookingController.viewAcce
 router.get('/seller-service/rejected-bookings', SellerBookingController.viewRejectedBookings);
 // ------------------>Slot management section end
 
-router.post('/service-commision', AdminCommission.addCommission);
+router.put('/myaccount/update-password/:id', MyAccountController.updatePassword);
+
+router.post('/service-commision', AdminCommission.addNEditCommission);
 
 router.post('/add-report', upload.single("report"), csv_reports.reportAdd);
 router.post('/user-subscriptions', ReportController.allUserSubscriptions);
