@@ -6,7 +6,6 @@ var aboutUs = require('../../../Models/Website_info/about_us');
 
 var addNEditSegment = async (req, res) => {
     const V = new Validator(req.body, {
-        info_id: 'required',
         description: 'required'
     });
     let matched = V.check().then(val => val)

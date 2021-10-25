@@ -4,7 +4,7 @@ const { Validator } = require('node-input-validator');
 
 var privacyPolicy = require('../../../Models/Website_info/privacy_policy');
 
-var addSegment = async (req, res) => {
+var addNEditSegment = async (req, res) => {
     const V = new Validator(req.body, {
         description: 'required'
     });
@@ -25,24 +25,53 @@ var addSegment = async (req, res) => {
     ) {
         segmentData.heading = req.body.heading;
     }
-    const NEW_SEGMENT = new privacyPolicy(segmentData);
 
-    return NEW_SEGMENT.save((err, docs) => {
-        if (!err) {
-            res.status(200).json({
-                status: true,
-                message: "Segment added successfully!",
-                data: docs
-            });
-        }
-        else {
-            res.status(500).json({
-                status: false,
-                message: "Failed to add segment. Server error.",
-                error: err
-            });
-        }
-    });
+    var privacy_info = await privacyPolicy.find({ _id: mongoose.Types.ObjectId(req.body.info_id) }).exec();
+    console.log(privacy_info);
+
+    if (privacy_info == "" || privacy_info == null) {
+        const NEW_SEGMENT = new privacyPolicy(segmentData);
+
+        return NEW_SEGMENT.save((err, docs) => {
+            if (!err) {
+                res.status(200).json({
+                    status: true,
+                    message: "Info added successfully!",
+                    data: docs
+                });
+            }
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Failed to add info. Server error.",
+                    error: err.message
+                });
+            }
+        });
+    }
+    else {
+        return privacyPolicy.findByIdAndUpdate(
+            { _id: mongoose.Types.ObjectId(req.body.info_id) },
+            req.body,
+            { new: true },
+            (err, docs) => {
+                if (!err) {
+                    res.status(200).json({
+                        status: true,
+                        message: "Information successfully updated.",
+                        data: docs
+                    });
+                }
+                else {
+                    res.status(500).json({
+                        status: false,
+                        message: "Invalid id.",
+                        error: err
+                    });
+                }
+            }
+        );
+    }
 }
 
 var viewAllSegments = async (req, res) => {
@@ -139,7 +168,7 @@ var deleteSegment = async (req, res) => {
 }
 
 module.exports = {
-    addSegment,
+    addNEditSegment,
     viewAllSegments,
     viewSegmentById,
     editSegment,

@@ -6,7 +6,6 @@ var termsNCondin = require('../../../Models/Website_info/terms_n_conditn');
 
 var addNEditSegment = async (req, res) => {
     const V = new Validator(req.body, {
-        info_id: 'required',
         description: 'required'
     });
     let matched = V.check().then(val => val)
@@ -45,7 +44,7 @@ var addNEditSegment = async (req, res) => {
                 res.status(500).json({
                     status: false,
                     message: "Failed to add info. Server error.",
-                    error: err
+                    error: err.message
                 });
             }
         });
