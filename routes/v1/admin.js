@@ -94,16 +94,14 @@ router.post('/service-commision', AdminCommission.addNEditCommission);
 router.post('/add-report', upload.single("report"), csv_reports.reportAdd);
 router.post('/user-subscriptions', ReportController.allUserSubscriptions);
 
-router.post('/about-us', AboutUs.addSegment);
+router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);
 router.get('/about-us/:id', AboutUs.viewSegmentById);
-router.put('/about-us/:id', AboutUs.editSegment);
 router.delete('/about-us/:id', AboutUs.deleteSegment);
 
-router.post('/terms-and-condition', TermsNConditn.addSegment);
+router.post('/terms-and-condition', TermsNConditn.addNEditSegment);
 router.get('/terms-and-condition', TermsNConditn.viewAllSegments);
 router.get('/terms-and-condition/:id', TermsNConditn.viewSegmentById);
-router.put('/terms-and-condition/:id', TermsNConditn.editSegment);
 router.delete('/terms-and-condition/:id', TermsNConditn.deleteSegment);
 
 module.exports = router;

@@ -2,11 +2,10 @@ var mongoose = require('mongoose');
 
 const { Validator } = require('node-input-validator');
 
-var termsNCondin = require('../../../Models/Website_info/terms_n_conditn');
+var privacyPolicy = require('../../../Models/Website_info/privacy_policy');
 
-var addNEditSegment = async (req, res) => {
+var addSegment = async (req, res) => {
     const V = new Validator(req.body, {
-        info_id: 'required',
         description: 'required'
     });
     let matched = V.check().then(val => val)
@@ -26,53 +25,24 @@ var addNEditSegment = async (req, res) => {
     ) {
         segmentData.heading = req.body.heading;
     }
+    const NEW_SEGMENT = new privacyPolicy(segmentData);
 
-    var terms_info = await termsNCondin.find({ _id: mongoose.Types.ObjectId(req.body.info_id) }).exec();
-    console.log(terms_info);
-
-    if (terms_info == "" || terms_info == null) {
-        const NEW_SEGMENT = new termsNCondin(segmentData);
-
-        return NEW_SEGMENT.save((err, docs) => {
-            if (!err) {
-                res.status(200).json({
-                    status: true,
-                    message: "Info added successfully!",
-                    data: docs
-                });
-            }
-            else {
-                res.status(500).json({
-                    status: false,
-                    message: "Failed to add info. Server error.",
-                    error: err
-                });
-            }
-        });
-    }
-    else {
-        return termsNCondin.findByIdAndUpdate(
-            { _id: mongoose.Types.ObjectId(req.body.info_id) },
-            req.body,
-            { new: true },
-            (err, docs) => {
-                if (!err) {
-                    res.status(200).json({
-                        status: true,
-                        message: "Information successfully updated.",
-                        data: docs
-                    });
-                }
-                else {
-                    res.status(500).json({
-                        status: false,
-                        message: "Invalid id.",
-                        error: err
-                    });
-                }
-            }
-        );
-    }
+    return NEW_SEGMENT.save((err, docs) => {
+        if (!err) {
+            res.status(200).json({
+                status: true,
+                message: "Segment added successfully!",
+                data: docs
+            });
+        }
+        else {
+            res.status(500).json({
+                status: false,
+                message: "Failed to add segment. Server error.",
+                error: err
+            });
+        }
+    });
 }
 
 var viewAllSegments = async (req, res) => {
@@ -118,6 +88,32 @@ var viewSegmentById = async (req, res) => {
     );
 }
 
+var editSegment = async (req, res) => {
+    var id = req.params.id;
+
+    return termsNCondin.findByIdAndUpdate(
+        { _id: id },
+        req.body,
+        { new: true },
+        (err, docs) => {
+            if (!err) {
+                res.status(200).json({
+                    status: true,
+                    message: "Segment successfully updated.",
+                    data: docs
+                });
+            }
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Invalid id.",
+                    error: err
+                });
+            }
+        }
+    );
+}
+
 var deleteSegment = async (req, res) => {
     var id = req.params.id;
 
@@ -143,8 +139,9 @@ var deleteSegment = async (req, res) => {
 }
 
 module.exports = {
-    addNEditSegment,
+    addSegment,
     viewAllSegments,
     viewSegmentById,
+    editSegment,
     deleteSegment
 }
