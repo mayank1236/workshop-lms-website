@@ -22,6 +22,7 @@ const AboutUs = require('../../Controller/Admin/Website_info/AboutUs');
 const TermsNConditn = require('../../Controller/Admin/Website_info/TermsNConditn');
 const PrivacyPolicy = require('../../Controller/Admin/Website_info/PrivacyPolicy');
 const SocialMediaInfo = require('../../Controller/Admin/Website_info/SocialMediaInfo');
+const ContactUsInfo = require('../../Controller/Admin/Website_info/ContactUsInfo');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -115,5 +116,10 @@ router.post('/social-media-info', SocialMediaInfo.addNEdit);
 router.get('/social-media-info', SocialMediaInfo.viewAll);
 router.get('/social-media-info/:id', SocialMediaInfo.viewById);
 router.delete('/social-media-info/:id', SocialMediaInfo.deleteSegment);
+
+router.post('/contact-us-info', ContactUsInfo.addNEdit);
+router.get('/contact-us-info', ContactUsInfo.viewAll);
+router.get('/contact-us-info/:id', ContactUsInfo.viewById);
+router.delete('/contact-us-info/:id', ContactUsInfo.deleteSegment);
 
 module.exports = router;
