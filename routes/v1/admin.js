@@ -21,6 +21,7 @@ const csv_reports = require('../../service/csv_reports');
 const AboutUs = require('../../Controller/Admin/Website_info/AboutUs');
 const TermsNConditn = require('../../Controller/Admin/Website_info/TermsNConditn');
 const PrivacyPolicy = require('../../Controller/Admin/Website_info/PrivacyPolicy');
+const SocialMediaInfo = require('../../Controller/Admin/Website_info/SocialMediaInfo');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -109,5 +110,8 @@ router.post('/privacy-policy', PrivacyPolicy.addNEditSegment);
 router.get('/privacy-policy', PrivacyPolicy.viewAllSegments);
 router.get('/privacy-policy/:id', PrivacyPolicy.viewSegmentById);
 router.delete('/privacy-policy/:id', PrivacyPolicy.deleteSegment);
+
+router.post('/social-media-info', SocialMediaInfo.addNEdit);
+router.get('/social-media-info', SocialMediaInfo.viewAll);
 
 module.exports = router;
