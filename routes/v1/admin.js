@@ -11,6 +11,7 @@ const ServiceController = require('../../Controller/Admin/ServiceCategory'); // 
 const OrderHistory = require('../../Controller/Admin/Orderhistory')
 const ServiceSubCategoryController = require('../../Controller/Admin/SubCategory');// added by anirbank-93
 const SellerBookingController = require('../../Controller/Admin/Slot/SellerBooking');//added by anirbank-93
+const SellerReviews = require('../../Controller/Admin/ServiceReview');    // added by anirbank-93
 const MyAccountController = require('../../Controller/Admin/Myaccount');
 const AdminCommission = require('../../Controller/Admin/AdminCommision');
 const ReportController = require('../../Controller/Admin/Report');
@@ -89,6 +90,8 @@ router.get('/seller-service/new-bookings', SellerBookingController.newBookings);
 router.get('/seller-service/accepted-bookings', SellerBookingController.viewAcceptedBookings);
 router.get('/seller-service/rejected-bookings', SellerBookingController.viewRejectedBookings);
 // ------------------>Slot management section end
+
+router.get('/seller-service/reviews', SellerReviews.getReviews);
 
 router.put('/myaccount/update-password/:id', MyAccountController.updatePassword);
 
