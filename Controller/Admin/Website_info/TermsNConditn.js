@@ -25,11 +25,11 @@ var addNEditSegment = async (req, res) => {
     ) {
         segmentData.heading = req.body.heading;
     }
-
-    var terms_info = await termsNCondin.find({ _id: mongoose.Types.ObjectId(req.body.info_id) }).exec();
-    console.log(terms_info);
-
-    if (terms_info == "" || terms_info == null) {
+    if (
+        req.body.info_id == "" ||
+        req.body.info_id == null ||
+        typeof req.body.info_id == "undefined"
+    ) {
         const NEW_SEGMENT = new termsNCondin(segmentData);
 
         return NEW_SEGMENT.save((err, docs) => {

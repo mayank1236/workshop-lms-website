@@ -25,11 +25,11 @@ var addNEditSegment = async (req, res) => {
     ) {
         segmentData.heading = req.body.heading;
     }
-
-    var privacy_info = await privacyPolicy.find({ _id: mongoose.Types.ObjectId(req.body.info_id) }).exec();
-    console.log(privacy_info);
-
-    if (privacy_info == "" || privacy_info == null) {
+    if (
+        req.body.info_id == null ||
+        req.body.info_id == "" ||
+        typeof req.body.info_id == "undefined"
+    ) {
         const NEW_SEGMENT = new privacyPolicy(segmentData);
 
         return NEW_SEGMENT.save((err, docs) => {
@@ -75,13 +75,13 @@ var addNEditSegment = async (req, res) => {
 }
 
 var viewAllSegments = async (req, res) => {
-    var termsInfo = await termsNCondin.find().exec();
+    var privacyInfo = await privacyPolicy.find().exec();
 
-    if (termsInfo.length > 0) {
+    if (privacyInfo.length > 0) {
         return res.status(200).json({
             status: true,
             message: "Data get successfully!",
-            data: termsInfo
+            data: privacyInfo
         });
     }
     else {
