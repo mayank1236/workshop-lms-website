@@ -129,5 +129,6 @@ var deleteSegment = async (req, res) => {
 module.exports = {
     addNEdit,
     viewAll,
-    viewById
+    viewById,
+    deleteSegment
 }

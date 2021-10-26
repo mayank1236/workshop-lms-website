@@ -113,5 +113,7 @@ router.delete('/privacy-policy/:id', PrivacyPolicy.deleteSegment);
 
 router.post('/social-media-info', SocialMediaInfo.addNEdit);
 router.get('/social-media-info', SocialMediaInfo.viewAll);
+router.get('/social-media-info/:id', SocialMediaInfo.viewById);
+router.delete('/social-media-info/:id', SocialMediaInfo.deleteSegment);
 
 module.exports = router;
