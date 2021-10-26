@@ -117,32 +117,6 @@ var viewSegmentById = async (req, res) => {
     );
 }
 
-var editSegment = async (req, res) => {
-    var id = req.params.id;
-
-    return termsNCondin.findByIdAndUpdate(
-        { _id: id },
-        req.body,
-        { new: true },
-        (err, docs) => {
-            if (!err) {
-                res.status(200).json({
-                    status: true,
-                    message: "Segment successfully updated.",
-                    data: docs
-                });
-            }
-            else {
-                res.status(500).json({
-                    status: false,
-                    message: "Invalid id.",
-                    error: err
-                });
-            }
-        }
-    );
-}
-
 var deleteSegment = async (req, res) => {
     var id = req.params.id;
 
@@ -171,6 +145,5 @@ module.exports = {
     addNEditSegment,
     viewAllSegments,
     viewSegmentById,
-    editSegment,
     deleteSegment
 }

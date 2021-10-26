@@ -106,5 +106,8 @@ router.get('/terms-and-condition/:id', TermsNConditn.viewSegmentById);
 router.delete('/terms-and-condition/:id', TermsNConditn.deleteSegment);
 
 router.post('/privacy-policy', PrivacyPolicy.addNEditSegment);
+router.get('/privacy-policy', PrivacyPolicy.viewAllSegments);
+router.get('/privacy-policy/:id', PrivacyPolicy.viewSegmentById);
+router.delete('/privacy-policy/:id', PrivacyPolicy.deleteSegment);
 
 module.exports = router;
