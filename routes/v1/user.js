@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 const ProductController = require("../../Controller/User/Product");
-const UserSellerController=require('../../Controller/User/UserSellers');//added by anirbank-93
+const UserSellerController = require('../../Controller/User/UserSellers');//added by anirbank-93
 const SubscriptionController = require("../../Controller/User/Subscription");// added by anirbank-93
 const ServiceController = require('../../Controller/User/ServiceCategory');  // added by anirbank-93
 const ShopController = require("../../Controller/User/Shop");      // added by anirbank-93
@@ -23,26 +23,45 @@ const SearchController = require('../../Controller/User/Search');
 const multer = require('multer');
 
 var storage1 = multer.memoryStorage();
-var upload1 = multer({storage: storage1});
+var upload1 = multer({ storage: storage1 });
 
 var storage2 = multer.diskStorage({
-  destination: (req,file,cb)=>{cb(null,"uploads/shop_banner_n_image")},
-  filename: (req,file,cb)=>{
-    if(file.fieldname == 'banner_img'){
-      pro_img1 = "banner_"+file.originalname;// +Math.floor(100000+(Math.random()*900000))+"_"+Date.now()+"_"
+  destination: (req, file, cb) => { cb(null, "uploads/shop_banner_n_image") },
+  filename: (req, file, cb) => {
+    if (file.fieldname == 'banner_img') {
+      pro_img1 = "banner_" + file.originalname;// +Math.floor(100000+(Math.random()*900000))+"_"+Date.now()+"_"
       banner_img = pro_img1;
-      cb(null,pro_img1);
+      cb(null, pro_img1);
     }
     if (file.fieldname == "shop_img") {
-      pro_img2 = "shop_"+file.originalname;// +Math.floor(100000+(Math.random()*900000))+"_"+Date.now()+"_"
+      pro_img2 = "shop_" + file.originalname;// +Math.floor(100000+(Math.random()*900000))+"_"+Date.now()+"_"
       shop_img = pro_img2;
       cb(null, pro_img2);
     }
   }
 });
 
-var upload2 = multer({storage: storage2});
-var uploadMultiple = upload2.fields([{name: 'banner_img', maxCount: 1}, {name: 'shop_img', maxCount: 1}]);
+var upload2 = multer({ storage: storage2 });
+var uploadMultiple1 = upload2.fields([{ name: 'banner_img', maxCount: 1 }, { name: 'shop_img', maxCount: 1 }]);
+
+var storage3 = multer.diskStorage({
+  destination: (req, file, cb) => { cb(null, "uploads/shop_services") },
+  filename: (req, file, cb) => {
+    if (file.fieldname == "image") {
+      pro_img = "image_" + file.originalname;
+      service_img = pro_img;
+      cb(null, pro_img);
+    }
+    if (file.fieldnamefieldname == "audio") {
+      pro_aud = "audio_" + file.originalname;
+      service_aud = pro_aud;
+      cb(null, pro_aud);
+    }
+  }
+});
+
+var upload3 = multer({ storage: storage3 });
+var uploadMultiple2 = upload3.fields([{ name: "image", maxCount: 20 }, { name: "audio", maxCount: 1 }]);
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -73,7 +92,7 @@ router.get('/list-of-sellers', UserSellerController.viewSellerList);// added by 
 router.post('/add-to-cart', CartController.addToCart);
 router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
 router.get('/get-cart/:user_id', CartController.getCart);
-router.delete('/cartDelete/:id',CartController.Delete);
+router.delete('/cartDelete/:id', CartController.Delete);
 /**=================Product cart api's end======================= */
 
 router.get('/service-category', ServiceController.viewAllServices); // added by anirbank-93
@@ -82,11 +101,13 @@ router.get('/service/subcategory/:id', ServiceController.viewServiceSubCategory)
 // route to fetch all shop services available for a service category
 router.get('/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
-router.post('/shop', uploadMultiple, ShopController.createNUpdate);// added by anirbank-93
+router.post('/shop', uploadMultiple1, ShopController.createNUpdate);// added by anirbank-93
 router.get('/shop', ShopController.viewAllShops);   // added by anirbank-93
 router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
 
-router.post('/shop/services', upload1.single("image"), ShopServiceController.create);// added by anirbank-93
+router.post('/shop/services', upload1.single("audio"), ShopServiceController.create);// added by anirbank-93
+router.post('/shop-service-images', upload1.single("image"), ShopServiceController.shopserviceImageUrl);// anirbank-93
+router.post('/shop-service-images', upload1.single("audio"), ShopServiceController.shopserviceImageUrl);// anirbank-93
 // route to fetch all services of a shop
 router.get('/shop/all-services/:seller_id', ShopServiceController.viewShopServicesPerSeller);// added by anirbank-93
 // route to fetch one service of a shop
@@ -94,7 +115,7 @@ router.get('/shop/view-shopservice/:seller_id/:category_id', ShopServiceControll
 router.get('/shop/shopservice-details/:id', ShopServiceController.viewShopServiceDetails); // added by anirbank-93
 router.put('/shop/services/:id', upload1.single("image"), ShopServiceController.update);// added by anirbank-93
 router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
-router.post('/image-uploadurl', upload1.single("image"), ShopServiceController.imageurlApi);// added by anirbank-93
+router.post('/image-uploadurl', upload1.single("image"), ShopServiceController.chatImageUrlApi);// added by anirbank-93
 
 router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
 router.get('/seller_account/booking-stat/:seller_id', SellerAccount.serviceBookingStat);

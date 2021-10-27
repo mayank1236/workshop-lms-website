@@ -17,8 +17,9 @@ const create = async (req, res) => {
     if (!matched) {
         res.status(200).send({ status: false, errors: v.errors })
     }
-    console.log(req.file)
-    let image_url = await Upload.uploadFile(req, "shop_services")
+    console.log(req.files)
+    // let image_url = await Upload.uploadFile(req, "shop_services")
+    let audio_url = await Upload.uploadAudioFile(req, "shop_services")
     let shopServiceData = {
         _id: mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -45,10 +46,22 @@ const create = async (req, res) => {
     else {
         shopServiceData.hashtags = JSON.parse(req.body.hashtags)
     }
-    if (typeof (req.file) == 'undefined' || req.file == '' || req.file == null) {
+    if (
+        typeof (req.body.image) == 'undefined' || 
+        req.body.image == '' || 
+        req.body.image == null
+        ) {
         shopServiceData.image = null
     } else {
-        shopServiceData.image = image_url
+        shopServiceData.image = JSON.parse(req.body.image)
+    }
+
+    if (
+        req.file != "" || 
+        req.file != null || 
+        typeof req.file != "undefined"
+    ) {
+        shopServiceData.audio = audio_url
     }
 
     let shop_service = new ShopService(shopServiceData)
@@ -79,17 +92,31 @@ const create = async (req, res) => {
         })
 }
 
-const imageurlApi = async (req, res) => {
+const shopserviceImageUrl = async(req,res)=>{
     let imagUrl = '';
-    let image_url = await Upload.uploadFile(req, "chat")
-    if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
+    let image_url = await Upload.uploadFile(req, "shop_services")
+    if(typeof(req.file)!='undefined' || req.file!='' || req.file!=null){
         imagUrl = image_url
     }
 
     return res.status(200).send({
-        status: true,
-        data: imagUrl,
-        error: null
+        status : true,
+        data : imagUrl,
+        error : null
+    })
+}
+
+const shopserviceAudioUrl = async(req,res)=>{
+    let audioUrl = '';
+    let audio_url = await Upload.uploadAudioFile(req, "shop_services");
+    if(typeof(req.file)!='undefined' || req.file!='' || req.file!=null){
+        audioUrl = audio_url
+    }
+
+    return res.status(200).send({
+        status : true,
+        data : audioUrl,
+        error : null
     })
 }
 
@@ -162,6 +189,20 @@ const Delete = async (req, res) => {
             message: "Server error. Couldn't delete data",
             error: err
         })
+    })
+}
+
+const chatImageUrlApi = async (req, res) => {
+    let imagUrl = '';
+    let image_url = await Upload.uploadFile(req, "chat")
+    if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
+        imagUrl = image_url
+    }
+
+    return res.status(200).send({
+        status: true,
+        data: imagUrl,
+        error: null
     })
 }
 
@@ -489,11 +530,13 @@ const viewTopServiceProvider = async (req,res)=>{
 
 module.exports = {
     create,
-    imageurlApi,
+    shopserviceImageUrl,
+    shopserviceAudioUrl,
     update,
     Delete,
     viewShopServicesPerSeller,
     viewOneService,
+    chatImageUrlApi,
     viewShopServiceDetails,
     viewTopServiceProvider
 }

@@ -32,9 +32,10 @@ const ShopServiceSchema = new Schema({
     user_id: mongoose.Schema.Types.ObjectId,
     hashtags:[],
     image:{
-        type: String,
-        required: false
+        type: Array,
+        required: true
     },
+    audio: String,
     status:{
         type: Boolean,
         default: true
