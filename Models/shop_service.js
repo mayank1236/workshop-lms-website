@@ -35,7 +35,7 @@ const ShopServiceSchema = new Schema({
         type: Array,
         required: true
     },
-    audio: String,
+    video: String,
     status:{
         type: Boolean,
         default: true

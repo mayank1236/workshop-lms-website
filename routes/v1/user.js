@@ -52,7 +52,7 @@ var storage3 = multer.diskStorage({
       service_img = pro_img;
       cb(null, pro_img);
     }
-    if (file.fieldnamefieldname == "audio") {
+    if (file.fieldnamefieldname == "video") {
       pro_aud = "audio_" + file.originalname;
       service_aud = pro_aud;
       cb(null, pro_aud);
@@ -61,7 +61,7 @@ var storage3 = multer.diskStorage({
 });
 
 var upload3 = multer({ storage: storage3 });
-var uploadMultiple2 = upload3.fields([{ name: "image", maxCount: 20 }, { name: "audio", maxCount: 1 }]);
+var uploadMultiple2 = upload3.fields([{ name: "image", maxCount: 20 }, { name: "video", maxCount: 1 }]);
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -105,9 +105,9 @@ router.post('/shop', uploadMultiple1, ShopController.createNUpdate);// added by 
 router.get('/shop', ShopController.viewAllShops);   // added by anirbank-93
 router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
 
-router.post('/shop/services', upload1.single("audio"), ShopServiceController.create);// added by anirbank-93
+router.post('/shop/services', upload1.single("video"), ShopServiceController.create);// added by anirbank-93
 router.post('/shop-service-images', upload1.single("image"), ShopServiceController.shopserviceImageUrl);// anirbank-93
-router.post('/shop-service-images', upload1.single("audio"), ShopServiceController.shopserviceImageUrl);// anirbank-93
+router.post('/shop-service-audio', upload1.single("audio"), ShopServiceController.shopserviceImageUrl);// anirbank-93
 // route to fetch all services of a shop
 router.get('/shop/all-services/:seller_id', ShopServiceController.viewShopServicesPerSeller);// added by anirbank-93
 // route to fetch one service of a shop

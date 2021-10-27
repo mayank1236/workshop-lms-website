@@ -19,7 +19,7 @@ const create = async (req, res) => {
     }
     console.log(req.files)
     // let image_url = await Upload.uploadFile(req, "shop_services")
-    let audio_url = await Upload.uploadAudioFile(req, "shop_services")
+    let video_url = await Upload.uploadVideoFile(req, "shop_services")
     let shopServiceData = {
         _id: mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -61,7 +61,7 @@ const create = async (req, res) => {
         req.file != null || 
         typeof req.file != "undefined"
     ) {
-        shopServiceData.audio = audio_url
+        shopServiceData.video = video_url
     }
 
     let shop_service = new ShopService(shopServiceData)
