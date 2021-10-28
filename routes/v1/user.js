@@ -107,13 +107,13 @@ router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
 
 router.post('/shop/services', upload1.single("video"), ShopServiceController.create);// added by anirbank-93
 router.post('/shop-service-images', upload1.single("image"), ShopServiceController.shopserviceImageUrl);// anirbank-93
-router.post('/shop-service-audio', upload1.single("audio"), ShopServiceController.shopserviceImageUrl);// anirbank-93
+router.post('/shop-service-audio', upload1.single("video"), ShopServiceController.shopserviceImageUrl);// anirbank-93
 // route to fetch all services of a shop
 router.get('/shop/all-services/:seller_id', ShopServiceController.viewShopServicesPerSeller);// added by anirbank-93
 // route to fetch one service of a shop
 router.get('/shop/view-shopservice/:seller_id/:category_id', ShopServiceController.viewOneService);// added by anirbank-93  
 router.get('/shop/shopservice-details/:id', ShopServiceController.viewShopServiceDetails); // added by anirbank-93
-router.put('/shop/services/:id', upload1.single("image"), ShopServiceController.update);// added by anirbank-93
+router.put('/shop/services/:id', upload1.single("video"), ShopServiceController.update);// added by anirbank-93
 router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
 router.post('/image-uploadurl', upload1.single("image"), ShopServiceController.chatImageUrlApi);// added by anirbank-93
 

@@ -17,7 +17,7 @@ const create = async (req, res) => {
     if (!matched) {
         res.status(200).send({ status: false, errors: v.errors })
     }
-    console.log(req.files)
+    console.log(req.file)
     // let image_url = await Upload.uploadFile(req, "shop_services")
     let video_url = await Upload.uploadVideoFile(req, "shop_services")
     let shopServiceData = {
@@ -30,35 +30,34 @@ const create = async (req, res) => {
         user_id: mongoose.Types.ObjectId(req.body.user_id)
     }
     if (
-        typeof (req.body.personalization) != 'undefined' || 
-        req.body.personalization != '' || 
+        typeof (req.body.personalization) != 'undefined' ||
+        req.body.personalization != '' ||
         req.body.personalization != null
-        ) {
+    ) {
         shopServiceData.personalization = req.body.personalization
     }
     if (
-        typeof (req.body.hashtags) == 'undefined' || 
-        req.body.hashtags == '' || 
+        typeof (req.body.hashtags) == 'undefined' ||
+        req.body.hashtags == '' ||
         req.body.hashtags == null
-        ) {
+    ) {
         shopServiceData.hashtags = null
     }
     else {
         shopServiceData.hashtags = JSON.parse(req.body.hashtags)
     }
     if (
-        typeof (req.body.image) == 'undefined' || 
-        req.body.image == '' || 
+        typeof (req.body.image) == 'undefined' ||
+        req.body.image == '' ||
         req.body.image == null
-        ) {
+    ) {
         shopServiceData.image = null
     } else {
         shopServiceData.image = JSON.parse(req.body.image)
     }
-
     if (
-        req.file != "" || 
-        req.file != null || 
+        req.file != "" ||
+        req.file != null ||
         typeof req.file != "undefined"
     ) {
         shopServiceData.video = video_url
@@ -72,7 +71,7 @@ const create = async (req, res) => {
                 service_id: docs._id,
                 category_id: docs.category_id
             }
-            
+
             const ADMIN_COMMISSION = new AdminCommission(commissionData)
 
             var save_admin_commission = await ADMIN_COMMISSION.save()
@@ -92,31 +91,31 @@ const create = async (req, res) => {
         })
 }
 
-const shopserviceImageUrl = async(req,res)=>{
+const shopserviceImageUrl = async (req, res) => {
     let imagUrl = '';
     let image_url = await Upload.uploadFile(req, "shop_services")
-    if(typeof(req.file)!='undefined' || req.file!='' || req.file!=null){
+    if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
         imagUrl = image_url
     }
 
     return res.status(200).send({
-        status : true,
-        data : imagUrl,
-        error : null
+        status: true,
+        data: imagUrl,
+        error: null
     })
 }
 
-const shopserviceAudioUrl = async(req,res)=>{
+const shopserviceAudioUrl = async (req, res) => {
     let audioUrl = '';
     let audio_url = await Upload.uploadAudioFile(req, "shop_services");
-    if(typeof(req.file)!='undefined' || req.file!='' || req.file!=null){
+    if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
         audioUrl = audio_url
     }
 
     return res.status(200).send({
-        status : true,
-        data : audioUrl,
-        error : null
+        status: true,
+        data: audioUrl,
+        error: null
     })
 }
 
@@ -134,20 +133,34 @@ const update = async (req, res) => {
             error: v.errors
         });
     }
-    console.log(req.file)
-    if (typeof (req.file) != "undefined" || req.file != null) {
-        let image_url = await Upload.uploadFile(req, "shop_services");
-        req.body.image = image_url;
-    }
+
     if (
-        typeof (req.body.hashtags) != 'undefined' || 
-        req.body.hashtags != '' || 
+        typeof (req.body.hashtags) != 'undefined' ||
+        req.body.hashtags != '' ||
         req.body.hashtags != null
-        ) {
+    ) {
         req.body.hashtags = JSON.parse(req.body.hashtags)
     }
+    if (
+        typeof (req.body.image) == 'undefined' ||
+        req.body.image == '' ||
+        req.body.image == null
+    ) {
+        req.body.image = null
+    } else {
+        req.body.image = JSON.parse(req.body.image)
+    }
 
-    let id = req.params.id
+    let video_url = await Upload.uploadVideoFile(req, "shop_services")
+    if (
+        req.file != "" ||
+        req.file != null ||
+        typeof req.file != "undefined"
+    ) {
+        req.body.video = video_url
+    }
+
+    var id = req.params.id
     return ShopService.findOneAndUpdate(
         { _id: { $in: [mongoose.Types.ObjectId(id)] } },
         req.body,
@@ -408,124 +421,124 @@ const viewShopServiceDetails = async (req, res) => {
         })
 }
 
-const viewTopServiceProvider = async (req,res)=>{
+const viewTopServiceProvider = async (req, res) => {
     // Cart
     ShopService
-    .aggregate(
-        [
-            {
-                $group:{
-                    _id:'$_id'
-                }
-            },
-            {
-                $lookup:{
-                    from:'service_carts',
-                    // localField:'order_id',
-                    // foreignField:'order_id',
-                    let:{
-                        'service_id':'$_id'
-                    },
-                    pipeline:[
-                        {
-                            $match:{
-                                $expr:{
-                                    $and:[
-                                        { $eq: ['$service_id', '$$service_id'] }
-                                    ]
+        .aggregate(
+            [
+                {
+                    $group: {
+                        _id: '$_id'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'service_carts',
+                        // localField:'order_id',
+                        // foreignField:'order_id',
+                        let: {
+                            'service_id': '$_id'
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ['$service_id', '$$service_id'] }
+                                        ]
+                                    }
                                 }
-                            }
-                        },
-                        {
-                            $group:{
-                                _id:"$service_id",totalCount :{$sum:1}
-                            }
-                        },
-                        {
-                            $sort:{totalCount:-1}
-                        },
-                    ],
-                    as:'cart_data'
-                }
-            },
-            {
-                $unwind:"$cart_data"
-            },
-            {
-                $lookup:{
-                    from:"shop_services",
-                    localField:"cart_data._id",
-                    foreignField:"_id",
-                    as:"service_data"
-                }
-            },
-            {
-                $unwind:"$service_data"
-            },
-            {
-                $lookup:{
-                    from:"service_categories",
-                    localField:"service_data.category_id",
-                    foreignField:"_id",
-                    as:"category_data"
-                }
-            },
-            {
-                $unwind:"$category_data"
-            },
-            {
-                $lookup:{
-                    from:"users",
-                    localField:"service_data.user_id",
-                    foreignField:"_id",
-                    as:"provider_data"
-                }
-            },
-            {
-                $unwind:"$provider_data"
-            },
-            {
-                $project:{
-                    _v:0
-                }
-            },
-            {
-                $lookup:{
-                    from:"service_reviews",
-                    localField:"service_data._id",
-                    foreignField: "service_id",
-                    // pipeline:[ {$limit: 0} ],
-                    as:"rev_data"
-                }
-            },
-            {
-                $addFields: {
-                    avgRating: {
-                        $avg: {
-                            $map: {
-                                input: "$rev_data",
-                                in: "$$this.rating"
+                            },
+                            {
+                                $group: {
+                                    _id: "$service_id", totalCount: { $sum: 1 }
+                                }
+                            },
+                            {
+                                $sort: { totalCount: -1 }
+                            },
+                        ],
+                        as: 'cart_data'
+                    }
+                },
+                {
+                    $unwind: "$cart_data"
+                },
+                {
+                    $lookup: {
+                        from: "shop_services",
+                        localField: "cart_data._id",
+                        foreignField: "_id",
+                        as: "service_data"
+                    }
+                },
+                {
+                    $unwind: "$service_data"
+                },
+                {
+                    $lookup: {
+                        from: "service_categories",
+                        localField: "service_data.category_id",
+                        foreignField: "_id",
+                        as: "category_data"
+                    }
+                },
+                {
+                    $unwind: "$category_data"
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "service_data.user_id",
+                        foreignField: "_id",
+                        as: "provider_data"
+                    }
+                },
+                {
+                    $unwind: "$provider_data"
+                },
+                {
+                    $project: {
+                        _v: 0
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "service_reviews",
+                        localField: "service_data._id",
+                        foreignField: "service_id",
+                        // pipeline:[ {$limit: 0} ],
+                        as: "rev_data"
+                    }
+                },
+                {
+                    $addFields: {
+                        avgRating: {
+                            $avg: {
+                                $map: {
+                                    input: "$rev_data",
+                                    in: "$$this.rating"
+                                }
                             }
                         }
                     }
-                }
-            },
-        ]
-    )
-    .then(data=>{
-        res.status(200).json({
-            status: true,
-            message: "Popular services get successfully",
-            data: data
+                },
+            ]
+        )
+        .then(data => {
+            res.status(200).json({
+                status: true,
+                message: "Popular services get successfully",
+                data: data
+            })
         })
-    })
-    .catch(err=>{
-        res.status(500).json({
-            status: false,
-            message: "Failed to get popular shop service data. Server error.",
-            error: err
-        });
-    })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Failed to get popular shop service data. Server error.",
+                error: err
+            });
+        })
 }
 
 module.exports = {
