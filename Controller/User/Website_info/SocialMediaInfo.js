@@ -1,38 +1,23 @@
 var mongoose = require('mongoose');
 
-const { Validator } = require('node-input-validator');
+var socialMediaInfo = require('../../../Models/Website_info/social_media');
 
-var privacyPolicy = require('../../../Models/Website_info/privacy_policy');
-
-var addNEditSegment = async (req, res) => {
-    const V = new Validator(req.body, {
-        description: 'required'
-    });
-    let matched = V.check().then(val => val)
-
-    if (!matched) {
-        return res.status(400).json({ status: false, errors: V.errors });
-    }
-
-    let segmentData = {
+var addNEdit = async (req, res) => {
+    let saveData = {
         _id: mongoose.Types.ObjectId(),
-        description: req.body.description
+        facebook: req.body.facebook,
+        twitter: req.body.twitter,
+        youtube: req.body.youtube,
+        linkedin: req.body.linkedin
     }
     if (
-        req.body.heading != "" ||
-        req.body.heading != null ||
-        typeof req.body.heading != "undefined"
-    ) {
-        segmentData.heading = req.body.heading;
-    }
-    if (
-        req.body.info_id == null ||
         req.body.info_id == "" ||
+        req.body.info_id == null ||
         typeof req.body.info_id == "undefined"
     ) {
-        const NEW_SEGMENT = new privacyPolicy(segmentData);
+        const NEW_SOCIAL_MEDIA_INFO = new socialMediaInfo(saveData);
 
-        return NEW_SEGMENT.save((err, docs) => {
+        return NEW_SOCIAL_MEDIA_INFO.save((err, docs) => {
             if (!err) {
                 res.status(200).json({
                     status: true,
@@ -44,13 +29,13 @@ var addNEditSegment = async (req, res) => {
                 res.status(500).json({
                     status: false,
                     message: "Failed to add info. Server error.",
-                    error: err.message
+                    error: err
                 });
             }
         });
     }
     else {
-        return privacyPolicy.findByIdAndUpdate(
+        return socialMediaInfo.findByIdAndUpdate(
             { _id: mongoose.Types.ObjectId(req.body.info_id) },
             req.body,
             { new: true },
@@ -58,7 +43,7 @@ var addNEditSegment = async (req, res) => {
                 if (!err) {
                     res.status(200).json({
                         status: true,
-                        message: "Information successfully updated.",
+                        message: "Info updated successfully!",
                         data: docs
                     });
                 }
@@ -74,14 +59,14 @@ var addNEditSegment = async (req, res) => {
     }
 }
 
-var viewAllSegments = async (req, res) => {
-    var privacyInfo = await privacyPolicy.find().exec();
+var viewAll = async (req, res) => {
+    var social_media_info = await socialMediaInfo.find().exec();
 
-    if (privacyInfo.length > 0) {
+    if (social_media_info.length > 0) {
         return res.status(200).json({
             status: true,
             message: "Data get successfully!",
-            data: privacyInfo
+            data: social_media_info
         });
     }
     else {
@@ -93,16 +78,16 @@ var viewAllSegments = async (req, res) => {
     }
 }
 
-var viewSegmentById = async (req, res) => {
+var viewById = async (req, res) => {
     var id = req.params.id;
 
-    return privacyPolicy.findById(
+    return socialMediaInfo.findById(
         { _id: id },
         (err, docs) => {
             if (!err) {
                 res.status(200).json({
                     status: true,
-                    message: "Segment successfully get.",
+                    message: "Info successfully get.",
                     data: docs
                 });
             }
@@ -120,13 +105,13 @@ var viewSegmentById = async (req, res) => {
 var deleteSegment = async (req, res) => {
     var id = req.params.id;
 
-    return termsNCondin.findByIdAndDelete(
+    return socialMediaInfo.findByIdAndDelete(
         { _id: id },
         (err, docs) => {
             if (!err) {
                 res.status(200).json({
                     status: true,
-                    message: "Segment successfully deleted.",
+                    message: "Info successfully deleted.",
                     data: docs
                 });
             }
@@ -142,8 +127,8 @@ var deleteSegment = async (req, res) => {
 }
 
 module.exports = {
-    addNEditSegment,
-    viewAllSegments,
-    viewSegmentById,
+    addNEdit,
+    viewAll,
+    viewById,
     deleteSegment
 }
