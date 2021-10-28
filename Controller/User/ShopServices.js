@@ -19,7 +19,7 @@ const create = async (req, res) => {
     }
     console.log(req.file)
     // let image_url = await Upload.uploadFile(req, "shop_services")
-    let video_url = await Upload.uploadVideoFile(req, "shop_services")
+    // let video_url = await Upload.uploadVideoFile(req, "shop_services")
     let shopServiceData = {
         _id: mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -60,7 +60,7 @@ const create = async (req, res) => {
         req.file != null ||
         typeof req.file != "undefined"
     ) {
-        shopServiceData.video = video_url
+        shopServiceData.video = req.body.video
     }
 
     let shop_service = new ShopService(shopServiceData)
@@ -105,16 +105,16 @@ const shopserviceImageUrl = async (req, res) => {
     })
 }
 
-const shopserviceAudioUrl = async (req, res) => {
-    let audioUrl = '';
-    let audio_url = await Upload.uploadAudioFile(req, "shop_services");
+const shopserviceVideoUrl = async (req, res) => {
+    let videoUrl = '';
+    let video_url = await Upload.uploadVideoFile(req, "shop_services")
     if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
-        audioUrl = audio_url
+        videoUrl = video_url
     }
 
     return res.status(200).send({
         status: true,
-        data: audioUrl,
+        data: videoUrl,
         error: null
     })
 }
@@ -149,15 +149,6 @@ const update = async (req, res) => {
         req.body.image = null
     } else {
         req.body.image = JSON.parse(req.body.image)
-    }
-
-    let video_url = await Upload.uploadVideoFile(req, "shop_services")
-    if (
-        req.file != "" ||
-        req.file != null ||
-        typeof req.file != "undefined"
-    ) {
-        req.body.video = video_url
     }
 
     var id = req.params.id
@@ -544,7 +535,7 @@ const viewTopServiceProvider = async (req, res) => {
 module.exports = {
     create,
     shopserviceImageUrl,
-    shopserviceAudioUrl,
+    shopserviceVideoUrl,
     update,
     Delete,
     viewShopServicesPerSeller,

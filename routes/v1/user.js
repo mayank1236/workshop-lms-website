@@ -107,7 +107,7 @@ router.get('/shop/:id', ShopController.viewShop);   // added by anirbank-93
 
 router.post('/shop/services', upload1.single("video"), ShopServiceController.create);// added by anirbank-93
 router.post('/shop-service-images', upload1.single("image"), ShopServiceController.shopserviceImageUrl);// anirbank-93
-router.post('/shop-service-audio', upload1.single("video"), ShopServiceController.shopserviceImageUrl);// anirbank-93
+router.post('/shop-service-video', upload1.single("video"), ShopServiceController.shopserviceVideoUrl);// anirbank-93
 // route to fetch all services of a shop
 router.get('/shop/all-services/:seller_id', ShopServiceController.viewShopServicesPerSeller);// added by anirbank-93
 // route to fetch one service of a shop
