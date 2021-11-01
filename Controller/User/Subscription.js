@@ -161,6 +161,7 @@ const newSubscription = async (req, res) => {
   }
 };
 
+// cancel subscription and set user type to "User"
 const cancelSubscription = async (req, res) => {
   var user_id = req.params.user_id;
 

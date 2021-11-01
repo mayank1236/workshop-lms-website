@@ -81,7 +81,7 @@ router.use((req, res, next) => {
 router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
 router.get("/subscription/check-subscription/:id", SubscriptionController.checkUserSubscription);
 router.post("/subscription-purchase", SubscriptionController.newSubscription);// added by anirbank-93
-router.put('/subscription/:user_id', SubscriptionController.cancelSubscription);
+router.put('/subscription/:user_id', SubscriptionController.cancelSubscription); // added by anirbank-93
 
 router.get('/seller-portal/:token', UserSellerController.sellerTokenCheck);    // added by anirbank-93
 // router.post('/seller-portal/login', UserSellerController.sellerLogin);// added by anirbank-93
