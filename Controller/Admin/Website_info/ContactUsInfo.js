@@ -6,7 +6,8 @@ var addNEdit = async (req, res) => {
     let saveData = {
         _id: mongoose.Types.ObjectId(),
         email: req.body.email,
-        phone: Number(req.body.phone)
+        phone: Number(req.body.phone),
+        address: req.body.address
     }
     if (
         req.body.info_id == "" ||

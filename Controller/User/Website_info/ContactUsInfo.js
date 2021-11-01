@@ -1,5 +1,3 @@
-var mongoose = require('mongoose');
-
 var contactUsInfo = require('../../../Models/Website_info/contact_us');
 
 var viewAll = async (req, res) => {
