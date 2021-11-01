@@ -58,7 +58,8 @@ var checkUserSubscription = async (req, res) => {
   SubscribedBy.aggregate([
     {
       $match: {
-        userid: { $in: [mongoose.Types.ObjectId(userid)] }
+        userid: { $in: [mongoose.Types.ObjectId(userid)] },
+        status: true
       }
     },
     {
@@ -79,7 +80,7 @@ var checkUserSubscription = async (req, res) => {
       if (data == null || data == '') {
         res.status(200).json({
           status: true,
-          message: "No subscription purchased by user.",
+          message: "Currently no user subscription.",
           data: []
         })
       }
