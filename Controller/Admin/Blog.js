@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 const { Validator } = require('node-input-validator');
 
-const BLOG = require('../../models/blog');
+const BLOG = require('../../Models/blog');
 var Upload = require('../../service/upload');
 
 var addBlog = async (req, res) => {
