@@ -22,6 +22,7 @@ const TermsNConditn = require('../../Controller/User/Website_info/TermsNConditn'
 const PrivacyPolicy = require('../../Controller/User/Website_info/PrivacyPolicy');
 const SocialMediaInfo = require('../../Controller/User/Website_info/SocialMediaInfo');
 const ContactUsInfo = require('../../Controller/User/Website_info/ContactUsInfo');
+const BlogController = require('../../Controller/User/Blog');
 /**-----------------------Website info section end----------------------- */
 
 const middleware  = require('../../service/middleware').middleware;
@@ -63,6 +64,9 @@ router.get('/user/social-media-info/:id', SocialMediaInfo.viewById);
 
 router.get('/user/contact-us-info', ContactUsInfo.viewAll);
 router.get('/user/contact-us-info/:id', ContactUsInfo.viewById);
+
+router.get('/user/blog', BlogController.viewAllBlogs);
+router.get('/user/blog/:id', BlogController.viewBlogById);
 /** ================================= without login url section end ================================ */
 
 router.use(middleware);
