@@ -25,6 +25,7 @@ const PrivacyPolicy = require('../../Controller/Admin/Website_info/PrivacyPolicy
 const SocialMediaInfo = require('../../Controller/Admin/Website_info/SocialMediaInfo');
 const ContactUsInfo = require('../../Controller/Admin/Website_info/ContactUsInfo');
 const BlogController = require('../../Controller/Admin/Blog');
+const SafetyGuide = require('../../Controller/Admin/Website_info/SafetyGuide');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -132,5 +133,10 @@ router.get('/blog', BlogController.viewAllBlogs);
 router.get('/blog/:id', BlogController.viewBlogById);
 router.put('/blog/:id', BlogController.editBlog);
 router.delete('/blog/:id', BlogController.deleteBlog);
+
+router.post('/safety-guide', SafetyGuide.addNEditSegment);
+router.get('/safety-guide', SafetyGuide.viewAllSegments);
+router.get('/safety-guide/:id', SafetyGuide.viewSegmentById);
+router.delete('/safety-guide/:id', SafetyGuide.deleteSegment);
 
 module.exports = router;
