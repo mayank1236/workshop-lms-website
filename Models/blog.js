@@ -13,10 +13,7 @@ const BLOG_SCHEMA = new Schema({
         type: String,
         required: true,
     },
-    author: {
-        type: String,
-        required: true
-    },
+    author: String,
     created_at: {
         type: Date,
         default: moment.tz(new Date(), "Asia/Kolkata")

@@ -21,8 +21,14 @@ var addBlog = async (req, res) => {
         _id: mongoose.Types.ObjectId(),
         title: req.body.title,
         content: req.body.content,
-        author: req.body.author,
         image: req.body.image
+    }
+    if (
+        req.body.author != "" || 
+        req.body.author != null || 
+        typeof req.body.author != "undefined"
+    ) {
+        blogData.author = req.body.author;
     }
     if (
         req.body.audio != "" ||
