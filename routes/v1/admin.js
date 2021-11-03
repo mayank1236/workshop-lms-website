@@ -15,6 +15,8 @@ const SellerReviews = require('../../Controller/Admin/ServiceReview');    // add
 const MyAccountController = require('../../Controller/Admin/Myaccount');
 const AdminCommission = require('../../Controller/Admin/AdminCommision');
 const ReportController = require('../../Controller/Admin/Report');
+const BlogController = require('../../Controller/Admin/Blog');
+const GrievanceController = require('../../Controller/Admin/Grievance');
 /** ----------------utility modules--------------- */
 const csv_reports = require('../../service/csv_reports');
 /**-------------utility modules end--------------- */
@@ -24,7 +26,6 @@ const TermsNConditn = require('../../Controller/Admin/Website_info/TermsNConditn
 const PrivacyPolicy = require('../../Controller/Admin/Website_info/PrivacyPolicy');
 const SocialMediaInfo = require('../../Controller/Admin/Website_info/SocialMediaInfo');
 const ContactUsInfo = require('../../Controller/Admin/Website_info/ContactUsInfo');
-const BlogController = require('../../Controller/Admin/Blog');
 const SafetyGuide = require('../../Controller/Admin/Website_info/SafetyGuide');
  
 var storage = multer.memoryStorage()
@@ -102,6 +103,17 @@ router.post('/service-commision', AdminCommission.addNEditCommission);
 router.post('/add-report', upload.single("report"), csv_reports.reportAdd);
 router.post('/user-subscriptions', ReportController.allUserSubscriptions);
 
+router.post('/blog', BlogController.addBlog);
+router.post('/blog/image-upload', upload.single("image"), BlogController.imageUpload);
+router.get('/blog', BlogController.viewAllBlogs);
+router.get('/blog/:id', BlogController.viewBlogById);
+router.put('/blog/:id', BlogController.editBlog);
+router.delete('/blog/:id', BlogController.deleteBlog);
+
+router.get('/complaint', GrievanceController.viewAllComplaints);
+router.get('/complaint/:id', GrievanceController.viewComplaintById);
+
+/**==========================CMS Section========================== */
 router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);
 router.get('/about-us/:id', AboutUs.viewSegmentById);
@@ -127,16 +139,10 @@ router.get('/contact-us-info', ContactUsInfo.viewAll);
 router.get('/contact-us-info/:id', ContactUsInfo.viewById);
 router.delete('/contact-us-info/:id', ContactUsInfo.deleteSegment);
 
-router.post('/blog', BlogController.addBlog);
-router.post('/blog/image-upload', upload.single("image"), BlogController.imageUpload);
-router.get('/blog', BlogController.viewAllBlogs);
-router.get('/blog/:id', BlogController.viewBlogById);
-router.put('/blog/:id', BlogController.editBlog);
-router.delete('/blog/:id', BlogController.deleteBlog);
-
 router.post('/safety-guide', SafetyGuide.addNEditSegment);
 router.get('/safety-guide', SafetyGuide.viewAllSegments);
 router.get('/safety-guide/:id', SafetyGuide.viewSegmentById);
 router.delete('/safety-guide/:id', SafetyGuide.deleteSegment);
+/**========================CMS Section End======================== */
 
 module.exports = router;
