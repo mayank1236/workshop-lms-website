@@ -24,6 +24,7 @@ const SocialMediaInfo = require('../../Controller/User/Website_info/SocialMediaI
 const ContactUsInfo = require('../../Controller/User/Website_info/ContactUsInfo');
 const BlogController = require('../../Controller/User/Blog');
 const SafetyGuide = require('../../Controller/User/Website_info/SafetyGuide');
+const Associates = require('../../Controller/Admin/Website_info/Associates');
 /**-----------------------Website info section end----------------------- */
 
 const middleware  = require('../../service/middleware').middleware;
@@ -71,6 +72,9 @@ router.get('/user/blog/:id', BlogController.viewBlogById);
 
 router.get('/user/safety-guide', SafetyGuide.viewAllSegments);
 router.get('/user/safety-guide/:id', SafetyGuide.viewSegmentById);
+
+router.get('/user/associate', Associates.viewAllAssociates);
+router.get('/user/associate/:id', Associates.viewAssociateById);
 /** ================================= without login url section end ================================ */
 
 router.use(middleware);

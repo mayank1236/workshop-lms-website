@@ -27,6 +27,7 @@ const PrivacyPolicy = require('../../Controller/Admin/Website_info/PrivacyPolicy
 const SocialMediaInfo = require('../../Controller/Admin/Website_info/SocialMediaInfo');
 const ContactUsInfo = require('../../Controller/Admin/Website_info/ContactUsInfo');
 const SafetyGuide = require('../../Controller/Admin/Website_info/SafetyGuide');
+const Associates = require('../../Controller/Admin/Website_info/Associates');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -143,6 +144,13 @@ router.post('/safety-guide', SafetyGuide.addNEditSegment);
 router.get('/safety-guide', SafetyGuide.viewAllSegments);
 router.get('/safety-guide/:id', SafetyGuide.viewSegmentById);
 router.delete('/safety-guide/:id', SafetyGuide.deleteSegment);
+
+router.post('/associate', Associates.addAssociate);
+router.post('/associate/image-upload', upload.single("image"), Associates.imageUpload);
+router.get('/associate', Associates.viewAllAssociates);
+router.get('/associate/:id', Associates.viewAssociateById);
+router.put('/associate/:id', upload.single("image"), Associates.editAssociate);
+router.delete('/associate/:id', Associates.deleteAssociate);
 /**========================CMS Section End======================== */
 
 module.exports = router;
