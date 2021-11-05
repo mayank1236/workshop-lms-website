@@ -149,7 +149,7 @@ router.post('/associate', Associates.addAssociate);
 router.post('/associate/image-upload', upload.single("image"), Associates.imageUpload);
 router.get('/associate', Associates.viewAllAssociates);
 router.get('/associate/:id', Associates.viewAssociateById);
-router.put('/associate/:id', upload.single("image"), Associates.editAssociate);
+router.put('/associate/:id', Associates.editAssociate);
 router.delete('/associate/:id', Associates.deleteAssociate);
 /**========================CMS Section End======================== */
 
