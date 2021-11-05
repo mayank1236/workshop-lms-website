@@ -28,6 +28,7 @@ const SocialMediaInfo = require('../../Controller/Admin/Website_info/SocialMedia
 const ContactUsInfo = require('../../Controller/Admin/Website_info/ContactUsInfo');
 const SafetyGuide = require('../../Controller/Admin/Website_info/SafetyGuide');
 const Associates = require('../../Controller/Admin/Website_info/Associates');
+const LegalNotice = require('../../Controller/Admin/Website_info/LegalNotice');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -151,6 +152,11 @@ router.get('/associate', Associates.viewAllAssociates);
 router.get('/associate/:id', Associates.viewAssociateById);
 router.put('/associate/:id', Associates.editAssociate);
 router.delete('/associate/:id', Associates.deleteAssociate);
+
+router.post('/legal-notice', LegalNotice.addNEditSegment);
+router.get('/legal-notice', LegalNotice.viewAllSegments);
+router.get('/legal-notice/:id', LegalNotice.viewSegmentById);
+router.delete('/legal-notice/:id', LegalNotice.deleteSegment);
 /**========================CMS Section End======================== */
 
 module.exports = router;
