@@ -39,13 +39,6 @@ var addGrievance = async (req,res)=>{
     ) {
         complaintData.url = req.body.url;
     }
-    if (
-        req.body.url != '' || 
-        req.body.url != null || 
-        typeof req.body.url != "undefined"
-    ) {
-        complaintData.url = req.body.url;
-    }
     let attachment_url = await Upload.uploadFile(req, "grievances");
     if (
         req.file != '' || 

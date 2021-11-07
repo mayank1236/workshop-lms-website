@@ -20,6 +20,7 @@ const Checkout = require('../../Controller/User/Checkout');
 const ServiceReview = require('../../Controller/User/ServiceReview');
 const SearchController = require('../../Controller/User/Search');
 const GrievanceController = require('../../Controller/User/Grievance');
+const FeedbackController = require('../../Controller/User/Feedback');
 
 const multer = require('multer');
 
@@ -168,6 +169,8 @@ router.post('/search-service', SearchController.Search);
 /**=====================Service search end======================= */
 
 router.post('/complaint', upload1.single("attachment"), GrievanceController.addGrievance);
+
+router.post('/feedback', FeedbackController.addFeedback);
 /** ================================= with login url section end ================================ */
 
 module.exports = router;

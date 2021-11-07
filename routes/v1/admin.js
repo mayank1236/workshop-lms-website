@@ -17,6 +17,7 @@ const AdminCommission = require('../../Controller/Admin/AdminCommision');
 const ReportController = require('../../Controller/Admin/Report');
 const BlogController = require('../../Controller/Admin/Blog');
 const GrievanceController = require('../../Controller/Admin/Grievance');
+const FeedbackController = require('../../Controller/Admin/Feedback');
 /** ----------------utility modules--------------- */
 const csv_reports = require('../../service/csv_reports');
 /**-------------utility modules end--------------- */
@@ -114,6 +115,9 @@ router.delete('/blog/:id', BlogController.deleteBlog);
 
 router.get('/complaint', GrievanceController.viewAllComplaints);
 router.get('/complaint/:id', GrievanceController.viewComplaintById);
+
+router.get('/feedback', FeedbackController.viewAllFeedback);
+router.get('/feedback/:id', FeedbackController.viewFeedbackById);
 
 /**==========================CMS Section========================== */
 router.post('/about-us', AboutUs.addNEditSegment);
