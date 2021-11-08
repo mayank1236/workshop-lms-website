@@ -30,6 +30,7 @@ const ContactUsInfo = require('../../Controller/Admin/Website_info/ContactUsInfo
 const SafetyGuide = require('../../Controller/Admin/Website_info/SafetyGuide');
 const Associates = require('../../Controller/Admin/Website_info/Associates');
 const LegalNotice = require('../../Controller/Admin/Website_info/LegalNotice');
+const Careers = require('../../Controller/Admin/Website_info/Careers');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -161,6 +162,12 @@ router.post('/legal-notice', LegalNotice.addNEditSegment);
 router.get('/legal-notice', LegalNotice.viewAllSegments);
 router.get('/legal-notice/:id', LegalNotice.viewSegmentById);
 router.delete('/legal-notice/:id', LegalNotice.deleteSegment);
+
+router.post('/careers', Careers.addJobPost);
+router.get('/careers', Careers.viewAllPostedJobs);
+router.get('/careers/:id', Careers.viewPostedJobById);
+router.put('/careers/:id', Careers.editPostedJob);
+router.delete('/careers/:id', Careers.deletePostedJob);
 /**========================CMS Section End======================== */
 
 module.exports = router;

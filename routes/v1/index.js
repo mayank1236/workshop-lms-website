@@ -26,6 +26,7 @@ const BlogController = require('../../Controller/User/Blog');
 const SafetyGuide = require('../../Controller/User/Website_info/SafetyGuide');
 const Associates = require('../../Controller/User/Website_info/Associates');
 const LegalNotice = require('../../Controller/User/Website_info/LegalNotice');
+const Careers = require('../../Controller/User/Website_info/Careers');
 /**-----------------------Website info section end----------------------- */
 
 const middleware  = require('../../service/middleware').middleware;
@@ -79,6 +80,9 @@ router.get('/user/associate/:id', Associates.viewAssociateById);
 
 router.get('/user/legal-notice', LegalNotice.viewAllSegments);
 router.get('/user/legal-notice/:id', LegalNotice.viewSegmentById);
+
+router.get('/user/careers', Careers.viewAllPostedJobs);
+router.get('/user/careers/:id', Careers.viewPostedJobById);
 /** ================================= without login url section end ================================ */
 
 router.use(middleware);
