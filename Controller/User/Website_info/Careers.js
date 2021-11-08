@@ -108,7 +108,7 @@ var applyToJob = async (req, res) => {
                     res.status(500).json({
                         status: false,
                         message: "Failed to add data. Server error.",
-                        error: err
+                        error: err.message
                     });
                 }
             });
