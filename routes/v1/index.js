@@ -1,14 +1,10 @@
 const express = require('express');
+const multer = require('multer');
+
 const router = express.Router();
-// const multer = require('multer');
 
-// var storage = multer.memoryStorage();
-// var upload = multer({storage: storage});
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.send({status: false})
-});
+var storage = multer.memoryStorage();
+var upload = multer({storage: storage});
 
 const AdminController = require('../../Controller/Auth/Admin');
 const UserController = require('../../Controller/Auth/User');
@@ -33,6 +29,11 @@ const middleware  = require('../../service/middleware').middleware;
 
 const AdminRoute = require('./admin');
 const UserRoute = require('./user');
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.send({status: false})
+});
 
 /** ================================= without login url ================================= */
 
@@ -83,6 +84,7 @@ router.get('/user/legal-notice/:id', LegalNotice.viewSegmentById);
 
 router.get('/user/careers', Careers.viewAllPostedJobs);
 router.get('/user/careers/:id', Careers.viewPostedJobById);
+router.post('/user/apply-to-job', upload.single("cv"), Careers.applyToJob);
 /** ================================= without login url section end ================================ */
 
 router.use(middleware);

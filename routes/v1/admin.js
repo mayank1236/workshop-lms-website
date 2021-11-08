@@ -18,6 +18,7 @@ const ReportController = require('../../Controller/Admin/Report');
 const BlogController = require('../../Controller/Admin/Blog');
 const GrievanceController = require('../../Controller/Admin/Grievance');
 const FeedbackController = require('../../Controller/Admin/Feedback');
+const JobApplications = require('../../Controller/Admin/JobApplications');
 /** ----------------utility modules--------------- */
 const csv_reports = require('../../service/csv_reports');
 /**-------------utility modules end--------------- */
@@ -120,6 +121,8 @@ router.get('/complaint/:id', GrievanceController.viewComplaintById);
 router.get('/feedback', FeedbackController.viewAllFeedback);
 router.get('/feedback/:id', FeedbackController.viewFeedbackById);
 
+router.get('/received-applications', JobApplications.viewAll);
+router.get('/received-applications/:id', JobApplications.viewById);
 /**==========================CMS Section========================== */
 router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);

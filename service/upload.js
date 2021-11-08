@@ -6,6 +6,12 @@ const uploadFile = async (req, folder) => {
     return file_name;
 }
 
+const uploadFile2 = async (req, folder) => {
+    let file_name = "uploads/"+folder+"/"+req.file.originalname;
+    fs.writeFileSync(file_name, req.file.buffer);
+    return file_name;
+}
+
 const uploadVideoFile = async (req, folder) => {
     let file_name = "uploads/" + folder + "/video_" + req.file.originalname;
     fs.writeFileSync(file_name, Buffer.from(new Uint8Array(req.file.buffer)));
@@ -14,5 +20,6 @@ const uploadVideoFile = async (req, folder) => {
 
 module.exports = {
     uploadFile,
+    uploadFile2,
     uploadVideoFile
 };
