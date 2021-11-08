@@ -84,6 +84,7 @@ router.get('/user/legal-notice/:id', LegalNotice.viewSegmentById);
 
 router.get('/user/careers', Careers.viewAllPostedJobs);
 router.get('/user/careers/:id', Careers.viewPostedJobById);
+// user apply for job without login
 router.post('/user/apply-to-job', upload.single("cv"), Careers.applyToJob);
 /** ================================= without login url section end ================================ */
 

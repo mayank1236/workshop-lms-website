@@ -48,6 +48,7 @@ var viewPostedJobById = async (req, res) => {
     );
 }
 
+// user apply for job
 var applyToJob = async (req, res) => {
     const V = new Validator(req.body, {
         firstName: 'required',

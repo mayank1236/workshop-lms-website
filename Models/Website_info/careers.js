@@ -17,7 +17,7 @@ const CAREER_SCHEMA = new Schema({
         required: true
     },
     vacancy: Number,
-    urgent: String,
+    urgent: Boolean,
     status: {
         type: Boolean,
         default: true
