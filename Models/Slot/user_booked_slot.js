@@ -23,9 +23,7 @@ const userBookedSlot = new Schema({
     price:{
         type: Number
     },
-    image:{
-        type: String,
-    },
+    image: Array,
     day_name_of_booking:{
         type: String,
         required: true

@@ -126,7 +126,7 @@ var bookAppointment = async (req,res,next)=>{
     let matched = V.check().then(val=>val)
     
     if (!matched) {
-        res.status(500).json({ status: false, error: V.errors })
+        res.status(400).json({ status: false, error: V.errors })
     }
     
     let saveData1 = {
@@ -161,11 +161,9 @@ var bookAppointment = async (req,res,next)=>{
         ) {
         saveData1.price = req.body.price
     }
-    if (
-        req.body.image!="" && 
-        req.body.image!=null && 
-        typeof req.body.image!="undefined"
-        ) {
+    if (req.body.image == "" || req.body.image == null || typeof req.body.image == "undefined") {
+        saveData1.image = null
+    } else {
         saveData1.image = req.body.image
     }
     
@@ -210,8 +208,7 @@ var bookAppointment = async (req,res,next)=>{
                     service_id: docs.shop_service_id,
                     slot_id: docs.slot_id,
                     service_name: docs.shop_service_name,
-                    price: docs.price,
-                    image: docs.image
+                    price: docs.price
                 }
                 // if (
                 //     docs.shop_service_category!="" && 
@@ -220,6 +217,11 @@ var bookAppointment = async (req,res,next)=>{
                 //     ) {
                 //     cartData.service_category = docs.shop_service_category
                 // }
+                if (docs.image == "" || docs.image == null || typeof docs.image == "undefined") {
+                    cartData.image = null
+                } else {
+                    cartData.image = docs.image
+                }
 
                 const SELLER_BOOKING = new SellerBookings(sellerBookingData)
                 const SERVICE_CART = new ServiceCart(cartData)
@@ -247,7 +249,7 @@ var bookAppointment = async (req,res,next)=>{
                       res.status(500).json({
                           status: false,
                           message: "Couldn't book slot. Server error",
-                          error: fault
+                          error: fault.message
                         })
                   })
             }
@@ -256,7 +258,7 @@ var bookAppointment = async (req,res,next)=>{
             res.send({
                 status: false,
                 msg: "Server error. Please try again",
-                error: err
+                error: err.message
             })
         }
     })

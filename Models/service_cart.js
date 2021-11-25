@@ -26,10 +26,7 @@ const SERVICE_CART_SCHEMA = new Schema({
         type: Number,
         required: true
     },
-    image:{
-        type: String,
-        required: true
-    },
+    image: Array,
     seller_confirmed:{
         type: String,
         default: false

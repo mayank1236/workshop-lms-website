@@ -22,7 +22,7 @@ var createSlot = async (req,res)=>{
             let matched = V.check().then(val=>val)
             
             if (!matched) {
-                res.status(200).json({ status: true, error: V.errors })
+                res.status(400).json({ status: false, error: V.errors })
             }
             
             var ranges = []           // start times array
@@ -216,6 +216,7 @@ const convertTime12to24 = function(time12h) {
 // Convert 24-hour format timestamp to total minutes from 00:00:00
 const convertH2M = function(timeInHour){
     var timeParts = timeInHour.split(":");
+    // console.log(timeParts);
     return Number(timeParts[0]) * 60 + Number(timeParts[1]);
 }
 

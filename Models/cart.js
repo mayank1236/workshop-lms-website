@@ -16,10 +16,7 @@ const CartSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    image:{
-        type:String,
-        required:true
-    }
+    image: Array
 })
 
 module.exports = mongoose.model('Cart',CartSchema);
