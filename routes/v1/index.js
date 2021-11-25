@@ -10,6 +10,7 @@ const AdminController = require('../../Controller/Auth/Admin');
 const UserController = require('../../Controller/Auth/User');
 const ProductController = require('../../Controller/User/Product');// added by anirbank-93
 const ServiceController = require('../../Controller/User/ServiceCategory');// added by anirbank-93
+const UserSellersController = require('../../Controller/User/UserSellers');// added by anirbank-93
 const ShopServiceController = require('../../Controller/User/ShopServices');// added by anirbank-93
 const SearchController = require('../../Controller/User/Search');  // added by anirbank-93
 /**-------------------------Website info section------------------------- */
@@ -52,6 +53,8 @@ router.get('/user/service-category/:id', ServiceController.viewService);// added
 router.get('/user/service-category/shop-services/:id', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
 router.get('/user/shop/top-services', ShopServiceController.viewTopServiceProvider);// added by anirbank-93
+
+router.get('/user/top-sellers', UserSellersController.viewTopSellers);  // added by anirbank-93
 
 router.post('/user/search-service', SearchController.allServicesSearch);   // added by anirbank-93
 

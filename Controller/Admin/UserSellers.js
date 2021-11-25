@@ -1,18 +1,12 @@
 var mongoose = require('mongoose');
-var User = require("../../Models/user");
-var passwordHash = require('password-hash')
 
-var jwt = require('jsonwebtoken');
+const User = require("../../Models/user");
 
-const { Validator } = require('node-input-validator');
-
-var uuidv1 = require('uuid').v1;
-
-const viewUserList = async (req,res)=>{
+const viewUserList = async (req, res) => {
     return User.find(
-        {type: { $in : "User" } },
-        (err,docs)=>{
-            if(err){
+        { type: { $in: "User" } },
+        (err, docs) => {
+            if (err) {
                 res.status(400).json({
                     status: false,
                     message: "Server error. Data not available",
@@ -29,33 +23,33 @@ const viewUserList = async (req,res)=>{
         });
 }
 
-const viewUser = async (req,res)=>{
-    let id=req.params.id;
+const viewUser = async (req, res) => {
+    let id = req.params.id;
     return User.findOne(
-        {_id: { $in : [mongoose.Types.ObjectId(id)] } },
-        (err,docs)=>{
-        if(err){
-            res.status(400).json({
-                status: false,
-                message: "Server error. Data not available",
-                error: err
-            });
-        }
-        else {
-            res.status(200).json({
-                status: true,
-                message: "User get successfully",
-                data: docs
-            });
-        }
-    });
+        { _id: { $in: [mongoose.Types.ObjectId(id)] } },
+        (err, docs) => {
+            if (err) {
+                res.status(400).json({
+                    status: false,
+                    message: "Server error. Data not available",
+                    error: err
+                });
+            }
+            else {
+                res.status(200).json({
+                    status: true,
+                    message: "User get successfully",
+                    data: docs
+                });
+            }
+        });
 }
 
-const viewSellerList = async (req,res)=>{
+const viewSellerList = async (req, res) => {
     return User.find(
-        {type: { $in : "Seller" } },
-        (err,docs)=>{
-            if(err){
+        { type: { $in: "Seller" } },
+        (err, docs) => {
+            if (err) {
                 res.status(400).json({
                     status: false,
                     message: "Server error. Data not available",
@@ -72,31 +66,56 @@ const viewSellerList = async (req,res)=>{
         });
 }
 
-const viewSeller = async (req,res)=>{
-    let id=req.params.id;
+const viewSeller = async (req, res) => {
+    let id = req.params.id;
     return User.findOne(
-        {_id: { $in : [mongoose.Types.ObjectId(id)] } },
-        (err,docs)=>{
-        if(err){
-            res.status(400).json({
-                status: false,
-                message: "Server error. Data not available",
-                error: err
-            });
-        }
-        else {
+        { _id: { $in: [mongoose.Types.ObjectId(id)] } },
+        (err, docs) => {
+            if (err) {
+                res.status(400).json({
+                    status: false,
+                    message: "Server error. Data not available",
+                    error: err
+                });
+            }
+            else {
+                res.status(200).json({
+                    status: true,
+                    message: "Seller get successfully",
+                    data: docs
+                });
+            }
+        });
+}
+
+var selectTopSeller = async (req, res) => {
+    var id = req.params.id;
+
+    return User.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        { $set: { top_seller: true } },
+        { new: true }
+    )
+        .then(data=>{
             res.status(200).json({
                 status: true,
-                message: "Seller get successfully",
-                data: docs
+                message: "Data edited successfully.",
+                data: data
             });
-        }
-    });
+        })
+        .catch(err=>{
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err
+            });
+        });
 }
 
 module.exports = {
     viewUserList,
     viewUser,
     viewSellerList,
-    viewSeller
+    viewSeller,
+    selectTopSeller
 }

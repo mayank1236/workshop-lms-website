@@ -41,9 +41,12 @@ let UserSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    top_seller: {
+        type: Boolean,
+        default: false
+    },
     status: {
         type: Boolean,
-        required: false,
         default: true
     },
     cart:{

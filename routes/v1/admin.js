@@ -78,6 +78,7 @@ router.get('/userlist', UserSellersController.viewUserList)     // added by anir
 router.get('/viewuser/:id', UserSellersController.viewUser)     // added by anirbank-93
 router.get('/sellerlist', UserSellersController.viewSellerList) // added by anirbank-93
 router.get('/viewseller/:id', UserSellersController.viewSeller)  // added by anirbank-93
+router.put('/top-sellers/:id', UserSellersController.selectTopSeller);
 
 router.post('/service-category',upload.single("image"),ServiceController.create)// added by anirbank-93
 router.get('/service-category', ServiceController.viewAllServices)              // added by anirbank-93
@@ -107,13 +108,6 @@ router.post('/service-commision', AdminCommission.addNEditCommission);
 
 router.post('/add-report', upload.single("report"), csv_reports.reportAdd);
 router.post('/user-subscriptions', ReportController.allUserSubscriptions);
-
-router.post('/blog', BlogController.addBlog);
-router.post('/blog/image-upload', upload.single("image"), BlogController.imageUpload);
-router.get('/blog', BlogController.viewAllBlogs);
-router.get('/blog/:id', BlogController.viewBlogById);
-router.put('/blog/:id', BlogController.editBlog);
-router.delete('/blog/:id', BlogController.deleteBlog);
 
 router.get('/complaint', GrievanceController.viewAllComplaints);
 router.get('/complaint/:id', GrievanceController.viewComplaintById);
@@ -153,6 +147,13 @@ router.post('/safety-guide', SafetyGuide.addNEditSegment);
 router.get('/safety-guide', SafetyGuide.viewAllSegments);
 router.get('/safety-guide/:id', SafetyGuide.viewSegmentById);
 router.delete('/safety-guide/:id', SafetyGuide.deleteSegment);
+
+router.post('/blog', BlogController.addBlog);
+router.post('/blog/image-upload', upload.single("image"), BlogController.imageUpload);
+router.get('/blog', BlogController.viewAllBlogs);
+router.get('/blog/:id', BlogController.viewBlogById);
+router.put('/blog/:id', BlogController.editBlog);
+router.delete('/blog/:id', BlogController.deleteBlog);
 
 router.post('/associate', Associates.addAssociate);
 router.post('/associate/image-upload', upload.single("image"), Associates.imageUpload);
