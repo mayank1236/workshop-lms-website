@@ -30,6 +30,14 @@ var viewAll = async (req, res) => {
             },
             {
                 $lookup: {
+                    from: "seller_earnings",
+                    localField: "service_id",
+                    foreignField: "serv_id",
+                    as: "earning_data"
+                }
+            },
+            {
+                $lookup: {
                     from: "admin_commissions",
                     localField: "service_id",
                     foreignField: "service_id",
