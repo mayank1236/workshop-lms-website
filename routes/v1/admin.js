@@ -19,6 +19,7 @@ const BlogController = require('../../Controller/Admin/Blog');
 const GrievanceController = require('../../Controller/Admin/Grievance');
 const FeedbackController = require('../../Controller/Admin/Feedback');
 const JobApplications = require('../../Controller/Admin/JobApplications');
+const SellerEarnings = require('../../Controller/Admin/SellerEarnings');
 /** ----------------utility modules--------------- */
 const csv_reports = require('../../service/csv_reports');
 /**-------------utility modules end--------------- */
@@ -117,6 +118,9 @@ router.get('/feedback/:id', FeedbackController.viewFeedbackById);
 
 router.get('/received-applications', JobApplications.viewAll);
 router.get('/received-applications/:id', JobApplications.viewById);
+
+router.get('/seller-payment-request', SellerEarnings.viewAllServiceEarnings);
+router.put('/seller-payment-request/:id', SellerEarnings.approveServiceEarnings);
 /**==========================CMS Section========================== */
 router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);

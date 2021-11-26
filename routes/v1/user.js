@@ -9,11 +9,11 @@ const ShopController = require("../../Controller/User/Shop");      // added by a
 const ShopServiceController = require("../../Controller/User/ShopServices"); // added by anirbank-93
 /* Service schedule section start */
 const SellerTimingsController = require('../../Controller/User/Slot/SellerTimingsNSlots');// added by anirbank-93
-const SellerAccount = require('../../Controller/User/SellerMyaccount');   // added by anirbank-93
 const UserBookingActions = require('../../Controller/User/Slot/UserBookingActions');// added by anirbank-93
-/* Service schedule section end */
 const SellerBookingActions = require('../../Controller/User/Slot/SellerBookingActions');// added by anirbank-93
+/* Service schedule section end */
 const UserAccount = require('../../Controller/User/Myaccount');       // added by anirbank-93
+const SellerAccount = require('../../Controller/User/SellerMyaccount');   // added by anirbank-93
 const CartController = require('../../Controller/User/Cart');
 const ServiceCart = require('../../Controller/User/ServiceCart');
 const Checkout = require('../../Controller/User/Checkout');
@@ -120,9 +120,6 @@ router.put('/shop/services/:id', upload1.single("video"), ShopServiceController.
 router.delete('/shop/services/:id', ShopServiceController.Delete);    // added by anirbank-93
 router.post('/image-uploadurl', upload1.single("image"), ShopServiceController.chatImageUrlApi);// added by anirbank-93
 
-router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
-router.get('/seller_account/booking-stat/:seller_id', SellerAccount.serviceBookingStat);
-
 // ----------------->Slot management section start
 router.post('/shop-service/timing', SellerTimingsController.createSlot); // added by anirbank-93
 router.get('/shop-service/weekly-timings/:id', SellerTimingsController.viewShopServiceTimings);// added by anirbank-93
@@ -163,6 +160,10 @@ router.post('/seller-service/reviews', ServiceReview.giveOrderReview); // rating
 //
 router.get('/seller-service/reviews/:seller_id', ServiceReview.getReviews);
 /**===============Service review api end========================= */
+
+router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
+router.get('/seller_account/booking-stat/:seller_id', SellerAccount.serviceBookingStat);
+router.post('/seller_account/withdraw-earnings', SellerAccount.withdrawEarnings);
 
 /**=======================Service search========================= */
 router.post('/search-service', SearchController.Search);
