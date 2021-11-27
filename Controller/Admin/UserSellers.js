@@ -112,10 +112,35 @@ var selectTopSeller = async (req, res) => {
         });
 }
 
+var userNSellerCount = async (req,res)=>{
+    var findUsers = await User.find({type: "User"}).exec();
+    var userCount = findUsers.length;
+    var findSellers = await User.find({type: "Seller"}).exec();
+    var sellerCount = findSellers.length;
+
+    if (userCount && sellerCount > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            user_count: userCount,
+            seller_count: sellerCount
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No user and seller registered yet",
+            user_count: 0,
+            seller_count: 0
+        });
+    }
+}
+
 module.exports = {
     viewUserList,
     viewUser,
     viewSellerList,
     viewSeller,
-    selectTopSeller
+    selectTopSeller,
+    userNSellerCount
 }
