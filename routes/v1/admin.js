@@ -80,7 +80,7 @@ router.get('/viewuser/:id', UserSellersController.viewUser)     // added by anir
 router.get('/sellerlist', UserSellersController.viewSellerList) // added by anirbank-93
 router.get('/viewseller/:id', UserSellersController.viewSeller)  // added by anirbank-93
 router.put('/top-sellers/:id', UserSellersController.selectTopSeller);
-router.get('/user-stat', UserSellersController.userNSellerCount);
+router.get('/booking-and-user-stat', UserSellersController.bookingNUserStat);
 
 router.post('/service-category',upload.single("image"),ServiceController.create)// added by anirbank-93
 router.get('/service-category', ServiceController.viewAllServices)              // added by anirbank-93
@@ -100,7 +100,7 @@ router.delete('/service/subcategory/:id', ServiceSubCategoryController.Delete)//
 router.get('/seller-service/new-bookings', SellerBookingController.newBookings);
 router.get('/seller-service/accepted-bookings', SellerBookingController.viewAcceptedBookings);
 router.get('/seller-service/rejected-bookings', SellerBookingController.viewRejectedBookings);
-router.get('/seller-service/booking-stat', SellerBookingController.serviceBookingStat);
+// router.get('/booking-and-user-stat', SellerBookingController.serviceBookingStat);
 // ------------------>Slot management section end
 
 router.get('/seller-service/reviews', SellerReviews.getReviews);
