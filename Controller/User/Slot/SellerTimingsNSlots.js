@@ -98,33 +98,33 @@ var createSlot = async (req, res, next) => {
             })
     })
     // console.log("Return data", returnData);
-    return res.redirect(`/v1/user/shop-service/weekly-timings/${req.body.shop_service_id}`);
-    // return sellerSlots.find({
-    //     $and: [
-    //         {
-    //             shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id)
-    //         },
-    //         {
-    //             weekday_name: {
-    //                 $in: req.body.day_name
-    //             }
-    //         }
-    //     ]
-    // }).then(data => {
-    //     console.log("New slots", data);
-    //     res.status(200).json({
-    //         status: true,
-    //         message: "Slots created successfully for the day.",
-    //         data: data
-    //     })
-    // })
-    //     .catch(err => {
-    //         res.status(500).json({
-    //             status: false,
-    //             message: "Failed to add slot. Server error.",
-    //             error: err.message
-    //         })
-    //     })
+    // return res.redirect(`/v1/user/shop-service/weekly-timings/${req.body.shop_service_id}`);
+    return sellerSlots.find({
+        $and: [
+            {
+                shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id)
+            },
+            {
+                weekday_name: {
+                    $in: req.body.day_name
+                }
+            }
+        ]
+    }).then(data => {
+        console.log("New slots", data);
+        res.status(200).json({
+            status: true,
+            message: "Slots created successfully for the day.",
+            data: data
+        })
+    })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Failed to add slot. Server error.",
+                error: err.message
+            })
+        })
 }
 
 var viewShopServiceTimings = async (req, res) => {
