@@ -102,20 +102,19 @@ var createSlot = async (req, res, next) => {
     // console.log("Return data", returnData);
     // return res.redirect(`/v1/user/shop-service/weekly-timings/${req.body.shop_service_id}`);
     return sellerTimings.find(
-        {}, 
-        // {
-        //     // $and: [
-        //     //     {
-        //             shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id)
-        //     //     },
-        //     //     {
-        //     //         weekday_name: {
-        //     //             $in: selectDays
-        //     //         }
-        //     //     }
-        //     // ]
-        // },
-        // { new: true }, 
+        {
+            // $and: [
+            //     {
+                    shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id)
+            //     },
+            //     {
+            //         weekday_name: {
+            //             $in: selectDays
+            //         }
+            //     }
+            // ]
+        },
+        { new: true }, 
         (err, docs) => {
             if (!err) {
                 console.log("New slots", docs)
