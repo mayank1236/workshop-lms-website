@@ -8,10 +8,10 @@ const { Validator } = require('node-input-validator')
 var createSlot = async (req, res, next) => {
     var selectDays = []
     console.log("Selected days", selectDays)
-    
+
     req.body.day_name.forEach(element => {
         console.log(element.value)
-        selectDays.push(element.value);
+        selectDays.push(element.value.toString());
         sellerTimings.findOne({
             shop_service_id: { $in: [mongoose.Types.ObjectId(req.body.shop_service_id)] },
             day_name: element.value
@@ -101,32 +101,57 @@ var createSlot = async (req, res, next) => {
     })
     // console.log("Return data", returnData);
     // return res.redirect(`/v1/user/shop-service/weekly-timings/${req.body.shop_service_id}`);
-    return sellerSlots.find({
-        $and: [
-            {
-                shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id)
-            },
-            {
-                weekday_name: {
-                    $in: selectDays
-                }
+    return sellerTimings.find(
+        {}, 
+        // {
+        //     // $and: [
+        //     //     {
+        //             shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id)
+        //     //     },
+        //     //     {
+        //     //         weekday_name: {
+        //     //             $in: selectDays
+        //     //         }
+        //     //     }
+        //     // ]
+        // },
+        // { new: true }, 
+        (err, docs) => {
+            if (!err) {
+                console.log("New slots", docs)
+                res.status(200).json({
+                    status: true,
+                    message: "Slots created successfully for the day.",
+                    data: docs
+                })
             }
-        ]
-    }).then(data => {
-        console.log("New slots", data);
-        res.status(200).json({
-            status: true,
-            message: "Slots created successfully for the day.",
-            data: data
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Failed to add slot. Server error.",
+                    error: err.message
+                })
+            }
         })
-    })
-        .catch(err => {
-            res.status(500).json({
-                status: false,
-                message: "Failed to add slot. Server error.",
-                error: err.message
-            })
-        })
+    // return sellerTimings.aggregate([
+    //     {
+    //         $match: ObjectId('611e057ebd1ecb100822acd6')
+    //     }
+    // ])
+    //     .then(docs => {
+    //         res.status(200).json({
+    //             status: true,
+    //             message: "Slots created successfully for the day.",
+    //             data: docs
+    //         })
+    //     })
+    //     .catch(err => {
+    //         res.status(500).json({
+    //             status: false,
+    //             message: "Failed to add slot. Server error.",
+    //             error: err.message
+    //         })
+    //     })
 }
 
 var viewShopServiceTimings = async (req, res) => {
@@ -169,7 +194,6 @@ var viewShopServiceTimings = async (req, res) => {
 
 var editSlot = async (req, res) => {
     const v = new Validator(req.body, {
-        day_name: "required",
         available_duration: "required"
     })
 
