@@ -6,10 +6,12 @@ const { Validator } = require('node-input-validator')
 // const { find } = require('../../../Models/Slot/seller_timing')
 
 var createSlot = async (req, res, next) => {
-    // var returnData = []
-
+    var selectDays = []
+    console.log("Selected days", selectDays)
+    
     req.body.day_name.forEach(element => {
-        // console.log(element)
+        console.log(element.value)
+        selectDays.push(element.value);
         sellerTimings.findOne({
             shop_service_id: { $in: [mongoose.Types.ObjectId(req.body.shop_service_id)] },
             day_name: element.value
@@ -106,7 +108,7 @@ var createSlot = async (req, res, next) => {
             },
             {
                 weekday_name: {
-                    $in: req.body.day_name
+                    $in: selectDays
                 }
             }
         ]
