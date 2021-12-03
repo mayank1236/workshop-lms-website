@@ -5,7 +5,7 @@ var sellerSlots = require('../../../Models/Slot/seller_slots')
 const { Validator } = require('node-input-validator')
 // const { find } = require('../../../Models/Slot/seller_timing')
 
-var createSlot = async (req, res, next) => {
+var createTimingNSlots = async (req, res, next) => {
     var selectDays = []
     console.log("Selected days", selectDays)
 
@@ -85,7 +85,6 @@ var createSlot = async (req, res, next) => {
                                     slot_duration: data.slot_duration
                                 }
                                 data.addSlots(saveData2)
-                                // returnData.push(data);
                             })
                         })
                 }
@@ -99,7 +98,7 @@ var createSlot = async (req, res, next) => {
                 }
             })
     })
-    
+
     // return res.redirect(`/v1/user/shop-service/weekly-timings/${req.body.shop_service_id}`);
     return sellerTimings.find(
         {
@@ -161,117 +160,169 @@ var viewShopServiceTimings = async (req, res) => {
         })
 }
 
-var editSlot = async (req, res) => {
-    const v = new Validator(req.body, {
-        available_duration: "required"
+var editTimingNSlots = async (req, res) => {
+    const V = new Validator(req.body, {
+        from: "required",
+        to: "required",
+        slot_duration: "required"
     })
 
-    let matched = v.check().then(val => val)
+    let matched = V.check().then(val => val)
     if (!matched) {
-        return res.status(400).json({ status: false, message: v.errors })
+        return res.status(400).json({ status: false, message: V.errors })
     }
+
+    var id = req.params.id;
     // update with _id of seller_timings table
     return sellerTimings.findOneAndUpdate(
-        { _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } },
+        { _id: mongoose.Types.ObjectId(id) },
         req.body,
-        (err, docs) => {
-            if (err) {
-                res.status(500).json({
-                    status: false,
-                    message: "Server error. Please try again.",
-                    error: err
-                })
-            }
-            else {
-                res.status(200).json({
-                    status: true,
-                    message: "Schedule has been updated.",
-                    data: docs
-                })
-            }
-        })
-}
+        { new: true }
+    )
+        .then(async (docs) => {
+            console.log("Slot timings", docs);
+            var deleteSlots = await sellerSlots.deleteMany(
+                {
+                    shop_service_id: mongoose.Types.ObjectId(docs.shop_service_id),
+                    weekday_name: docs.day_name
+                },
+                (fault, result) => {
+                    console.log(result)
+                }
+            )
 
-var deleteSlot = async (req, res) => {
-    // delete with _id of seller_timings table
-    return sellerTimings.deleteOne({ _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } })
-        .then(data => {
+            var ranges = []           // start times array
+            var nietos = []           // array of objects with {starttime, endtime}
+            let single_slot = {}      // object with single slot start time, end time
+
+            var starttime = convertTime12to24(req.body.from)          // see below for utility functions
+            var endtime = convertTime12to24(req.body.to)              // see below for utility functions
+            var interval = req.body.slot_duration
+            var language = docs.language
+
+            // console.log("Start time", starttime)
+            // console.log("End time", endtime)
+
+            var st_InMin4m12AM = convertH2M(starttime)         // see below for utility functions
+            var et_InMin4m12AM = convertH2M(endtime)           // see below for utility functions
+
+            console.log("Start time", st_InMin4m12AM)
+            console.log("End time", et_InMin4m12AM)
+
+            var timeRanges = getTimeRanges(ranges, st_InMin4m12AM, et_InMin4m12AM, interval, language)// see below for utility functions
+
+            console.log(timeRanges)
+
+            enterObjectsInArr(ranges, nietos)          // see below for utility functions
+            console.log("Timings", nietos)
+
+            nietos.forEach(element => {
+                let saveData = {
+                    _id: mongoose.Types.ObjectId(),
+                    category_id: mongoose.Types.ObjectId(docs.category_id),
+                    shop_service_id: mongoose.Types.ObjectId(docs.shop_service_id),
+                    weekday_name: docs.day_name,
+                    timing: element,
+                    slot_duration: docs.slot_duration
+                }
+                docs.addSlots(saveData)
+            })
+
             res.status(200).json({
                 status: true,
-                message: "Available day removed successfully.",
-                data: data
+                message: "Schedule has been updated.",
+                data: docs
             })
         })
         .catch(err => {
             res.status(500).json({
                 status: false,
-                message: "Server error. Failed to delete data.",
+                message: "Server error. Please try again.",
                 error: err
             })
         })
 }
 
-/**=============Utility functions section start==================**/
-// Convert timestamp to 24-hour format
-const convertTime12to24 = function (time12h) {
-    const [time, modifier] = time12h.split(' ');
-
-    let [hours, minutes] = time.split(':');
-
-    if (hours === '12') {
-        hours = '00';
+    var deleteTimingNSlots = async (req, res) => {
+        // delete with _id of seller_timings table
+        return sellerTimings.deleteOne({ _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } })
+            .then(data => {
+                res.status(200).json({
+                    status: true,
+                    message: "Available day removed successfully.",
+                    data: data
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: false,
+                    message: "Server error. Failed to delete data.",
+                    error: err
+                })
+            })
     }
 
-    if (modifier === 'PM') {
-        hours = parseInt(hours, 10) + 12;
+    /**=============Utility functions section start==================**/
+    // Convert timestamp to 24-hour format
+    const convertTime12to24 = function (time12h) {
+        const [time, modifier] = time12h.split(' ');
+
+        let [hours, minutes] = time.split(':');
+
+        if (hours === '12') {
+            hours = '00';
+        }
+
+        if (modifier === 'PM') {
+            hours = parseInt(hours, 10) + 12;
+        }
+
+        return `${hours}:${minutes}`;
     }
 
-    return `${hours}:${minutes}`;
-}
-
-// Convert 24-hour format timestamp to total minutes from 00:00:00
-const convertH2M = function (timeInHour) {
-    var timeParts = timeInHour.split(":");
-    // console.log(timeParts);
-    return Number(timeParts[0]) * 60 + Number(timeParts[1]);
-}
-
-// Push date-time data in an empty array
-const getTimeRanges = function (arr, start_time, end_time, interval, language = window.navigator.language) {
-    const date = new Date();
-    const format = {
-        hour: 'numeric',
-        minute: 'numeric',
-    };
-
-    for (let minutes = start_time; minutes <= end_time; minutes = minutes + interval) {
-        date.setHours(0);
-        date.setMinutes(minutes);
-        arr.push(date.toLocaleTimeString(language, format));
+    // Convert 24-hour format timestamp to total minutes from 00:00:00
+    const convertH2M = function (timeInHour) {
+        var timeParts = timeInHour.split(":");
+        // console.log(timeParts);
+        return Number(timeParts[0]) * 60 + Number(timeParts[1]);
     }
 
-    return arr;
-}
+    // Push date-time data in an empty array
+    const getTimeRanges = function (arr, start_time, end_time, interval, language = window.navigator.language) {
+        const date = new Date();
+        const format = {
+            hour: 'numeric',
+            minute: 'numeric',
+        };
 
-// Enter objects in an empty arry
-const enterObjectsInArr = function (data_arr, emp_arr) {
-    for (let i = 0; i < data_arr.length; i++) {
-        if (i < data_arr.length - 1) {
-            // empty_obj['from'] = data_arr[i];
-            // empty_obj['to'] = data_arr[parseInt(i)+parseInt(1)];
-            let obj = {
-                "from": data_arr[i],
-                "to": data_arr[i + 1]
+        for (let minutes = start_time; minutes <= end_time; minutes = minutes + interval) {
+            date.setHours(0);
+            date.setMinutes(minutes);
+            arr.push(date.toLocaleTimeString(language, format));
+        }
+
+        return arr;
+    }
+
+    // Enter objects in an empty arry
+    const enterObjectsInArr = function (data_arr, emp_arr) {
+        for (let i = 0; i < data_arr.length; i++) {
+            if (i < data_arr.length - 1) {
+                // empty_obj['from'] = data_arr[i];
+                // empty_obj['to'] = data_arr[parseInt(i)+parseInt(1)];
+                let obj = {
+                    "from": data_arr[i],
+                    "to": data_arr[i + 1]
+                }
+                emp_arr.push(obj);
             }
-            emp_arr.push(obj);
         }
     }
-}
-/**=============Utility functions section end==================**/
+    /**=============Utility functions section end==================**/
 
-module.exports = {
-    createSlot,
-    viewShopServiceTimings,
-    editSlot,
-    deleteSlot
-}
+    module.exports = {
+        createTimingNSlots,
+        viewShopServiceTimings,
+        editTimingNSlots,
+        deleteTimingNSlots
+    }

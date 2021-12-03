@@ -121,10 +121,10 @@ router.delete('/shop/services/:id', ShopServiceController.Delete);    // added b
 router.post('/image-uploadurl', upload1.single("image"), ShopServiceController.chatImageUrlApi);// added by anirbank-93
 
 // ----------------->Slot management section start
-router.post('/shop-service/timing', SellerTimingsController.createSlot); // added by anirbank-93
+router.post('/shop-service/timing', SellerTimingsController.createTimingNSlots); // added by anirbank-93
 router.get('/shop-service/weekly-timings/:id', SellerTimingsController.viewShopServiceTimings);// added by anirbank-93
-router.put('/shop-service/timing/:id', SellerTimingsController.editSlot);// added by anirbank-93
-router.delete('/shop-service/timing/:id', SellerTimingsController.deleteSlot);// added by anirbank-93
+router.put('/shop-service/timing/:id', SellerTimingsController.editTimingNSlots);// added by anirbank-93
+router.delete('/shop-service/timing/:id', SellerTimingsController.deleteTimingNSlots);// added by anirbank-93
 
 router.get('/seller-service/new-bookings/:seller_id', SellerBookingActions.newBookings);// added by anirbank-93
 router.put('/seller-service/accept-booking/:id', SellerBookingActions.acceptNewBooking);      // added by anirbank-93
