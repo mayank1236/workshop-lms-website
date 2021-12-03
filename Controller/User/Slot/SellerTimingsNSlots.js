@@ -243,86 +243,98 @@ var editTimingNSlots = async (req, res) => {
         })
 }
 
-    var deleteTimingNSlots = async (req, res) => {
-        // delete with _id of seller_timings table
-        return sellerTimings.deleteOne({ _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } })
-            .then(data => {
+var deleteTimingNSlots = async (req, res) => {
+    // delete with _id of seller_timings table
+    var id = req.params.id;
+
+    var deleteTiming = await sellerTimings.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) });
+    // console.log("Delete data ", deleteTiming);
+    return sellerSlots.deleteMany(
+        {
+            shop_service_id: mongoose.Types.ObjectId(deleteTiming.shop_service_id), 
+            weekday_name: deleteTiming.day_name
+        }, 
+        (err,docs)=>{
+            if (!err) {
                 res.status(200).json({
                     status: true,
-                    message: "Available day removed successfully.",
-                    data: data
-                })
-            })
-            .catch(err => {
+                    message: "Slots deleted successfully",
+                    timing_data: deleteTiming,
+                    slot_data: docs
+                });
+            }
+            else {
                 res.status(500).json({
                     status: false,
-                    message: "Server error. Failed to delete data.",
+                    message: "Failed to delete slots. Server error.",
                     error: err
-                })
-            })
-    }
-
-    /**=============Utility functions section start==================**/
-    // Convert timestamp to 24-hour format
-    const convertTime12to24 = function (time12h) {
-        const [time, modifier] = time12h.split(' ');
-
-        let [hours, minutes] = time.split(':');
-
-        if (hours === '12') {
-            hours = '00';
-        }
-
-        if (modifier === 'PM') {
-            hours = parseInt(hours, 10) + 12;
-        }
-
-        return `${hours}:${minutes}`;
-    }
-
-    // Convert 24-hour format timestamp to total minutes from 00:00:00
-    const convertH2M = function (timeInHour) {
-        var timeParts = timeInHour.split(":");
-        // console.log(timeParts);
-        return Number(timeParts[0]) * 60 + Number(timeParts[1]);
-    }
-
-    // Push date-time data in an empty array
-    const getTimeRanges = function (arr, start_time, end_time, interval, language = window.navigator.language) {
-        const date = new Date();
-        const format = {
-            hour: 'numeric',
-            minute: 'numeric',
-        };
-
-        for (let minutes = start_time; minutes <= end_time; minutes = minutes + interval) {
-            date.setHours(0);
-            date.setMinutes(minutes);
-            arr.push(date.toLocaleTimeString(language, format));
-        }
-
-        return arr;
-    }
-
-    // Enter objects in an empty arry
-    const enterObjectsInArr = function (data_arr, emp_arr) {
-        for (let i = 0; i < data_arr.length; i++) {
-            if (i < data_arr.length - 1) {
-                // empty_obj['from'] = data_arr[i];
-                // empty_obj['to'] = data_arr[parseInt(i)+parseInt(1)];
-                let obj = {
-                    "from": data_arr[i],
-                    "to": data_arr[i + 1]
-                }
-                emp_arr.push(obj);
+                });
             }
         }
-    }
-    /**=============Utility functions section end==================**/
+    );
+}
 
-    module.exports = {
-        createTimingNSlots,
-        viewShopServiceTimings,
-        editTimingNSlots,
-        deleteTimingNSlots
+/**=============Utility functions section start==================**/
+// Convert timestamp to 24-hour format
+const convertTime12to24 = function (time12h) {
+    const [time, modifier] = time12h.split(' ');
+
+    let [hours, minutes] = time.split(':');
+
+    if (hours === '12') {
+        hours = '00';
     }
+
+    if (modifier === 'PM') {
+        hours = parseInt(hours, 10) + 12;
+    }
+
+    return `${hours}:${minutes}`;
+}
+
+// Convert 24-hour format timestamp to total minutes from 00:00:00
+const convertH2M = function (timeInHour) {
+    var timeParts = timeInHour.split(":");
+    // console.log(timeParts);
+    return Number(timeParts[0]) * 60 + Number(timeParts[1]);
+}
+
+// Push date-time data in an empty array
+const getTimeRanges = function (arr, start_time, end_time, interval, language = window.navigator.language) {
+    const date = new Date();
+    const format = {
+        hour: 'numeric',
+        minute: 'numeric',
+    };
+
+    for (let minutes = start_time; minutes <= end_time; minutes = minutes + interval) {
+        date.setHours(0);
+        date.setMinutes(minutes);
+        arr.push(date.toLocaleTimeString(language, format));
+    }
+
+    return arr;
+}
+
+// Enter objects in an empty arry
+const enterObjectsInArr = function (data_arr, emp_arr) {
+    for (let i = 0; i < data_arr.length; i++) {
+        if (i < data_arr.length - 1) {
+            // empty_obj['from'] = data_arr[i];
+            // empty_obj['to'] = data_arr[parseInt(i)+parseInt(1)];
+            let obj = {
+                "from": data_arr[i],
+                "to": data_arr[i + 1]
+            }
+            emp_arr.push(obj);
+        }
+    }
+}
+/**=============Utility functions section end==================**/
+
+module.exports = {
+    createTimingNSlots,
+    viewShopServiceTimings,
+    editTimingNSlots,
+    deleteTimingNSlots
+}
