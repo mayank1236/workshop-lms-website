@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Category = require("../../Models/category");
+var RequestCategory = require('../../Models/request_product');
 var passwordHash = require('password-hash');
 const {Validator} = require('node-input-validator');
 var jwt = require('jsonwebtoken')
@@ -125,9 +126,40 @@ const Delete = async(req,res)=>{
     
 }
 
+
+const viewAllrequestdCategory = async( req ,res )=>
+{
+    return RequestCategory.aggregate(
+        [
+            {
+                $project:{
+                    _v:0
+                }
+            }
+        ]
+    ).
+    then((data)=>{
+        res.status(200).json({
+            status:true,
+            message:'Category Request Data Get Successfully',
+            data:data
+        })
+    })
+    .catch((err)=>{
+        res.status(500).json({
+            status: false,
+            message: "Server error. Please try again.",
+            error: error,
+          });
+    })
+}
+
+
+
 module.exports = {
     create,
     viewAll,
     update,
-    Delete
+    Delete,
+    viewAllrequestdCategory
   };

@@ -79,7 +79,7 @@ router.use((req, res, next) => {
 });
 
 /** ================================= WITH LOGIN URL ================================= */
-// router.get('/product/viewall',ProductController.viewProductList)
+router.post('/request_category',ProductController.create)
 router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
 router.get("/subscription/check-subscription/:id", SubscriptionController.checkUserSubscription);
 router.post("/subscription-purchase", SubscriptionController.newSubscription);// added by anirbank-93

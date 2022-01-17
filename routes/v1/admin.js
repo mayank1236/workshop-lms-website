@@ -59,6 +59,7 @@ router.put('/product/Product/:id',upload.single("image"),ProductController.updat
 router.delete('/product/Product/:id',ProductController.Delete)
 
 router.post('/category/Category',CategoryController.create)
+router.get('/category/new_catrequest',CategoryController.viewAllrequestdCategory)
 router.get('/category/Category',CategoryController.viewAll)
 router.put('/category/Category/:id',CategoryController.update)
 router.delete('/category/Category/:id',CategoryController.Delete)
