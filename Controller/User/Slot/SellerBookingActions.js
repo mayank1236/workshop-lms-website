@@ -3,19 +3,22 @@ var sellerSlots = require('../../../Models/Slot/seller_slots');
 var sellerBookings = require('../../../Models/Slot/seller_bookings');
 var userBookedSlot = require('../../../Models/Slot/user_booked_slot');
 var userServiceCart = require('../../../Models/service_cart');
+var adminCommission = require('../../../Models/admin_commission');
+var sellerEarnings = require('../../../Models/seller_earnings');
+var adminEarnings = require('../../../Models/earnings/admin_earnings');
 
-var newBookings = async (req,res)=>{
+var newBookings = async (req, res) => {
     var new_bookings = await sellerBookings.aggregate(
         [
             {
-                $match:{
+                $match: {
                     seller_id: mongoose.Types.ObjectId(req.params.seller_id),
                     new_booking: true,
                     booking_accept: false
                 }
             },
             {
-                $lookup:{
+                $lookup: {
                     from: "users",
                     localField: "user_id",
                     foreignField: "_id",
@@ -23,7 +26,7 @@ var newBookings = async (req,res)=>{
                 }
             },
             {
-                $lookup:{
+                $lookup: {
                     from: "shop_services",
                     localField: "shop_service_id",
                     foreignField: "_id",
@@ -31,14 +34,14 @@ var newBookings = async (req,res)=>{
                 }
             },
             {
-                $project:{
+                $project: {
                     __v: 0
                 }
             }
         ]
     ).exec();
-    
-    if (new_bookings.length>0) {
+
+    if (new_bookings.length > 0) {
         return res.status(200).json({
             status: true,
             message: "New bookings successfully get.",
@@ -54,93 +57,159 @@ var newBookings = async (req,res)=>{
     }
 };
 
-var acceptNewBooking = async (req,res)=>{
-    sellerBookings.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
-      .then(async (data)=>{
-          console.log("Seller booking details ", data);
-          var payment_status = await userServiceCart.findOne(
-              {
-                  user_booking_id: data.user_booking_id,
-                  status: false
-              }
-          ).exec();
-          console.log("Service cart data ", payment_status);
-
-          if (payment_status==null || payment_status=="") {
-            return res.status(500).json({
-                status: false,
-                message: "Payment not yet made. Can't accept booking.",
-                data: "Item still in cart. Order not placed."
-            });
-          }
-          else {
-            return sellerBookings.findOneAndUpdate(
+var acceptNewBooking = async (req, res) => {
+    sellerBookings.findOne({ _id: mongoose.Types.ObjectId(req.params.id) })
+        .then(async (data) => {
+            console.log("Seller booking details ", data);
+            var payment_status = await userServiceCart.findOne(
                 {
-                    _id: mongoose.Types.ObjectId(req.params.id), 
-                    new_booking: true, 
-                    booking_accept: false
-                }, 
-                {
-                    $set:{
-                        new_booking: false,
-                        booking_accept: true
-                    }
-                },
-                {
-                    returnNewDocument: true
-                },
-                (err,docs)=>{
-                    if (!err) {
-                        var userBookedSlotData = userBookedSlot.findOneAndUpdate(
-                            {
-                                _id: docs.user_booking_id, 
-                                slot_id: docs.slot_id
-                            }, 
-                            { $set:{ seller_confirmed: true } }, 
-                            { returnNewDocument: true }
-                        ).exec();
-        
-                        var serviceCartData = userServiceCart.findOneAndUpdate(
-                            { 
-                                user_booking_id: docs.user_booking_id, 
-                                slot_id: docs.slot_id
-                            }, 
-                            { $set:{ seller_confirmed: true } }, 
-                            { returnNewDocument: true }
-                        ).exec();
-        
-                        //
-                        res.status(200).json({
-                            status: true,
-                            message: "Booking accepted.",
-                            data: docs
-                        });
-                    }
-                    else {
-                        res.status(500).json({
-                            status: false,
-                            message: "Failed to accept booking. Server error.",
-                            error: err
-                        });
-                    }
+                    user_booking_id: data.user_booking_id,
+                    status: false
                 }
-            );
-          }
-      })
+            ).exec();
+            console.log("Service cart data ", payment_status);
+
+            if (payment_status == null || payment_status == "") {
+                return res.status(500).json({
+                    status: false,
+                    message: "Payment not yet made. Can't accept booking.",
+                    data: "Item still in cart. Order not placed."
+                });
+            }
+            else {
+                return sellerBookings.findOneAndUpdate(
+                    {
+                        _id: mongoose.Types.ObjectId(req.params.id),
+                        new_booking: true,
+                        booking_accept: false
+                    },
+                    {
+                        $set: {
+                            new_booking: false,
+                            booking_accept: true
+                        }
+                    },
+                    {
+                        returnNewDocument: true
+                    },
+                    async (err, docs) => {
+                        if (!err) {
+                            var userBookedSlotData = userBookedSlot.findOneAndUpdate(
+                                {
+                                    _id: docs.user_booking_id,
+                                    slot_id: docs.slot_id
+                                },
+                                { $set: { seller_confirmed: true } },
+                                { returnNewDocument: true }
+                            ).exec();
+
+                            var serviceCartData = userServiceCart.findOneAndUpdate(
+                                {
+                                    user_booking_id: docs.user_booking_id,
+                                    slot_id: docs.slot_id
+                                },
+                                { $set: { seller_confirmed: true } },
+                                { returnNewDocument: true }
+                            ).exec();
+
+                            // calculate earnings using shop service commission to admin - seller,admin
+                            var service_commission = await adminCommission.findOne(
+                                {
+                                    shop_service_id: data.shop_service_id,
+                                    status: false
+                                }
+                            ).exec();
+                            console.log("Service Commission data ", service_commission);
+
+                            var commssionpercent = Number(service_commission.percentage)
+                            var totalpricee = Number(payment_status.price)
+                            var admincomision = ((commssionpercent / 100) * totalpricee)
+                            var sellercomision = totalpricee - admincomision
+                            
+                            let sellersaveDaata = {
+                                    booking_id: mongoose.Types.ObjectId(data._id),
+                                    order_id: mongoose.Types.ObjectId(sellerBookings._id),
+                                    seller_id: mongoose.Types.ObjectId(payment_status.seller_id),
+                                    service_id: mongoose.Types.ObjectId(payment_status.service_id),
+                                    price: Number(payment_status.price),
+                                    commission: sellercomision,
+                                }
+
+                            const SELLEREARNINGS = await new sellerEarnings(sellersaveDaata)
+                            SELLEREARNINGS
+                                .save()
+                                .then((data) => {
+                                    res.status(200).json({
+                                        status: true,
+                                        message: "New Seller Earnings added successfully",
+                                        data: data,
+                                    })
+                                })
+                                .catch((error) => {
+                                    res.status(500).json({
+                                        status: false,
+                                        message: "Server error. Please try again.",
+                                        error: error,
+                                    });
+                                })
+
+                            adminsaveDaata = {
+                                booking_id: mongoose.Types.ObjectId(data._id),
+                                order_id: mongoose.Types.ObjectId(sellerBookings._id),
+                                seller_id: mongoose.Types.ObjectId(payment_status.seller_id),
+                                service_id: mongoose.Types.ObjectId(payment_status.service_id),
+                                price: Number(payment_status.price),
+                                commission: admincomision,
+                            }
+                            const ADMINEARNINGS = await new adminEarnings(adminsaveDaata)
+                            ADMINEARNINGS
+                                .save()
+                                .then((data) => {
+                                    res.status(200).json({
+                                        status: true,
+                                        message: "New ADMIN Earnings added successfully",
+                                        data: data,
+                                    })
+                                })
+                                .catch((error) => {
+                                    res.status(500).json({
+                                        status: false,
+                                        message: "Server error. Please try again.",
+                                        error: error,
+                                    });
+                                })
+
+                            res.status(200).json({
+                                status: true,
+                                message: "Booking accepted.",
+                                data: docs
+                            });
+                        }
+                        else {
+                            res.status(500).json({
+                                status: false,
+                                message: "Failed to accept booking. Server error.",
+                                error: err
+                            });
+                        }
+                    }
+                );
+            }
+        })
 };
 
-var viewAcceptedBookings = async (req,res)=>{
+var viewAcceptedBookings = async (req, res) => {
     var accepted_bookings = await sellerBookings.aggregate(
         [
             {
-                $match:{
+                $match: {
                     seller_id: mongoose.Types.ObjectId(req.params.seller_id),
                     new_booking: false,
                     booking_accept: true
                 }
             },
             {
-                $lookup:{
+                $lookup: {
                     from: "users",
                     localField: "user_id",
                     foreignField: "_id",
@@ -148,7 +217,7 @@ var viewAcceptedBookings = async (req,res)=>{
                 }
             },
             {
-                $lookup:{
+                $lookup: {
                     from: "shop_services",
                     localField: "shop_service_id",
                     foreignField: "_id",
@@ -156,7 +225,7 @@ var viewAcceptedBookings = async (req,res)=>{
                 }
             },
             {
-                $project:{
+                $project: {
                     __v: 0
                 }
             }
@@ -179,15 +248,15 @@ var viewAcceptedBookings = async (req,res)=>{
     }
 };
 
-var rejectNewBooking = async (req,res)=>{
+var rejectNewBooking = async (req, res) => {
     return sellerBookings.findOneAndUpdate(
         {
-            _id: mongoose.Types.ObjectId(req.params.id), 
-            new_booking: true, 
+            _id: mongoose.Types.ObjectId(req.params.id),
+            new_booking: true,
             booking_accept: false
-        }, 
+        },
         {
-            $set:{
+            $set: {
                 new_booking: false,
                 booking_accept: false
             }
@@ -195,7 +264,7 @@ var rejectNewBooking = async (req,res)=>{
         {
             returnNewDocument: true
         },
-        async (err,docs)=>{
+        async (err, docs) => {
             if (!err) {
                 console.log("Seller booking", docs);
                 // cancel seller slot booking
@@ -204,10 +273,10 @@ var rejectNewBooking = async (req,res)=>{
                         _id: docs.slot_id,
                         booking_status: true
                     },
-                    { $set:{ booking_status: false } },
+                    { $set: { booking_status: false } },
                     { returnNewDocument: true }
                 ).exec();
-                
+
                 // if booked service is still in service cart
                 var inServiceCart = await userServiceCart.findOne(
                     {
@@ -230,24 +299,24 @@ var rejectNewBooking = async (req,res)=>{
                 //     }
                 // ).exec();
 
-                if (inServiceCart!=null && checkedOut==null) {
+                if (inServiceCart != null && checkedOut == null) {
                     var bookingStatus = userServiceCart.findOneAndUpdate(
                         {
                             user_booking_id: docs.user_booking_id,
                             status: true
-                        }, 
-                        { $set:{ status: false, seller_confirmed: 'cancelled' } },
+                        },
+                        { $set: { status: false, seller_confirmed: 'cancelled' } },
                         { returnNewDocument: true }
                     ).exec();
                 }
-                else if (inServiceCart==null && checkedOut!=null) {
+                else if (inServiceCart == null && checkedOut != null) {
                     // refund the booked session's amount
                     var bookingStatus = userServiceCart.findOneAndUpdate(
                         {
                             user_booking_id: docs.user_booking_id,
                             status: false
                         },
-                        { $set:{ seller_confirmed: 'cancelled' } },
+                        { $set: { seller_confirmed: 'cancelled' } },
                         { returnNewDocument: true }
                     ).exec();
                 }
@@ -269,18 +338,18 @@ var rejectNewBooking = async (req,res)=>{
     );
 };
 
-var viewRejectedBookings = async (req,res)=>{
+var viewRejectedBookings = async (req, res) => {
     var accepted_bookings = await sellerBookings.aggregate(
         [
             {
-                $match:{
+                $match: {
                     seller_id: mongoose.Types.ObjectId(req.params.seller_id),
                     new_booking: false,
                     booking_accept: false
                 }
             },
             {
-                $lookup:{
+                $lookup: {
                     from: "users",
                     localField: "user_id",
                     foreignField: "_id",
@@ -288,7 +357,7 @@ var viewRejectedBookings = async (req,res)=>{
                 }
             },
             {
-                $lookup:{
+                $lookup: {
                     from: "shop_services",
                     localField: "shop_service_id",
                     foreignField: "_id",
@@ -296,7 +365,7 @@ var viewRejectedBookings = async (req,res)=>{
                 }
             },
             {
-                $project:{
+                $project: {
                     __v: 0
                 }
             }
