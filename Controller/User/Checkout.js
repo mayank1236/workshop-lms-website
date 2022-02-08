@@ -30,7 +30,6 @@ var create = async (req,res)=>{
             `${new Date().getDate()}${new Date().getHours()}${new Date().getSeconds()}${new Date().getMilliseconds()}`
         ),
         subtotal: req.body.subtotal,
-        total: req.body.total,
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         address1: req.body.address1,
@@ -45,6 +44,9 @@ var create = async (req,res)=>{
         typeof(req.body.discount_percent) != undefined
         ) {
         saveData.discount_percent = req.body.discount_percent
+        
+        var payableAmt = req.body.subtotal - ((req.body.subtotal*req.body.discount_percent)/100);
+        saveData.total = payableAmt;
     }
     if (
         req.body.coupon_id != "" &&
@@ -125,7 +127,11 @@ var create = async (req,res)=>{
       .then(data=>{        
         ServiceCart.updateMany(
             {user_id: mongoose.Types.ObjectId(req.body.user_id), status: true},
-            {$set: { status: false, order_id: data.order_id } },
+            {$set: { 
+                status: false, 
+                order_id: data.order_id, 
+                discount_percent: data.discount_percent
+            } },
             {multi: true},
             (err, writeResult)=>{
                 console.log(err);

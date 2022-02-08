@@ -7,20 +7,21 @@ const SubscriptionController = require("../../Controller/User/Subscription");// 
 const ServiceController = require('../../Controller/User/ServiceCategory');  // added by anirbank-93
 const ShopController = require("../../Controller/User/Shop");      // added by anirbank-93
 const ShopServiceController = require("../../Controller/User/ShopServices"); // added by anirbank-93
-/* Service schedule section start */
-const SellerTimingsController = require('../../Controller/User/Slot/SellerTimingsNSlots');// added by anirbank-93
-const UserBookingActions = require('../../Controller/User/Slot/UserBookingActions');// added by anirbank-93
-const SellerBookingActions = require('../../Controller/User/Slot/SellerBookingActions');// added by anirbank-93
-/* Service schedule section end */
+const SearchController = require('../../Controller/User/Search');
 const UserAccount = require('../../Controller/User/Myaccount');       // added by anirbank-93
 const SellerAccount = require('../../Controller/User/SellerMyaccount');   // added by anirbank-93
 const CartController = require('../../Controller/User/Cart');
 const ServiceCart = require('../../Controller/User/ServiceCart');
 const Checkout = require('../../Controller/User/Checkout');
 const ServiceReview = require('../../Controller/User/ServiceReview');
-const SearchController = require('../../Controller/User/Search');
 const GrievanceController = require('../../Controller/User/Grievance');
 const FeedbackController = require('../../Controller/User/Feedback');
+/* Service schedule section start */
+const SellerTimingsController = require('../../Controller/User/Slot/SellerTimingsNSlots');// added by anirbank-93
+const UserBookingActions = require('../../Controller/User/Slot/UserBookingActions');// added by anirbank-93
+const SellerBookingActions = require('../../Controller/User/Slot/SellerBookingActions');// added by anirbank-93
+/* Service schedule section end */
+const SellerCommission = require('../../Controller/User/SellerCommission');
 
 const multer = require('multer');
 
@@ -138,6 +139,8 @@ router.post('/shop-service/day-timing', UserBookingActions.viewSlotsForADay);   
 /** Below api for both book service slot and add to service cart */
 router.post('/shop-service/book-slot', UserBookingActions.bookAppointment); // added by anirbank-93
 /**------------------------------------------------------------- */
+
+router.get('/wallet/:id', SellerCommission.wallet);
 
 /**====================Service cart api's======================== */
 router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart)

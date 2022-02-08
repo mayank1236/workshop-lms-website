@@ -4,6 +4,7 @@ var sellerBookings = require('../../../Models/Slot/seller_bookings');
 var userBookedSlot = require('../../../Models/Slot/user_booked_slot');
 var userServiceCart = require('../../../Models/service_cart');
 var adminCommission = require('../../../Models/admin_commission');
+var serviceSaleCommission = require('../../../Models/service_sale_commissions');
 var sellerEarnings = require('../../../Models/seller_earnings');
 var adminEarnings = require('../../../Models/earnings/admin_earnings');
 
@@ -60,7 +61,7 @@ var newBookings = async (req, res) => {
 var acceptNewBooking = async (req, res) => {
     sellerBookings.findOne({ _id: mongoose.Types.ObjectId(req.params.id) })
         .then(async (data) => {
-            console.log("Seller booking details ", data);
+            // console.log("Seller booking details ", data);
             var payment_status = await userServiceCart.findOne(
                 {
                     user_booking_id: data.user_booking_id,
@@ -93,6 +94,7 @@ var acceptNewBooking = async (req, res) => {
                         returnNewDocument: true
                     },
                     async (err, docs) => {
+                        console.log("Updated seller booking ", docs);
                         if (!err) {
                             var userBookedSlotData = userBookedSlot.findOneAndUpdate(
                                 {
@@ -109,75 +111,43 @@ var acceptNewBooking = async (req, res) => {
                                     slot_id: docs.slot_id
                                 },
                                 { $set: { seller_confirmed: true } },
-                                { returnNewDocument: true }
+                                { new: true }
                             ).exec();
 
-                            // calculate earnings using shop service commission to admin - seller,admin
-                            var service_commission = await adminCommission.findOne(
-                                {
-                                    shop_service_id: data.shop_service_id,
-                                    status: false
-                                }
-                            ).exec();
-                            console.log("Service Commission data ", service_commission);
 
-                            var commssionpercent = Number(service_commission.percentage)
-                            var totalpricee = Number(payment_status.price)
-                            var admincomision = ((commssionpercent / 100) * totalpricee)
-                            var sellercomision = totalpricee - admincomision
-                            
-                            let sellersaveDaata = {
-                                    booking_id: mongoose.Types.ObjectId(data._id),
-                                    order_id: mongoose.Types.ObjectId(sellerBookings._id),
-                                    seller_id: mongoose.Types.ObjectId(payment_status.seller_id),
-                                    service_id: mongoose.Types.ObjectId(payment_status.service_id),
-                                    price: Number(payment_status.price),
-                                    commission: sellercomision,
-                                }
+                            /** ---- CALCULATE EARNINGS USING SHOP SERVICE COMMISSION TO ADMIN - SELLER, ADMIN ---- */
+                            var admin_commission = await adminCommission.findOne({ service_id: docs.shop_service_id }).exec();
+                            console.log("Admin commission ", admin_commission);
 
-                            const SELLEREARNINGS = await new sellerEarnings(sellersaveDaata)
-                            SELLEREARNINGS
-                                .save()
-                                .then((data) => {
-                                    res.status(200).json({
-                                        status: true,
-                                        message: "New Seller Earnings added successfully",
-                                        data: data,
-                                    })
-                                })
-                                .catch((error) => {
-                                    res.status(500).json({
-                                        status: false,
-                                        message: "Server error. Please try again.",
-                                        error: error,
-                                    });
-                                })
+                            var seller_earning = 0;
 
-                            adminsaveDaata = {
-                                booking_id: mongoose.Types.ObjectId(data._id),
-                                order_id: mongoose.Types.ObjectId(sellerBookings._id),
-                                seller_id: mongoose.Types.ObjectId(payment_status.seller_id),
-                                service_id: mongoose.Types.ObjectId(payment_status.service_id),
-                                price: Number(payment_status.price),
-                                commission: admincomision,
+                            if (
+                                payment_status.discount_percent != "" ||
+                                payment_status.discount_percent != null ||
+                                typeof payment_status.discount_percent != "undefined"
+                            ) {
+                                var discountAmt = (payment_status.price*payment_status.discount_percent)/100;
+                                var adminCommissionAmt = (payment_status.price*admin_commission.percentage)/100;
+                                seller_earning = payment_status.price - (discountAmt + adminCommissionAmt);
                             }
-                            const ADMINEARNINGS = await new adminEarnings(adminsaveDaata)
-                            ADMINEARNINGS
-                                .save()
-                                .then((data) => {
-                                    res.status(200).json({
-                                        status: true,
-                                        message: "New ADMIN Earnings added successfully",
-                                        data: data,
-                                    })
-                                })
-                                .catch((error) => {
-                                    res.status(500).json({
-                                        status: false,
-                                        message: "Server error. Please try again.",
-                                        error: error,
-                                    });
-                                })
+                            else {
+                                var adminCommissionAmt = (payment_status.price*admin_commission.percentage)/100;
+                                seller_earning = payment_status.price - adminCommissionAmt;
+                            }
+
+                            let obj = {
+                                seller_booking_id: docs._id,
+                                seller_id: docs.seller_id,
+                                service_id: docs.shop_service_id,
+                                user_booking_id: docs.user_booking_id,
+                                user_id: docs.user_id,
+                                cart_id: payment_status._id,
+                                order_id: Number(payment_status.order_id),
+                                seller_commission: Number(seller_earning)
+                            }
+                            const NEW_SERVICE_COMMISSION = new serviceSaleCommission(obj);
+                            NEW_SERVICE_COMMISSION.save();
+                            /** ---------------------------------------------------------------------------------- */
 
                             res.status(200).json({
                                 status: true,
@@ -197,6 +167,64 @@ var acceptNewBooking = async (req, res) => {
             }
         })
 };
+
+// var commssionpercent = Number(service_commission.percentage)
+//                             var totalpricee = Number(payment_status.price)
+//                             var admincomision = ((commssionpercent / 100) * totalpricee)
+//                             var sellercomision = totalpricee - admincomision
+
+//                             let sellersaveDaata = {
+//                                     booking_id: mongoose.Types.ObjectId(data._id),
+//                                     order_id: mongoose.Types.ObjectId(sellerBookings._id),
+//                                     seller_id: mongoose.Types.ObjectId(payment_status.seller_id),
+//                                     service_id: mongoose.Types.ObjectId(payment_status.service_id),
+//                                     price: Number(payment_status.price),
+//                                     commission: sellercomision,
+//                                 }
+
+//                             const SELLEREARNINGS = await new sellerEarnings(sellersaveDaata)
+//                             SELLEREARNINGS
+//                                 .save()
+//                                 .then((data) => {
+//                                     res.status(200).json({
+//                                         status: true,
+//                                         message: "New Seller Earnings added successfully",
+//                                         data: data,
+//                                     })
+//                                 })
+//                                 .catch((error) => {
+//                                     res.status(500).json({
+//                                         status: false,
+//                                         message: "Server error. Please try again.",
+//                                         error: error,
+//                                     });
+//                                 })
+
+//                             adminsaveDaata = {
+//                                 booking_id: mongoose.Types.ObjectId(data._id),
+//                                 order_id: mongoose.Types.ObjectId(sellerBookings._id),
+//                                 seller_id: mongoose.Types.ObjectId(payment_status.seller_id),
+//                                 service_id: mongoose.Types.ObjectId(payment_status.service_id),
+//                                 price: Number(payment_status.price),
+//                                 commission: admincomision,
+//                             }
+//                             const ADMINEARNINGS = await new adminEarnings(adminsaveDaata)
+//                             ADMINEARNINGS
+//                                 .save()
+//                                 .then((data) => {
+//                                     res.status(200).json({
+//                                         status: true,
+//                                         message: "New ADMIN Earnings added successfully",
+//                                         data: data,
+//                                     })
+//                                 })
+//                                 .catch((error) => {
+//                                     res.status(500).json({
+//                                         status: false,
+//                                         message: "Server error. Please try again.",
+//                                         error: error,
+//                                     });
+//                                 })
 
 var viewAcceptedBookings = async (req, res) => {
     var accepted_bookings = await sellerBookings.aggregate(

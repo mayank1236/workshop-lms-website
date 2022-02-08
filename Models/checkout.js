@@ -21,21 +21,15 @@ const CHECKOUT_SCHEMA = new Schema({
         type:Number,
         required:true
     },
-    discount_percent:{
-        type:Number,
-        required:false
-    },
-    total:{
-        type:Number,
-        required:true
-    },
+    discount_percent: Number,
+    total: Number,           // subtotal - discount amount
     coupon_id:{
         type:mongoose.Schema.Types.ObjectId,
-        required:false
+        required: false
     },
     coupon:{
         type:String,
-        required:false,
+        required: false,
     },
     firstname:{
         type:String,
@@ -55,7 +49,7 @@ const CHECKOUT_SCHEMA = new Schema({
     },
     address2:{
         type:String,
-        required:false
+        required: false
     },
     country:{
         type:String,
@@ -71,24 +65,24 @@ const CHECKOUT_SCHEMA = new Schema({
     },
     payment_type:{
         type:String,
-        required:false,
+        required: false,
         default: "COD"
     },
     card_name:{
         type:String,
-        required:false
+        required: false
     },
     card_no:{
         type:Number,
-        required:false
+        required: false
     },
     exp_date:{
         type:String,
-        required:false
+        required: false
     },
     cvv:{
         type:Number,
-        required:false
+        required: false
     },
     status:{
         type:String,

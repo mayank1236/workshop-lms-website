@@ -18,4 +18,4 @@ const ADMIN_COMMISSION = new Schema({
     }
 });
 
-module.exports = mongoose.model("admin_commissions", ADMIN_COMMISSION);
+module.exports = mongoose.model("admin_commission", ADMIN_COMMISSION);

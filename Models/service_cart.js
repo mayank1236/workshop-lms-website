@@ -11,12 +11,8 @@ const SERVICE_CART_SCHEMA = new Schema({
     seller_id: mongoose.Schema.Types.ObjectId,
     service_id: mongoose.Schema.Types.ObjectId,
     slot_id: mongoose.Schema.Types.ObjectId,
-    order_id:{
-        type:Number
-    },
-    rating:{
-        type: Number
-    },
+    order_id: Number,
+    rating: Number,
     service_name:{
         type: String,
         required: true
@@ -26,6 +22,7 @@ const SERVICE_CART_SCHEMA = new Schema({
         type: Number,
         required: true
     },
+    discount_percent: Number,
     image: Array,
     seller_confirmed:{
         type: String,
