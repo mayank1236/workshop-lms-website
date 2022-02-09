@@ -21,7 +21,6 @@ const SellerTimingsController = require('../../Controller/User/Slot/SellerTiming
 const UserBookingActions = require('../../Controller/User/Slot/UserBookingActions');// added by anirbank-93
 const SellerBookingActions = require('../../Controller/User/Slot/SellerBookingActions');// added by anirbank-93
 /* Service schedule section end */
-const SellerCommission = require('../../Controller/User/SellerCommission');
 
 const multer = require('multer');
 
@@ -140,8 +139,6 @@ router.post('/shop-service/day-timing', UserBookingActions.viewSlotsForADay);   
 router.post('/shop-service/book-slot', UserBookingActions.bookAppointment); // added by anirbank-93
 /**------------------------------------------------------------- */
 
-router.get('/wallet/:id', SellerCommission.wallet);
-
 /**====================Service cart api's======================== */
 router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart)
 router.delete('/delete-cart/:id', ServiceCart.DeleteCart)
@@ -166,7 +163,7 @@ router.get('/seller-service/reviews/:seller_id', ServiceReview.getReviews);
 
 router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
 router.get('/seller_account/booking-stat/:seller_id', SellerAccount.serviceBookingStat);
-router.post('/seller_account/withdraw-earnings', SellerAccount.withdrawEarnings);
+router.get('/wallet/:id', SellerAccount.wallet);
 
 /**=======================Service search========================= */
 router.post('/search-service', SearchController.Search);

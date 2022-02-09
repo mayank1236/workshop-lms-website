@@ -14,9 +14,17 @@ const COMMISSION_SCHEMA = new Schema({
         type: Boolean,
         default: false
     },
+    claim_status: {
+        type: Boolean,
+        default: false
+    },
+    seller_apply: {
+        type: Boolean,
+        default: false
+    },
     paystatus: {
-        type: String,
-        default: "pending"
+        type: Boolean,
+        default: false
     }
 });
 
