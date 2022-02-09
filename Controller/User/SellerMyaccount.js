@@ -205,21 +205,19 @@ var claimableCommissions = async (req, res) => {
 
     let claimableEarningData = await SERVICE_SALE_EARNINGS.find({
         seller_id: mongoose.Types.ObjectId(id),
-        claim_status: true,
-        seller_apply: false
+        claim_status: true
     }).exec()
 
-    var claimableEarning = 0
+    // var claimableEarning = 0
 
     if (claimableEarningData.length > 0) {
-        claimableEarningData.forEach(element => {
-            claimableEarning = parseInt(claimableEarning) + parseInt(element.seller_commission);
-        })
+        // claimableEarningData.forEach(element => {
+        //     claimableEarning = parseInt(claimableEarning) + parseInt(element.seller_commission);
+        // })
 
         return res.status(200).json({
             status: true,
             message: "Data successfully get.",
-            total_amt: claimableEarning,
             service_data: claimableEarningData
         })
     }
@@ -227,7 +225,6 @@ var claimableCommissions = async (req, res) => {
         return res.status(200).json({
             status: true,
             message: "No service earning to be claimed.",
-            total_amt: 0,
             service_data: []
         })
     }
