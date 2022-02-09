@@ -14,6 +14,7 @@ const ServiceSubCategoryController = require('../../Controller/Admin/SubCategory
 const SellerBookingController = require('../../Controller/Admin/Slot/SellerBooking');//added by anirbank-93
 const SellerReviews = require('../../Controller/Admin/ServiceReview');    // added by anirbank-93
 const RefundPersonnel = require('../../Controller/Admin/RefundPersonnel');// added by anirbank-93
+const ServiceRefund = require('../../Controller/Admin/ServiceRefund');    // added by anirbank-93
 const MyAccountController = require('../../Controller/Admin/Myaccount');
 const AdminCommission = require('../../Controller/Admin/AdminCommision');
 const ReportController = require('../../Controller/Admin/Report');
@@ -130,6 +131,8 @@ router.get('/received-applications/:id', JobApplications.viewById);
 router.post('/personnel-register', RefundPersonnel.register);
 router.get('/refund-personnel', RefundPersonnel.refundPersonnelList);
 router.put('/refund-personnel/:id', RefundPersonnel.setStatus);
+
+router.get('/service-refund-requests', ServiceRefund.getAllRefundRequests);
 /**==========================CMS Section========================== */
 router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);
