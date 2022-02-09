@@ -185,8 +185,8 @@ router.delete('/careers/:id', Careers.deletePostedJob);
 /**===================================== Automated tasks =====================================*/
 
 /**-------------- Clear all due payments every 3 days i.e. 72 hrs --------------*/
-const clearDueEarnings = nodeCron.schedule("* 72 * * *", AutomatedApi.payForServOrNot);
-const payClaimedEarnings = nodeCron.schedule("* 72 * * *", AutomatedApi.payForService);
+const clearDueEarnings = nodeCron.schedule("* 72 * * *", AutomatedApi.payForServOrNot); // added by anirbank-93
+const payClaimedEarnings = nodeCron.schedule("* 72 * * *", AutomatedApi.payForService); // added by anirbank-93
 /**-----------------------------------------------------------------------------*/
 /**===========================================================================================*/
 
