@@ -9,6 +9,7 @@ const sellerBookingSchema = new Schema({
     slot_id: mongoose.Schema.Types.ObjectId,
     shop_service_id: mongoose.Schema.Types.ObjectId,
     seller_id: mongoose.Schema.Types.ObjectId,
+    order_id: Number,
     date_of_booking:{
         type: Date,
         default: moment.tz(new Date(), "Asia/Kolkata"),//Date.now()
@@ -37,6 +38,10 @@ const sellerBookingSchema = new Schema({
     booking_accept:{
         type: Boolean,
         default: false
+    },
+    status: {
+        type: Boolean,
+        default: true
     }
 });
 

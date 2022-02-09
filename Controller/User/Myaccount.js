@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
+var passwordHash = require('password-hash');
+const { Validator } = require('node-input-validator');
+
 var Checkout = require('../../Models/checkout');
 var User = require('../../Models/user');
 var userBookedSlot = require('../../Models/Slot/user_booked_slot');
 var sellerSlots = require('../../Models/Slot/seller_slots');
 var shopServices = require('../../Models/shop_service');
 var Upload = require('../../service/upload');
-
-var passwordHash = require('password-hash');
-const { Validator } = require('node-input-validator');
 
 var viewAll = async (req, res) => {
   return Checkout.aggregate(
@@ -23,6 +23,14 @@ var viewAll = async (req, res) => {
           localField: "order_id",//
           foreignField: "order_id",
           as: "cart_data"//
+        }
+      },
+      {
+        $lookup: {
+          from: "seller_bookings",
+          localField: "order_id",
+          foreignField: "order_id",
+          as: "seller_booking_data"
         }
       },
       {
@@ -328,11 +336,14 @@ var imageurlApi = async (req, res) => {
   );
 }
 
+var serviceRefund = async (req,res) => {}
+
 module.exports = {
   viewAll,
   cancelBooking,
   updateProfile,
   updatePassword,
   deleteProfile,
-  imageurlApi
+  imageurlApi,
+  serviceRefund
 }
