@@ -133,6 +133,10 @@ router.get('/refund-personnel', RefundPersonnel.refundPersonnelList);
 router.put('/refund-personnel/:id', RefundPersonnel.setStatus);
 
 router.get('/service-refund-requests', ServiceRefund.getAllRefundRequests);
+router.put('/approve-service-refund/:id', ServiceRefund.approveRefund);
+router.get('/approved-service-refunds', ServiceRefund.getApprovedRefundList);
+router.put('/reject-service-refund/:id', ServiceRefund.rejectRefund);
+router.put('/initate-service-refund/:id', ServiceRefund.adminInitiateRefund);
 /**==========================CMS Section========================== */
 router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);
@@ -191,10 +195,10 @@ router.delete('/careers/:id', Careers.deletePostedJob);
 /**========================CMS Section End======================== */
 
 /**===================================== Automated tasks =====================================*/
-
-/**---------------Clear all due payments every 3 days of a month ---------------*/
+/**---------------Clear all due payments every 3 days of a week ---------------*/
 const clearDueEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForServOrNot);
 const payClaimedEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForService);
+const clearServiceRefund = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.clearServiceRefunds);
 /**-----------------------------------------------------------------------------*/
 /**===========================================================================================*/
 
