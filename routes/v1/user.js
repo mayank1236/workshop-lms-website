@@ -164,6 +164,8 @@ router.get('/seller-service/reviews/:seller_id', ServiceReview.getReviews);
 router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
 router.get('/seller_account/booking-stat/:seller_id', SellerAccount.serviceBookingStat);
 router.get('/wallet/:id', SellerAccount.wallet);
+router.get('/claimable_commissions/:id', SellerAccount.claimableCommissions);
+router.put('/withdraw_one_commission/:id', SellerAccount.claimOneCommission);
 
 /**=======================Service search========================= */
 router.post('/search-service', SearchController.Search);

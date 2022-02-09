@@ -152,10 +152,10 @@ var wallet = async (req, res) => {
 
     /**--------------------------- Pending settlement ---------------------------*/
     let pendingSettlementData = await SERVICE_SALE_EARNINGS.find({
-        seller_id: mongoose.Types.ObjectId(id), 
-        refund_status: false, 
+        seller_id: mongoose.Types.ObjectId(id),
+        refund_status: false,
         claim_status: false,
-        seller_apply: false, 
+        seller_apply: false,
         paystatus: false
     }).exec()
     console.log("Pending settlement data ", pendingSettlementData);
@@ -175,10 +175,8 @@ var wallet = async (req, res) => {
     /**--------------------------- Claimable earnings ---------------------------*/
     let claimableEarningData = await SERVICE_SALE_EARNINGS.find({
         seller_id: mongoose.Types.ObjectId(id),
-        refund_status: false,
         claim_status: true,
-        seller_apply: false,
-        paystatus: false
+        seller_apply: false
     }).exec()
 
     var claimableEarning = 0
@@ -202,8 +200,71 @@ var wallet = async (req, res) => {
     })
 }
 
+var claimableCommissions = async (req, res) => {
+    var id = req.params.id
+
+    let claimableEarningData = await SERVICE_SALE_EARNINGS.find({
+        seller_id: mongoose.Types.ObjectId(id),
+        claim_status: true,
+        seller_apply: false
+    }).exec()
+
+    var claimableEarning = 0
+
+    if (claimableEarningData.length > 0) {
+        claimableEarningData.forEach(element => {
+            claimableEarning = parseInt(claimableEarning) + parseInt(element.seller_commission);
+        })
+
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            total_amt: claimableEarning,
+            service_data: claimableEarningData
+        })
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No service earning to be claimed.",
+            total_amt: 0,
+            service_data: []
+        })
+    }
+}
+
+var claimOneCommission = async (req, res) => {
+    var id = req.params.id
+
+    return SERVICE_SALE_EARNINGS.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        { $set: { seller_apply: true } },
+        { new: true }
+    )
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully edited.",
+                data: docs
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            })
+        })
+}
+
+var claimAllCommissions = async (req,res) => {
+    var id = req.params.id;
+} 
+
 module.exports = {
     viewAll,
     serviceBookingStat,
-    wallet
+    wallet,
+    claimableCommissions,
+    claimOneCommission,
 }
