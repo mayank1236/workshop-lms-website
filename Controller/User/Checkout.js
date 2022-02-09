@@ -1,7 +1,6 @@
 var mongoose = require('mongoose')
 var Checkout = require('../../Models/checkout')
 var ServiceCart = require('../../Models/service_cart')
-var SellerBooking = require('../../Models/Slot/seller_bookings')
 
 const { Validator } = require('node-input-validator')
 
@@ -143,23 +142,6 @@ var create = async (req, res) => {
                     }
                 }
             );
-
-            // Update the new seller bookings of the user with order_id
-            SellerBooking.updateMany(
-                { user_id: mongoose.Types.ObjectId(req.body.user_id), status: true },
-                {
-                    $set: {
-                        status: false,
-                        order_id: data.order_id
-                    }
-                },
-                { multi: true },
-                (err, writeResult) => {
-                    if (err) {
-                        console.log(err.message);
-                    }
-                }
-            )
 
             res.status(200).json({
                 status: true,
