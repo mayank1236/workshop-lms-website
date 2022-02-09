@@ -54,6 +54,55 @@ const register = async (req, res) => {
         })
 }
 
+var refundPersonnelList = async (req, res) => {
+    let refundPersonnel = await ADMIN.find(
+        {
+            status: true,
+            admin_type: "Refund_personnel"
+        }).exec();
+
+    if (refundPersonnel.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            data: refundPersonnel
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "Currently no active personnel exists.",
+            data: []
+        });
+    }
+}
+
+var setStatus = async (req,res) => {
+    var id = req.params.id;
+
+    return ADMIN.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) }, 
+        { $set: { status: false } }, 
+        { new: true }
+        )
+        .then(data => {
+            res.status(200).json({
+                status: true,
+                message: "Personnel made inactive",
+                data: data
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err
+            });
+        });
+}
+
 module.exports = {
-    register
+    register,
+    refundPersonnelList,
+    setStatus
 }

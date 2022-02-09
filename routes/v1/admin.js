@@ -128,6 +128,8 @@ router.get('/received-applications', JobApplications.viewAll);
 router.get('/received-applications/:id', JobApplications.viewById);
 
 router.post('/personnel-register', RefundPersonnel.register);
+router.get('/refund-personnel', RefundPersonnel.refundPersonnelList);
+router.put('/refund-personnel/:id', RefundPersonnel.setStatus);
 /**==========================CMS Section========================== */
 router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);
