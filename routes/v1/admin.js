@@ -1,5 +1,6 @@
 var express = require('express');
-const multer = require('multer');
+var multer = require('multer');
+var nodeCron = require('node-cron');
 
 var router = express.Router();
 
@@ -19,7 +20,6 @@ const BlogController = require('../../Controller/Admin/Blog');
 const GrievanceController = require('../../Controller/Admin/Grievance');
 const FeedbackController = require('../../Controller/Admin/Feedback');
 const JobApplications = require('../../Controller/Admin/JobApplications');
-const SellerEarnings = require('../../Controller/Admin/SellerEarnings');
 /** ----------------utility modules--------------- */
 const csv_reports = require('../../service/csv_reports');
 /**-------------utility modules end--------------- */
@@ -33,6 +33,8 @@ const SafetyGuide = require('../../Controller/Admin/Website_info/SafetyGuide');
 const Associates = require('../../Controller/Admin/Website_info/Associates');
 const LegalNotice = require('../../Controller/Admin/Website_info/LegalNotice');
 const Careers = require('../../Controller/Admin/Website_info/Careers');
+
+const AutomatedApi = require('../../Controller/Admin/AutomatedApi');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -123,9 +125,6 @@ router.get('/feedback/:id', FeedbackController.viewFeedbackById);
 
 router.get('/received-applications', JobApplications.viewAll);
 router.get('/received-applications/:id', JobApplications.viewById);
-
-router.get('/seller-payment-request', SellerEarnings.viewAllServiceEarnings);
-router.put('/seller-payment-request/:id', SellerEarnings.approveServiceEarnings);
 /**==========================CMS Section========================== */
 router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);
@@ -182,5 +181,13 @@ router.get('/careers/:id', Careers.viewPostedJobById);
 router.put('/careers/:id', Careers.editPostedJob);
 router.delete('/careers/:id', Careers.deletePostedJob);
 /**========================CMS Section End======================== */
+
+/**===================================== Automated tasks =====================================*/
+
+/**---------------Clear all due payments every 3 days of a month ---------------*/
+const clearDueEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForServOrNot);
+const payClaimedEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForService);
+/**-----------------------------------------------------------------------------*/
+/**===========================================================================================*/
 
 module.exports = router;

@@ -1,12 +1,13 @@
 var mongoose = require('mongoose');
+
 var sellerSlots = require('../../../Models/Slot/seller_slots');
 var sellerBookings = require('../../../Models/Slot/seller_bookings');
 var userBookedSlot = require('../../../Models/Slot/user_booked_slot');
 var userServiceCart = require('../../../Models/service_cart');
 var adminCommission = require('../../../Models/admin_commission');
-var serviceSaleCommission = require('../../../Models/service_sale_commissions');
-var sellerEarnings = require('../../../Models/seller_earnings');
-var adminEarnings = require('../../../Models/earnings/admin_earnings');
+var serviceSaleCommission = require('../../../Models/earnings/service_sale_earnings');
+// var sellerTotalEarning = require('../../../Models/earnings/seller_total_earning');
+// var adminEarnings = require('../../../Models/earnings/admin_earnings');
 
 var newBookings = async (req, res) => {
     var new_bookings = await sellerBookings.aggregate(
@@ -90,9 +91,7 @@ var acceptNewBooking = async (req, res) => {
                             booking_accept: true
                         }
                     },
-                    {
-                        returnNewDocument: true
-                    },
+                    { new: true }, 
                     async (err, docs) => {
                         console.log("Updated seller booking ", docs);
                         if (!err) {
@@ -135,7 +134,7 @@ var acceptNewBooking = async (req, res) => {
                                 seller_earning = payment_status.price - adminCommissionAmt;
                             }
 
-                            let obj = {
+                            let obj1 = {
                                 seller_booking_id: docs._id,
                                 seller_id: docs.seller_id,
                                 service_id: docs.shop_service_id,
@@ -145,8 +144,29 @@ var acceptNewBooking = async (req, res) => {
                                 order_id: Number(payment_status.order_id),
                                 seller_commission: Number(seller_earning)
                             }
-                            const NEW_SERVICE_COMMISSION = new serviceSaleCommission(obj);
-                            NEW_SERVICE_COMMISSION.save();
+                            const NEW_SERVICE_EARNING = new serviceSaleCommission(obj1);
+                            NEW_SERVICE_EARNING.save();
+
+                            // Also update the total earning (varying with accept,withdraw, refund)
+                            // let totalEarningData = await sellerTotalEarning.findOne({ seller_id: docs.seller_id }).exec();
+
+                            // if (totalEarningData == null || totalEarningData == "") {
+                            //     let obj2 = {
+                            //         seller_id: docs.seller_id,
+                            //         total_earning: Number(seller_earning)
+                            //     }
+                            //     const NEW_TOTAL_EARNING = new sellerTotalEarning(obj2);
+                            //     NEW_TOTAL_EARNING.save()
+                            // }
+                            // else {
+                            //     var newTotal = parseInt(totalEarningData.total_earning) + parseInt(seller_earning);
+
+                            //     sellerTotalEarning.findOneAndUpdate(
+                            //         { seller_id: docs.seller_id },
+                            //         { $set: { total_earning: newTotal } },
+                            //         { new: true }
+                            //     ).exec();
+                            // }
                             /** ---------------------------------------------------------------------------------- */
 
                             res.status(200).json({

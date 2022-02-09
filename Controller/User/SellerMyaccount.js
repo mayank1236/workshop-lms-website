@@ -2,7 +2,8 @@ var mongoose = require('mongoose')
 
 var ServiceCart = require('../../Models/service_cart')
 var SellerBookings = require('../../Models/Slot/seller_bookings')
-var SellerEarnings = require('../../Models/seller_earnings')
+const SERVICE_SALE_EARNINGS = require('../../Models/earnings/service_sale_earnings');
+const SELLER_TOTAL_EARNINGS = require('../../Models/earnings/seller_total_earning');
 
 var viewAll = async (req, res) => {
     return ServiceCart.aggregate(
@@ -115,67 +116,182 @@ var serviceBookingStat = async (req, res) => {
     }
 }
 
-var withdrawEarnings = async (req, res) => {
-    var requestStatus = await SellerEarnings.findOne(
-        {
-            serv_id: mongoose.Types.ObjectId(req.body.serv_id),
-            order_id: Number(req.body.order_id)
-        }
-    ).exec();
-    console.log(requestStatus);
+var wallet = async (req, res) => {
+    var id = req.params.id
 
-    if (requestStatus == null) {
-        let saveData = {
-            _id: mongoose.Types.ObjectId(),
-            seller_id: mongoose.Types.ObjectId(req.body.seller_id),
-            serv_id: mongoose.Types.ObjectId(req.body.serv_id),
-            order_id: Number(req.body.order_id),
-            total_earning: Number(req.body.total_earning),
-            seller_earning: Number(req.body.seller_earning),
-            commission: Number(req.body.commission)
-        }
-        if (req.body.images != '' || req.body.images != null || typeof req.body.images != 'undefined') {
-            saveData.images = req.body.images;
-        }
+    /**----------------------------- Total earnings -----------------------------*/
+    let commissionData = await SERVICE_SALE_EARNINGS.find({ seller_id: mongoose.Types.ObjectId(id) }).exec()
 
-        const NEW_SELLER_EARNING = new SellerEarnings(saveData);
+    var totalEarnings = 0
 
-        return NEW_SELLER_EARNING.save()
-            .then(data => {
-                res.status(200).json({
-                    status: true,
-                    message: "Data successfully saved.",
-                    data: data
-                });
-            })
-            .catch(err => {
-                res.status(500).json({
-                    status: false,
-                    message: "Failed to save data. Server error.",
-                    error: err.message
-                });
-            });
+    commissionData.forEach(element => {
+        totalEarnings = parseInt(totalEarnings) + parseInt(element.seller_commission);
+    })
+    /**--------------------------------------------------------------------------*/
+
+    /**----------------------------- Settled earning-----------------------------*/
+    let settledEarningData = await SERVICE_SALE_EARNINGS.find({
+        seller_id: mongoose.Types.ObjectId(id),
+        refund_status: false,
+        claim_status: true,
+        seller_apply: true,
+        paystatus: true
+    }).exec()
+
+    var settledEarning = 0
+
+    if (settledEarningData.length > 0) {
+        settledEarningData.forEach(element => {
+            settledEarning = parseInt(settledEarning) + parseInt(element.seller_commission)
+        })
     }
     else {
-        if (requestStatus.receipt_status == "Requested") {
-            return res.status(200).json({
-                status: true,
-                message: "Already requested. Pending payment approval.",
-                data: requestStatus
-            });
-        }
-        else if (requestStatus.receipt_status == "Approved") {
-            return res.status(200).json({
-                status: true,
-                message: "Request approved. Please wait for transaction to your account.",
-                data: requestStatus
-            });
-        }
+        settledEarning = 0
+    }
+    /**--------------------------------------------------------------------------*/
+
+    /**--------------------------- Pending settlement ---------------------------*/
+    let pendingSettlementData = await SERVICE_SALE_EARNINGS.find({
+        seller_id: mongoose.Types.ObjectId(id),
+        refund_status: false,
+        claim_status: false,
+        seller_apply: false,
+        paystatus: false
+    }).exec()
+    console.log("Pending settlement data ", pendingSettlementData);
+
+    var pendingSettlement = 0
+
+    if (pendingSettlementData.length > 0) {
+        pendingSettlementData.forEach(element => {
+            pendingSettlement = parseInt(pendingSettlement) + parseInt(element.seller_commission)
+        })
+    }
+    else {
+        pendingSettlement = 0
+    }
+    /**--------------------------------------------------------------------------*/
+
+    /**--------------------------- Claimable earnings ---------------------------*/
+    let claimableEarningData = await SERVICE_SALE_EARNINGS.find({
+        seller_id: mongoose.Types.ObjectId(id),
+        claim_status: true,
+        seller_apply: false
+    }).exec()
+
+    var claimableEarning = 0
+
+    if (claimableEarningData.length > 0) {
+        claimableEarningData.forEach(element => {
+            claimableEarning = parseInt(claimableEarning) + parseInt(element.seller_commission);
+        })
+    }
+    else {
+        claimableEarning = 0
+    }
+    /**--------------------------------------------------------------------------*/
+
+    res.send({
+        total_earnings: totalEarnings,
+        earning_settled: settledEarning,
+        pending_settlement: pendingSettlement,
+        service_refund_amt: 0,
+        claimable_earnings: claimableEarning
+    })
+}
+
+var claimableCommissions = async (req, res) => {
+    var id = req.params.id
+
+    let claimableEarningData = await SERVICE_SALE_EARNINGS.find({
+        seller_id: mongoose.Types.ObjectId(id),
+        claim_status: true,
+        seller_apply: false
+    }).exec()
+
+    var claimableEarning = 0
+
+    if (claimableEarningData.length > 0) {
+        claimableEarningData.forEach(element => {
+            claimableEarning = parseInt(claimableEarning) + parseInt(element.seller_commission);
+        })
+
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            total_amt: claimableEarning,
+            service_data: claimableEarningData
+        })
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No service earning to be claimed.",
+            total_amt: 0,
+            service_data: []
+        })
     }
 }
+
+var claimOneCommission = async (req, res) => {
+    var id = req.params.id
+
+    return SERVICE_SALE_EARNINGS.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        { $set: { seller_apply: true } },
+        { new: true }
+    )
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully edited.",
+                data: docs
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            })
+        })
+}
+
+var claimAllCommissions = async (req,res) => {
+    var id = req.params.id
+
+    return SERVICE_SALE_EARNINGS.updateMany(
+        {
+            seller_id: mongoose.Types.ObjectId(id), 
+            claim_status: true,
+            seller_apply: false,
+        },
+        { $set: { seller_apply: true } }, 
+        { multi: true }, 
+        (err,result) => {
+            if (!err) {
+                res.status(200).json({
+                    status: 200,
+                    message: "All data successfully edited.",
+                    data: result
+                })
+            }
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Invalid id. Server error",
+                    error: err.message
+                })
+            }
+        }
+    )
+} 
 
 module.exports = {
     viewAll,
     serviceBookingStat,
-    withdrawEarnings
+    wallet,
+    claimableCommissions,
+    claimOneCommission,
+    claimAllCommissions
 }
