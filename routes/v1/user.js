@@ -140,8 +140,8 @@ router.post('/shop-service/book-slot', UserBookingActions.bookAppointment); // a
 /**------------------------------------------------------------- */
 
 /**====================Service cart api's======================== */
-router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart)
-router.delete('/delete-cart/:id', ServiceCart.DeleteCart)
+router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart);
+router.delete('/delete-cart/:id', ServiceCart.DeleteCart);
 /**================Service cart api's end======================== */
 
 /**====================Checkout api's============================ */
