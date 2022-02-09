@@ -25,12 +25,20 @@ const SERVICE_CART_SCHEMA = new Schema({
     discount_percent: Number,
     image: Array,
     seller_confirmed:{
-        type: String,
+        type: Boolean,
         default: false
     },
     status:{
         type:Boolean,
         default:true
+    },
+    refund_claim: {       // whether buyer can claim refund. Duration 3 days of seller accept
+        type: Boolean,
+        default: true
+    },
+    refund_request: {     // whether buyer has requested refund (within 3 ays of seller accept)
+        type: String,
+        default: "No"
     }
 })
 
