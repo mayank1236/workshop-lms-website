@@ -258,7 +258,33 @@ var claimOneCommission = async (req, res) => {
 }
 
 var claimAllCommissions = async (req,res) => {
-    var id = req.params.id;
+    var id = req.params.id
+
+    return SERVICE_SALE_EARNINGS.updateMany(
+        {
+            seller_id: mongoose.Types.ObjectId(id), 
+            claim_status: true,
+            seller_apply: false,
+        },
+        { $set: { seller_apply: true } }, 
+        { multi: true }, 
+        (err,result) => {
+            if (!err) {
+                res.status(200).json({
+                    status: 200,
+                    message: "All data successfully edited.",
+                    data: result
+                })
+            }
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Invalid id. Server error",
+                    error: err.message
+                })
+            }
+        }
+    )
 } 
 
 module.exports = {
@@ -267,4 +293,5 @@ module.exports = {
     wallet,
     claimableCommissions,
     claimOneCommission,
+    claimAllCommissions
 }
