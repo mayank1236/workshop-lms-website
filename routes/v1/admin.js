@@ -1,5 +1,6 @@
 var express = require('express');
-const multer = require('multer');
+var multer = require('multer');
+var nodeCron = require('node-cron');
 
 var router = express.Router();
 
@@ -32,6 +33,8 @@ const SafetyGuide = require('../../Controller/Admin/Website_info/SafetyGuide');
 const Associates = require('../../Controller/Admin/Website_info/Associates');
 const LegalNotice = require('../../Controller/Admin/Website_info/LegalNotice');
 const Careers = require('../../Controller/Admin/Website_info/Careers');
+
+const AutomatedApi = require('../../Controller/Admin/AutomatedApi');
  
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
@@ -178,5 +181,13 @@ router.get('/careers/:id', Careers.viewPostedJobById);
 router.put('/careers/:id', Careers.editPostedJob);
 router.delete('/careers/:id', Careers.deletePostedJob);
 /**========================CMS Section End======================== */
+
+/**===================================== Automated tasks =====================================*/
+
+/**-------------- Clear all due payments every 3 days i.e. 72 hrs --------------*/
+const clearDueEarnings = nodeCron.schedule("* 72 * * *", AutomatedApi.payForServOrNot);
+const payClaimedEarnings = nodeCron.schedule("* 72 * * *", AutomatedApi.payForService);
+/**-----------------------------------------------------------------------------*/
+/**===========================================================================================*/
 
 module.exports = router;
