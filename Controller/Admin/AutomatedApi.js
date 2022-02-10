@@ -41,14 +41,14 @@ var payForService = async (req, res) => {
 }
 
 var clearServiceRefunds = async (req, res) => {
-    SERVICE_CART.updateMany(
-        { refund_request: "Refund initiated" }, 
-        { $set: { refund_request: "Refunded" } }, 
-        { multi: true }, 
-        (err, result) => {
-            console.log("Couldn't update cart data due to ", err.name);
-        }
-    );
+    // SERVICE_CART.updateMany(
+    //     { refund_request: "Refund initiated" }, 
+    //     { $set: { refund_request: "Refunded" } }, 
+    //     { multi: true }, 
+    //     (err, result) => {
+    //         console.log("Couldn't update cart data due to ", err.name);
+    //     }
+    // );
     
     return SERVICE_REFUND.updateMany(
         { refund_status: false }, 

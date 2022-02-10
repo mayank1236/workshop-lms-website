@@ -38,7 +38,7 @@ const SERVICE_CART_SCHEMA = new Schema({
     },
     refund_request: {     // whether buyer has requested refund (within 3 ays of seller accept)
         type: String,
-        default: "No"
+        default: ""
     }
 })
 
