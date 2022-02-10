@@ -78,10 +78,10 @@ var approveRefund = async (req, res) => {
     )
         .then(docs => {
             console.log("Refund data ", docs);
-            SERVICE_CART.findOneAndUpdate(
-                { _id: docs.cart_id },
-                { $set: { refund_request: "Approved" } }
-            ).exec();
+            // SERVICE_CART.findOneAndUpdate(
+            //     { _id: docs.cart_id },
+            //     { $set: { refund_request: "Approved" } }
+            // ).exec();
 
             SERVICE_SALE_EARNING.findOneAndUpdate(
                 { cart_id: docs.cart_id },
