@@ -10,7 +10,7 @@ var shopServices = require('../../Models/shop_service');
 var Upload = require('../../service/upload');
 var ServiceCart = require('../../Models/service_cart');
 var ServiceRefund = require('../../Models/service_refund');
-var ServiceSaleCommission = require
+// var ServiceSaleEarning = require('../../Models/earnings/service_sale_earnings');
 
 var viewAll = async (req, res) => {
   return Checkout.aggregate(
@@ -331,7 +331,80 @@ var imageurlApi = async (req, res) => {
   );
 }
 
-var serviceRefund = async (req,res) => {}
+var serviceRefund = async (req,res) => {
+  var id =req.params.id ;  // cart _id
+
+  let cartData = await ServiceCart.findOne({ _id: mongoose.Types.ObjectId(id) }).exec();
+
+  console.log("Order id ", cartData.order_id);
+  
+  if (cartData.order_id == null || cartData.order_id == "" || typeof cartData.order_id == "undefined") {
+    return res.status(500).json({
+      status: false,
+      error: "Invalid id. Payment not made for this order.",
+      data: null
+    });
+  }
+  else {
+    return ServiceCart.findOneAndUpdate(
+      { _id: mongoose.Types.ObjectId(id) }, 
+      { $set: { refund_request: "Yes" } }, 
+      { new: true }
+    )
+        .then(async (docs) => {
+          console.log("Cart ", docs);
+          let checkoutData = await Checkout.findOne({ order_id: docs.order_id }).exec();
+          console.log("Checkout ", checkoutData);
+
+          let refundSaveData = {
+            user_id: docs.user_id,
+            seller_id: docs.seller_id,
+            serv_id: docs.service_id,
+            cart_id: docs._id,
+            order_id: docs.order_id,
+            refund_amount: checkoutData.total,
+            firstname: checkoutData.firstname,
+            lastname: checkoutData.lastname,
+            address1: checkoutData.address1,
+            country: checkoutData.country,
+            state: checkoutData.state,
+            zip: checkoutData.zip,
+            paymenttype: checkoutData.payment_type
+          }
+          if (checkoutData.address2 != "" || checkoutData.address2 != null || typeof checkoutData.address2 != "undefined") {
+            refundSaveData.address2 = checkoutData.address2;
+          }
+          if (checkoutData.card_name != "" || checkoutData.card_name != null || typeof checkoutData.card_name != "undefined") {
+            refundSaveData.cardname = checkoutData.card_name;
+          }
+          if (checkoutData.card_no != "" || checkoutData.card_no != null || typeof checkoutData.card_no != "undefined") {
+            refundSaveData.cardno = checkoutData.card_no;
+          }
+          if (checkoutData.exp_date != "" || checkoutData.exp_date != null || typeof checkoutData.exp_date != "undefined") {
+            refundSaveData.expdate = checkoutData.exp_date;
+          }
+          if (checkoutData.cvv != "" || checkoutData.cvv != null || typeof checkoutData.cvv != "undefined") {
+            refundSaveData.cvv = checkoutData.cvv;
+          }
+
+          const NEW_REFUND = new ServiceRefund(refundSaveData);
+          NEW_REFUND.save();
+
+          res.status(200).json({
+            status: true,
+            message: "Refund request successful.",
+            data: docs
+          });
+        })
+        .catch(err => {
+          res.status(500).json({
+            status: false,
+            message: "Invalid id. Server error.",
+            error: err.message
+          });
+        });
+  }
+}
 
 module.exports = {
   viewAll,

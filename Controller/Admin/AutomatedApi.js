@@ -1,4 +1,6 @@
 const SERVICE_SALE_EARNINGS = require('../../Models/earnings/service_sale_earnings');
+const SERVICE_CART = require('../../Models/service_cart');
+const SERVICE_REFUND = require('../../Models/service_refund');
 
 var payForServOrNot = async (req, res) => {
     return SERVICE_SALE_EARNINGS.updateMany(
@@ -38,7 +40,33 @@ var payForService = async (req, res) => {
     );
 }
 
+var clearServiceRefunds = async (req, res) => {
+    SERVICE_CART.updateMany(
+        { refund_request: "Refund initiated" }, 
+        { $set: { refund_request: "Refunded" } }, 
+        { multi: true }, 
+        (err, result) => {
+            console.log("Couldn't update cart data due to ", err.name);
+        }
+    );
+    
+    return SERVICE_REFUND.updateMany(
+        { refund_status: false }, 
+        { $set: { refund_status: true } },
+        { multi: true },
+        (err, result) => {
+            if (!err) {
+                console.log("Product refunds cleared.");
+            }
+            else {
+                console.log("Failed to clear product refunds due to: ", err.name);
+            }
+        }
+    );
+}
+
 module.exports = {
     payForServOrNot,
-    payForService
+    payForService,
+    clearServiceRefunds
 }
