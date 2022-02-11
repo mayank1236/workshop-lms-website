@@ -3,7 +3,6 @@ var mongoose = require('mongoose')
 var ServiceCart = require('../../Models/service_cart')
 var SellerBookings = require('../../Models/Slot/seller_bookings')
 const SERVICE_SALE_EARNINGS = require('../../Models/earnings/service_sale_earnings');
-const SELLER_TOTAL_EARNINGS = require('../../Models/earnings/seller_total_earning');
 
 var viewAll = async (req, res) => {
     return ServiceCart.aggregate(

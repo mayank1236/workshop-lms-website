@@ -95,7 +95,7 @@ var acceptNewBooking = async (req, res) => {
                     async (err, docs) => {
                         console.log("Updated seller booking ", docs);
                         if (!err) {
-                            var userBookedSlotData = userBookedSlot.findOneAndUpdate(
+                            var userBookedSlotData = await userBookedSlot.findOneAndUpdate(
                                 {
                                     _id: docs.user_booking_id,
                                     slot_id: docs.slot_id
@@ -104,7 +104,7 @@ var acceptNewBooking = async (req, res) => {
                                 { returnNewDocument: true }
                             ).exec();
 
-                            var serviceCartData = userServiceCart.findOneAndUpdate(
+                            var serviceCartData = await userServiceCart.findOneAndUpdate(
                                 {
                                     user_booking_id: docs.user_booking_id,
                                     slot_id: docs.slot_id
