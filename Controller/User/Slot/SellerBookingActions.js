@@ -6,7 +6,7 @@ var userBookedSlot = require('../../../Models/Slot/user_booked_slot');
 var userServiceCart = require('../../../Models/service_cart');
 var adminCommission = require('../../../Models/admin_commission');
 var serviceSaleCommission = require('../../../Models/earnings/service_sale_earnings');
-// var sellerTotalEarning = require('../../../Models/earnings/seller_total_earning');
+var sellerTotalEarning = require('../../../Models/earnings/seller_total_earning');
 // var adminEarnings = require('../../../Models/earnings/admin_earnings');
 
 var newBookings = async (req, res) => {
@@ -33,6 +33,14 @@ var newBookings = async (req, res) => {
                     localField: "shop_service_id",
                     foreignField: "_id",
                     as: "shopservice_data"
+                }
+            },
+            {
+                $lookup: {
+                    from: "service_carts",
+                    localField: "user_booking_id",
+                    foreignField: "user_booking_id",
+                    as: "cart_data"
                 }
             },
             {
@@ -148,25 +156,27 @@ var acceptNewBooking = async (req, res) => {
                             NEW_SERVICE_EARNING.save();
 
                             // Also update the total earning (varying with accept,withdraw, refund)
-                            // let totalEarningData = await sellerTotalEarning.findOne({ seller_id: docs.seller_id }).exec();
+                            let totalEarningData = await sellerTotalEarning.findOne({ seller_id: docs.seller_id }).exec();
 
-                            // if (totalEarningData == null || totalEarningData == "") {
-                            //     let obj2 = {
-                            //         seller_id: docs.seller_id,
-                            //         total_earning: Number(seller_earning)
-                            //     }
-                            //     const NEW_TOTAL_EARNING = new sellerTotalEarning(obj2);
-                            //     NEW_TOTAL_EARNING.save()
-                            // }
-                            // else {
-                            //     var newTotal = parseInt(totalEarningData.total_earning) + parseInt(seller_earning);
+                            if (totalEarningData == null || totalEarningData == "") {
+                                let obj2 = {
+                                    seller_id: docs.seller_id,
+                                    total_earning: Number(seller_earning)
+                                }
+                                const NEW_TOTAL_EARNING = new sellerTotalEarning(obj2);
+                                NEW_TOTAL_EARNING.save()
+                            }
+                            else {
+                                // var newTotal = parseInt(totalEarningData.total_earning) + parseInt(seller_earning);
 
-                            //     sellerTotalEarning.findOneAndUpdate(
-                            //         { seller_id: docs.seller_id },
-                            //         { $set: { total_earning: newTotal } },
-                            //         { new: true }
-                            //     ).exec();
-                            // }
+                                // sellerTotalEarning.findOneAndUpdate(
+                                //     { seller_id: docs.seller_id },
+                                //     { $set: { total_earning: newTotal } },
+                                //     { new: true }
+                                // ).exec();
+                                totalEarningData.total_earning += seller_earning;
+                                totalEarningData.save();
+                            }
                             /** ---------------------------------------------------------------------------------- */
 
                             res.status(200).json({
@@ -270,6 +280,14 @@ var viewAcceptedBookings = async (req, res) => {
                     localField: "shop_service_id",
                     foreignField: "_id",
                     as: "shopservice_data"
+                }
+            },
+            {
+                $lookup: {
+                    from: "service_carts",
+                    localField: "user_booking_id",
+                    foreignField: "user_booking_id",
+                    as: "cart_data"
                 }
             },
             {
@@ -410,6 +428,14 @@ var viewRejectedBookings = async (req, res) => {
                     localField: "shop_service_id",
                     foreignField: "_id",
                     as: "shopservice_data"
+                }
+            },
+            {
+                $lookup: {
+                    from: "service_carts",
+                    localField: "user_booking_id",
+                    foreignField: "user_booking_id",
+                    as: "cart_data"
                 }
             },
             {

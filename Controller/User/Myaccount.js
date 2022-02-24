@@ -358,7 +358,7 @@ var serviceRefund = async (req,res) => {
             refAmt = parseInt(docs.price);
           }
           else {
-            refAmt = parseInt(refAmt) + ((parseInt(docs.price)*parseInt(docs.discount_percent))/100);
+            refAmt = parseInt(docs.price) - ((parseInt(docs.price)*parseInt(docs.discount_percent))/100);
           }
           
           let checkoutData = await Checkout.findOne({ order_id: docs.order_id }).exec();
