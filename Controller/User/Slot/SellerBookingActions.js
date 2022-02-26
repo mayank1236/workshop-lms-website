@@ -81,6 +81,17 @@ var acceptNewBooking = async (req, res) => {
             ).exec();
             console.log("Service cart data ", payment_status);
 
+            // Should be done after updating status of seller slot booking
+            // but due to repeated problems shifted here
+            var userBookedSlotData = await userBookedSlot.findOneAndUpdate(
+                {
+                    _id: payment_status.user_booking_id,
+                    slot_id: payment_status.slot_id
+                },
+                { $set: { seller_confirmed: true } },
+                { returnNewDocument: true }
+            ).exec();
+
             if (payment_status == null || payment_status == "") {
                 return res.status(500).json({
                     status: false,
@@ -105,14 +116,8 @@ var acceptNewBooking = async (req, res) => {
                 )
                     .then(async (docs) => {
                         console.log("Updated seller booking ", docs);
-                        var userBookedSlotData = await userBookedSlot.findOneAndUpdate(
-                            {
-                                _id: docs.user_booking_id,
-                                slot_id: docs.slot_id
-                            },
-                            { $set: { seller_confirmed: true } },
-                            { returnNewDocument: true }
-                        ).exec();
+
+                        // Updating user booking slot was facing intermittent problem here
 
                         var serviceCartData = await userServiceCart.findOneAndUpdate(
                             {
