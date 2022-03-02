@@ -13,6 +13,7 @@ const ServiceController = require('../../Controller/User/ServiceCategory');// ad
 const UserSellersController = require('../../Controller/User/UserSellers');// added by anirbank-93
 const ShopServiceController = require('../../Controller/User/ShopServices');// added by anirbank-93
 const SearchController = require('../../Controller/User/Search');  // added by anirbank-93
+const UserContact = require('../../Controller/User/UserContact');  // added by anirbank-93
 /**-------------------------Website info section------------------------- */
 const AboutUs = require('../../Controller/User/Website_info/AboutUs');
 const TermsNConditn = require('../../Controller/User/Website_info/TermsNConditn');
@@ -57,6 +58,8 @@ router.get('/user/shop/top-services', ShopServiceController.viewTopServiceProvid
 router.get('/user/top-sellers', UserSellersController.viewTopSellers);  // added by anirbank-93
 
 router.post('/user/search-service', SearchController.allServicesSearch);   // added by anirbank-93
+
+router.post('/user/contact-us', upload.single("file"), UserContact.makeContact);
 
 router.get('/user/about-us', AboutUs.viewAllSegments);
 router.get('/user/about-us/:id', AboutUs.viewSegmentById);

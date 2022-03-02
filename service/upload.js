@@ -7,7 +7,9 @@ const uploadFile = async (req, folder) => {
 }
 
 const uploadFile2 = async (req, folder) => {
-    let file_name = "uploads/"+folder+"/"+req.file.originalname;
+    var upl_file = req.file.originalname;
+
+    let file_name = "uploads/"+folder+"/"+upl_file.replace(/\s+/g, '');
     fs.writeFileSync(file_name, req.file.buffer);
     return file_name;
 }
