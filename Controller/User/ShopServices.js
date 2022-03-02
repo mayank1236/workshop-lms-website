@@ -68,10 +68,10 @@ const create = async (req, res) => {
     shop_service.save()
         .then(async (docs) => {
             // Check user subscription info
-            let subData = await userSub.findOne({ userid: docs.user_id }).exec()
+            // let subData = await userSub.findOne({ userid: docs.user_id }).exec()
 
-            var sellerCom = Number(subData.seller_comission)
-            var adminComm = 100 - sellerCom
+            // var sellerCom = Number(subData.seller_comission)
+            // var adminComm = 100 - sellerCom
 
             let commissionData = {
                 _id: mongoose.Types.ObjectId(),

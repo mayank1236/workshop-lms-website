@@ -54,7 +54,6 @@ var addNEditCommission = async (req, res) => {
         });
     }
     else {
-
         return adminCommission.findOneAndUpdate(
             { service_id: mongoose.Types.ObjectId(req.body.service_id) },
             { percentage: req.body.percentage },
