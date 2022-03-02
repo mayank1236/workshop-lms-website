@@ -22,6 +22,7 @@ const BlogController = require('../../Controller/Admin/Blog');
 const GrievanceController = require('../../Controller/Admin/Grievance');
 const FeedbackController = require('../../Controller/Admin/Feedback');
 const JobApplications = require('../../Controller/Admin/JobApplications');
+const UserContacts = require('../../Controller/Admin/UserContact');
 /** ----------------utility modules--------------- */
 const csv_reports = require('../../service/csv_reports');
 /**-------------utility modules end--------------- */
@@ -127,6 +128,8 @@ router.get('/feedback/:id', FeedbackController.viewFeedbackById);
 
 router.get('/received-applications', JobApplications.viewAll);
 router.get('/received-applications/:id', JobApplications.viewById);
+
+router.get('/contact-us', UserContacts.getAllContacts);
 
 router.post('/personnel-register', RefundPersonnel.register);
 router.get('/refund-personnel', RefundPersonnel.refundPersonnelList);
