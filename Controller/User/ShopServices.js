@@ -1,8 +1,9 @@
 var mongoose = require('mongoose')
 
 var ShopService = require('../../Models/shop_service')
+var userSub = require('../../Models/subscr_purchase')
 var AdminCommission = require('../../Models/admin_commission')
-var Checkout = require('../../Models/checkout')
+
 var Upload = require('../../service/upload')
 
 const { Validator } = require('node-input-validator')
@@ -66,15 +67,21 @@ const create = async (req, res) => {
     let shop_service = new ShopService(shopServiceData)
     shop_service.save()
         .then(async (docs) => {
+            // Check user subscription info
+            // let subData = await userSub.findOne({ userid: docs.user_id }).exec()
+
+            // var sellerCom = Number(subData.seller_comission)
+            // var adminComm = 100 - sellerCom
+
             let commissionData = {
                 _id: mongoose.Types.ObjectId(),
                 service_id: docs._id,
-                category_id: docs.category_id
+                category_id: docs.category_id,
+                percentage: adminComm
             }
 
             const ADMIN_COMMISSION = new AdminCommission(commissionData)
-
-            var save_admin_commission = await ADMIN_COMMISSION.save()
+            ADMIN_COMMISSION.save()
 
             res.status(200).json({
                 status: true,
@@ -86,7 +93,7 @@ const create = async (req, res) => {
             res.status(500).json({
                 status: false,
                 message: "Server error. Please try again",
-                errors: err
+                errors: err.message
             })
         })
 }

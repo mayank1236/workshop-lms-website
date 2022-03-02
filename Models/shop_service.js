@@ -1,6 +1,9 @@
 var mongoose = require('mongoose')
+var moment = require('moment-timezone')
+
 // const shop = require('./shop')
 var Schema = mongoose.Schema
+var dateKolkata = moment.tz(Date.now(), "Asia/Kolkata")
 
 const ShopServiceSchema = new Schema({
     _id:mongoose.Schema.Types.ObjectId,
@@ -36,6 +39,10 @@ const ShopServiceSchema = new Schema({
     status:{
         type: Boolean,
         default: true
+    },
+    created_on: {
+        type: Date,
+        default: dateKolkata
     }
 })
 

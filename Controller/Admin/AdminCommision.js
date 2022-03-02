@@ -17,16 +17,15 @@ var addNEditCommission = async (req, res) => {
 
     let saveData = {
         _id: mongoose.Types.ObjectId(),
-        service_id: req.body.service_id,
+        service_id: mongoose.Types.ObjectId(req.body.service_id),
         percentage: req.body.percentage
     }
-    if (
-        req.body.category_id != "" ||
-        req.body.category_id != null ||
-        typeof req.body.category_id != "undefined"
-    ) {
+    if (req.body.category_id == "" || req.body.category_id == null || typeof req.body.category_id == "undefined") {
+        saveData.category_id = null;
+    }
+    else {
         console.log(req.body.category_id);
-        saveData.category_id = req.body.category_id;
+        saveData.category_id = mongoose.Types.ObjectId(req.body.category_id);
     }
 
     var commissionData = await adminCommission.
@@ -55,7 +54,6 @@ var addNEditCommission = async (req, res) => {
         });
     }
     else {
-
         return adminCommission.findOneAndUpdate(
             { service_id: mongoose.Types.ObjectId(req.body.service_id) },
             { percentage: req.body.percentage },
