@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-var moment = require('moment-timezone')
+// var moment = require('moment-timezone')
 var Schema = mongoose.Schema
 
 var SellerBookings = require('./seller_bookings')
@@ -13,7 +13,7 @@ const userBookedSlot = new Schema({
     // seller_timing_id: mongoose.Schema.Types.ObjectId,
     date_of_booking: {
         type: Date,
-        default: moment.tz(new Date(),"Asia/Kolkata"),//Date.now()
+    //     default: moment.tz(new Date(),"Asia/Kolkata"),//Date.now()
         required: true
     },
     shop_service_name:{
