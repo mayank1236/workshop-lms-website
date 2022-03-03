@@ -76,8 +76,8 @@ const create = async (req, res) => {
             let commissionData = {
                 _id: mongoose.Types.ObjectId(),
                 service_id: docs._id,
-                category_id: docs.category_id,
-                percentage: adminComm
+                category_id: docs.category_id
+                // percentage: adminComm
             }
 
             const ADMIN_COMMISSION = new AdminCommission(commissionData)

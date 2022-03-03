@@ -11,7 +11,10 @@ const ADMIN_COMMISSION = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         default: null
     },
-    percentage: Number,
+    percentage: {
+        type: Number,
+        default: 0
+    },
     status: {
         type: Boolean,
         default: true
