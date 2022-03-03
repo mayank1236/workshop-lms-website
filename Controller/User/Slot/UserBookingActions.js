@@ -85,34 +85,37 @@ var checkAvailability = async (req,res)=>{
 }
 
 var viewSlotsForADay = async (req,res)=>{
-    let shop_service_id = req.body.shop_service_id
-    ServiceSlots.find({
+    var shop_service_id = req.body.shop_service_id
+    
+    let slots = await ServiceSlots.find({
         shop_service_id: {$in: [mongoose.Types.ObjectId(shop_service_id)]},
         weekday_name: req.body.weekday_name
-    })
-    .then(data=>{
-        if (data==null || data=='') {
-            res.status(200).json({
+    }).sort({ "timing.from": 1 })
+
+        if (slots.length < 0) {
+            return res.status(200).json({
                 status: true,
                 message: "Seller doesn't provide service on this day.",
-                data: []
+                data: slots
             })
         }
         else {
-            res.status(200).json({
+            return res.status(200).json({
                 status: true,
                 message: "Service times for the day successfully get.",
-                data: data
+                data: slots
             })
         }
-    })
-    .catch(err=>{
-        res.status(500).json({
-            status: false,
-            message: "Failed to fetch timings. Server error.",
-            error: err
-        })
-    })
+
+    // .then(data=>{
+    // })
+    // .catch(err=>{
+    //     res.status(500).json({
+    //         status: false,
+    //         message: "Failed to fetch timings. Server error.",
+    //         error: err
+    //     })
+    // })
 }
 
 /** Api for both slot booking and add to cart */
