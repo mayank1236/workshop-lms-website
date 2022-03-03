@@ -141,33 +141,8 @@ var viewSlotsForADay = async (req, res) => {
                 ],
                 as: "booking_info"
             }
-        }
-        // {
-        //     $lookup: {
-        //         from: "user_booked_slots",
-        //         localField: "shop_service_id",
-        //         foreignField: "shop_service_id",
-        //         as: "user_booking_data"
-        //     }
-        // },
-        // {
-        //     $addFields: {
-        //         booking_info: {
-        //             $filter: {
-        //                 input: "$user_booking_data",
-        //                 as: "user_booking",
-        //                 cond: {
-        //                     $and: [
-        //                         { $eq: ["$user_booking_data.day_name_of_booking", "$weekday_name"] },
-        //                         { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()] },
-        //                         { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()] },
-        //                     ]
-        //                 }
-        //             },
-
-        //         }
-        //     }
-        // }
+        },
+        { $sort: { "timing.from": 1 }}
     ]).exec()
 
     if (slots.length < 0) {
