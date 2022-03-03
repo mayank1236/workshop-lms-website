@@ -124,12 +124,13 @@ var viewSlotsForADay = async (req, res) => {
         {
             $lookup: {
                 from: "user_booked_slots",
-                let: { from: "$timing.from" },
+                let: { day_name_of_booking: "$weekday_name", from: "$timing.from" },
                 pipeline: [
                     {
                         $match: {
                             $expr: {
                                 $and: [
+                                    { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] }, 
                                     { $eq: ["$from", "$$from"] },
                                     { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()]},
                                     { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()]},
