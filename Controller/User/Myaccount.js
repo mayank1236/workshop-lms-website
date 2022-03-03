@@ -22,6 +22,20 @@ var viewAll = async (req, res) => {
       },
       {
         $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user_data"
+        }
+      },
+      {
+        $unwind: {
+          path: "$user_data",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
           from: "service_carts",//
           localField: "order_id",//
           foreignField: "order_id",
@@ -29,8 +43,73 @@ var viewAll = async (req, res) => {
         }
       },
       {
+        $unwind: {
+          path: "$cart_data",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: "user_booked_slots",
+          let: { user_booking_id: "$cart_data.user_booking_id" },
+          pipeline: [{ $match: { $expr: { $and: [{ $eq: ["$_id", "$$user_booking_id"] }] } } }],
+          as: "cart_data.slot_data"
+        }
+      },
+      {
+        $unwind: {
+          path: "$cart_data.slot_data",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      // {
+      //   $lookup: {
+      //     from: "users",
+      //     let: {seller_id: "$cart_data.seller_id"},
+      //     pipeline: [{$match: {$expr: {$and: [{$eq: ["$_id", "$$seller_id"]}]}}}],
+      //     as: "cart_data.seller_data"
+      //   }
+      // },
+      // {
+      //   $unwind: {
+      //     path: "$cart_data.seller_data",
+      //     preserveNullAndEmptyArrays: true
+      //   }
+      // },
+      // {
+      //   $lookup: {
+      //     from: "shop_services",
+      //     let: {service_id: "$cart_data.service_id"},
+      //     pipeline: [{$match: {$expr: {$and: [{$eq: ["$_id", "$$service_id"]}]}}}],
+      //     as: "cart_data.seller_data.service_data"
+      //   }
+      // },
+      // {
+      //   $lookup: {
+      //     from: "service_refunds",
+      //     localField: "order_id",
+      //     foreignField: "order_id",
+      //     as: "service_refund"
+      //   }
+      // },
+      // {
+      //   $unwind: {
+      //     path: "$service_refund",
+      //     preserveNullAndEmptyArrays: true
+      //   }
+      // },
+      {
         $project: {
-          _v: 0
+          _id: 0
+        }
+      },
+      {
+        $group: {
+          _id: "$order_id",
+          order_subtotal: { $sum: "$cart_data.price" },
+          discount: { $sum: "$cart_data.discount_percent" },
+          user_data: { $push: "$user_data" },
+          cart_data: { $push: "$cart_data" }
         }
       }
     ]
@@ -331,13 +410,13 @@ var imageurlApi = async (req, res) => {
   );
 }
 
-var serviceRefund = async (req,res) => {
-  var id =req.params.id ;  // cart _id
+var serviceRefund = async (req, res) => {
+  var id = req.params.id;  // cart _id
 
   let cartData = await ServiceCart.findOne({ _id: mongoose.Types.ObjectId(id) }).exec();
 
   console.log("Order id ", cartData.order_id);
-  
+
   if (cartData.order_id == null || cartData.order_id == "" || typeof cartData.order_id == "undefined") {
     return res.status(500).json({
       status: false,
@@ -347,71 +426,71 @@ var serviceRefund = async (req,res) => {
   }
   else {
     return ServiceCart.findOneAndUpdate(
-      { _id: mongoose.Types.ObjectId(id) }, 
-      { $set: { refund_request: "Yes" } }, 
+      { _id: mongoose.Types.ObjectId(id) },
+      { $set: { refund_request: "Yes" } },
       { new: true }
     )
-        .then(async (docs) => {
-          console.log("Cart ", docs);
-          var refAmt = 0;   // this will go to 'refund_amount'
-          if (docs.discount_percent == null || docs.discount_percent == "" || typeof docs.discount_percent == "undefined") {
-            refAmt = parseInt(docs.price);
-          }
-          else {
-            refAmt = parseInt(docs.price) - ((parseInt(docs.price)*parseInt(docs.discount_percent))/100);
-          }
-          
-          let checkoutData = await Checkout.findOne({ order_id: docs.order_id }).exec();
-          console.log("Checkout ", checkoutData);
+      .then(async (docs) => {
+        console.log("Cart ", docs);
+        var refAmt = 0;   // this will go to 'refund_amount'
+        if (docs.discount_percent == null || docs.discount_percent == "" || typeof docs.discount_percent == "undefined") {
+          refAmt = parseInt(docs.price);
+        }
+        else {
+          refAmt = parseInt(docs.price) - ((parseInt(docs.price) * parseInt(docs.discount_percent)) / 100);
+        }
 
-          let refundSaveData = {
-            user_id: docs.user_id,
-            seller_id: docs.seller_id,
-            serv_id: docs.service_id,
-            cart_id: docs._id,
-            order_id: docs.order_id,
-            refund_amount: refAmt,
-            firstname: checkoutData.firstname,
-            lastname: checkoutData.lastname,
-            address1: checkoutData.address1,
-            country: checkoutData.country,
-            state: checkoutData.state,
-            zip: checkoutData.zip,
-            paymenttype: checkoutData.payment_type
-          }
-          if (checkoutData.address2 != "" || checkoutData.address2 != null || typeof checkoutData.address2 != "undefined") {
-            refundSaveData.address2 = checkoutData.address2;
-          }
-          if (checkoutData.card_name != "" || checkoutData.card_name != null || typeof checkoutData.card_name != "undefined") {
-            refundSaveData.cardname = checkoutData.card_name;
-          }
-          if (checkoutData.card_no != "" || checkoutData.card_no != null || typeof checkoutData.card_no != "undefined") {
-            refundSaveData.cardno = checkoutData.card_no;
-          }
-          if (checkoutData.exp_date != "" || checkoutData.exp_date != null || typeof checkoutData.exp_date != "undefined") {
-            refundSaveData.expdate = checkoutData.exp_date;
-          }
-          if (checkoutData.cvv != "" || checkoutData.cvv != null || typeof checkoutData.cvv != "undefined") {
-            refundSaveData.cvv = checkoutData.cvv;
-          }
+        let checkoutData = await Checkout.findOne({ order_id: docs.order_id }).exec();
+        console.log("Checkout ", checkoutData);
 
-          const NEW_REFUND = new ServiceRefund(refundSaveData);
-          let saveRefund = await NEW_REFUND.save();
-          console.log("Refund data", saveRefund);
+        let refundSaveData = {
+          user_id: docs.user_id,
+          seller_id: docs.seller_id,
+          serv_id: docs.service_id,
+          cart_id: docs._id,
+          order_id: docs.order_id,
+          refund_amount: refAmt,
+          firstname: checkoutData.firstname,
+          lastname: checkoutData.lastname,
+          address1: checkoutData.address1,
+          country: checkoutData.country,
+          state: checkoutData.state,
+          zip: checkoutData.zip,
+          paymenttype: checkoutData.payment_type
+        }
+        if (checkoutData.address2 != "" || checkoutData.address2 != null || typeof checkoutData.address2 != "undefined") {
+          refundSaveData.address2 = checkoutData.address2;
+        }
+        if (checkoutData.card_name != "" || checkoutData.card_name != null || typeof checkoutData.card_name != "undefined") {
+          refundSaveData.cardname = checkoutData.card_name;
+        }
+        if (checkoutData.card_no != "" || checkoutData.card_no != null || typeof checkoutData.card_no != "undefined") {
+          refundSaveData.cardno = checkoutData.card_no;
+        }
+        if (checkoutData.exp_date != "" || checkoutData.exp_date != null || typeof checkoutData.exp_date != "undefined") {
+          refundSaveData.expdate = checkoutData.exp_date;
+        }
+        if (checkoutData.cvv != "" || checkoutData.cvv != null || typeof checkoutData.cvv != "undefined") {
+          refundSaveData.cvv = checkoutData.cvv;
+        }
 
-          res.status(200).json({
-            status: true,
-            message: "Refund request successful.",
-            data: docs
-          });
-        })
-        .catch(err => {
-          res.status(500).json({
-            status: false,
-            message: "Invalid id. Server error.",
-            error: err.message
-          });
+        const NEW_REFUND = new ServiceRefund(refundSaveData);
+        let saveRefund = await NEW_REFUND.save();
+        console.log("Refund data", saveRefund);
+
+        res.status(200).json({
+          status: true,
+          message: "Refund request successful.",
+          data: docs
         });
+      })
+      .catch(err => {
+        res.status(500).json({
+          status: false,
+          message: "Invalid id. Server error.",
+          error: err.message
+        });
+      });
   }
 }
 
