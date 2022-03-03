@@ -159,21 +159,12 @@ var viewSlotsForADay = async (req, res) => {
             data: slots
         })
     }
-
-    // .then(data=>{
-    // })
-    // .catch(err=>{
-    //     res.status(500).json({
-    //         status: false,
-    //         message: "Failed to fetch timings. Server error.",
-    //         error: err
-    //     })
-    // })
 }
 
 /** Api for both slot booking and add to cart */
 var bookAppointment = async (req, res, next) => {
     const V = new Validator(req.body, {
+        date_of_booking: 'required',
         day_name_of_booking: "required",
         from: "required",
         to: "required",
@@ -191,6 +182,7 @@ var bookAppointment = async (req, res, next) => {
         slot_id: mongoose.Types.ObjectId(req.body.slot_id),
         shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
         seller_id: mongoose.Types.ObjectId(req.body.seller_id),
+        date_of_booking: req.body.date_of_booking,
         day_name_of_booking: req.body.day_name_of_booking,
         from: req.body.from,
         to: req.body.to,
@@ -250,6 +242,7 @@ var bookAppointment = async (req, res, next) => {
                     slot_id: docs.slot_id,
                     shop_service_id: docs.shop_service_id,
                     seller_id: docs.seller_id,
+                    date_of_booking: docs.date_of_booking,
                     day_name_of_booking: docs.day_name_of_booking,
                     from: docs.from,
                     to: docs.to,
