@@ -111,7 +111,8 @@ var viewAll = async (req, res) => {
           user_data: { $push: "$user_data" },
           cart_data: { $push: "$cart_data" }
         }
-      }
+      },
+      { $sort: { _id: -1 } }
     ]
   )
     .then((docs) => {
