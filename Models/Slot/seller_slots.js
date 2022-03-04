@@ -30,10 +30,10 @@ const SELLER_SLOT_SCHEMA = new Schema({
     slot_duration:{
         type: Number
     },
-    booking_status:{
-        type: Boolean,
-        default: false
-    }
+    // booking_status:{
+    //     type: Boolean,
+    //     default: false
+    // }
 });
 
 module.exports = MONGOOSE.model('seller_slots', SELLER_SLOT_SCHEMA);
