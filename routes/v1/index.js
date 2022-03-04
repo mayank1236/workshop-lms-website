@@ -57,7 +57,7 @@ router.get('/user/shop/top-services', ShopServiceController.viewTopServiceProvid
 
 router.get('/user/top-sellers', UserSellersController.viewTopSellers);  // added by anirbank-93
 
-router.post('/user/search-service', SearchController.allServicesSearch);   // added by anirbank-93
+router.post('/user/search-service', SearchController.allSearch);   // added by anirbank-93
 
 router.post('/user/contact-us', upload.single("file"), UserContact.makeContact);
 
