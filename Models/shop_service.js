@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
 var moment = require('moment-timezone')
+var aggregatePaginate = require('mongoose-aggregate-paginate-v2')
 
 // const shop = require('./shop')
 var Schema = mongoose.Schema
@@ -57,4 +58,6 @@ ShopServiceSchema.indexes({
     category_name: 'text' 
 })
 
-module.exports = mongoose.model("shop_services", ShopServiceSchema);
+ShopServiceSchema.plugin(aggregatePaginate)
+
+module.exports = mongoose.model("shop_services", ShopServiceSchema)
