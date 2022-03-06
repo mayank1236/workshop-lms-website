@@ -130,10 +130,10 @@ var viewSlotsForADay = async (req, res) => {
                         $match: {
                             $expr: {
                                 $and: [
-                                    { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] }, 
+                                    { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] },
                                     { $eq: ["$from", "$$from"] },
-                                    { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()]},
-                                    { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()]},
+                                    { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()] },
+                                    { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()] },
                                 ]
                             }
                         }
@@ -142,7 +142,7 @@ var viewSlotsForADay = async (req, res) => {
                 as: "booking_info"
             }
         },
-        { $sort: { "timing.from": 1 }}
+        { $sort: { "timing.from": 1 } }
     ]).exec()
 
     if (slots.length < 0) {
@@ -163,154 +163,168 @@ var viewSlotsForADay = async (req, res) => {
 
 /** Api for both slot booking and add to cart */
 var bookAppointment = async (req, res, next) => {
-    var service_cart = await ServiceCart.find({
-        user_id: mongoose.Types.ObjectId(req.body.user_id),
-        service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
-        status: true
+    var user_bookings = await UserBookedSlot.findOne({
+        slot_id: mongoose.Types.ObjectId(req.body.slot_id), 
+        date_of_booking: new Date(req.body.date_of_booking)
     }).exec()
-    console.log("User's service cart: ", service_cart)
 
-    if (service_cart.length > 0) {
-        res.status(500).json({
+    if (user_bookings != null) {
+        return res.status(500).json({
             status: false,
-            message: "Slot has already been booked for this request.",
-            data: service_cart
+            error: "Slot has already been booked.",
+            data: null
         })
     }
     else {
-        const V = new Validator(req.body, {
-            date_of_booking: 'required',
-            day_name_of_booking: "required",
-            from: "required",
-            to: "required",
-            duration: "required"
-        })
-        let matched = V.check().then(val => val)
-    
-        if (!matched) {
-            res.status(400).json({ status: false, error: V.errors })
-        }
-        
-        let saveData1 = {
-            _id: mongoose.Types.ObjectId(),
+        var service_cart = await ServiceCart.find({
             user_id: mongoose.Types.ObjectId(req.body.user_id),
-            slot_id: mongoose.Types.ObjectId(req.body.slot_id),
-            shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
-            seller_id: mongoose.Types.ObjectId(req.body.seller_id),
-            date_of_booking: req.body.date_of_booking,
-            day_name_of_booking: req.body.day_name_of_booking,
-            from: req.body.from,
-            to: req.body.to,
-            duration: req.body.duration
-        }
-        if (
-            req.body.shop_service_name != "" &&
-            req.body.shop_service_name != null &&
-            typeof req.body.shop_service_name != "undefined"
-        ) {
-            saveData1.shop_service_name = req.body.shop_service_name
-        }
-        // if (
-        //     req.body.shop_service_category!="" && 
-        //     req.body.shop_service_category!=null && 
-        //     typeof req.body.shop_service_category!="undefined"
-        //     ) {
-        //     saveData1.shop_service_category = req.body.shop_service_category
-        // }
-        if (
-            req.body.price != "" &&
-            req.body.price != null &&
-            typeof req.body.price != "undefined"
-        ) {
-            saveData1.price = req.body.price
-        }
-        if (req.body.image == "" || req.body.image == null || typeof req.body.image == "undefined") {
-            saveData1.image = null
-        } else {
-            saveData1.image = req.body.image
-        }
-    
-        const USER_BOOKED_SLOT = new UserBookedSlot(saveData1);
-    
-        USER_BOOKED_SLOT.save(async (err, docs) => {
-            if (!err) {
-                console.log("User booking info: ", docs)
+            service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
+            status: true
+        }).exec()
+        console.log("User's service cart: ", service_cart)
 
-                let sellerBookingData = {
-                    _id: mongoose.Types.ObjectId(),
-                    user_booking_id: docs._id,
-                    user_id: docs.user_id,
-                    slot_id: docs.slot_id,
-                    shop_service_id: docs.shop_service_id,
-                    seller_id: docs.seller_id,
-                    date_of_booking: docs.date_of_booking,
-                    day_name_of_booking: docs.day_name_of_booking,
-                    from: docs.from,
-                    to: docs.to,
-                    duration: docs.duration
-                }
-        
-                let cartData = {
-                    _id: mongoose.Types.ObjectId(),
-                    user_id: docs.user_id,
-                    user_booking_id: docs._id,
-                    seller_id: docs.seller_id,
-                    service_id: docs.shop_service_id,
-                    slot_id: docs.slot_id,
-                    service_name: docs.shop_service_name,
-                    price: docs.price
-                }
-                // if (
-                //     docs.shop_service_category!="" && 
-                //     docs.shop_service_category!=null && 
-                //     typeof docs.shop_service_category!="undefined"
-                //     ) {
-                //     cartData.service_category = docs.shop_service_category
-                // }
-                if (docs.image == "" || docs.image == null || typeof docs.image == "undefined") {
-                    cartData.image = null
-                } else {
-                    cartData.image = docs.image
-                }
-        
-                const SELLER_BOOKING = new SellerBookings(sellerBookingData)
-                const SERVICE_CART = new ServiceCart(cartData)
-        
-                var saveInSellerBookings = await SELLER_BOOKING.save()
-        
-                SERVICE_CART.save()
-                    .then(data2 => {
-                        //   var updateSlotBookingStatus = ServiceSlots.findOneAndUpdate(
-                        //       {
-                        //           _id: {$in: [mongoose.Types.ObjectId(req.body.slot_id)]},
-                        //           // weekday_name: req.body.day_name_of_booking
-                        //       },
-                        //       { $set: { booking_status: true } },
-                        //       { returnNewDocument: true }
-                        //   ).exec()
-        
-                        res.status(200).json({
-                            status: true,
-                            message: "Slot booking successfull. Awaiting seller confirmation.",
-                            data: docs
-                        })
-                    })
-                    .catch(fault => {
-                        res.status(500).json({
-                            status: false,
-                            message: "Couldn't book slot. Server error",
-                            error: fault.message
-                        })
-                    })
+        if (service_cart.length > 0) {
+            res.status(500).json({
+                status: false,
+                message: "Previous service booking still pending completion.",
+                data: service_cart
+            })
+        }
+        else {
+            const V = new Validator(req.body, {
+                date_of_booking: 'required',
+                day_name_of_booking: "required",
+                from: "required",
+                to: "required",
+                duration: "required"
+            })
+            let matched = V.check().then(val => val)
+
+            if (!matched) {
+                res.status(400).json({ status: false, error: V.errors })
             }
-            else {
-                res.send({
-                    status: false,
-                    msg: "Server error. Please try again",
-                    error: err.message
-                })
+
+            let saveData1 = {
+                _id: mongoose.Types.ObjectId(),
+                user_id: mongoose.Types.ObjectId(req.body.user_id),
+                slot_id: mongoose.Types.ObjectId(req.body.slot_id),
+                shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
+                seller_id: mongoose.Types.ObjectId(req.body.seller_id),
+                date_of_booking: req.body.date_of_booking,
+                day_name_of_booking: req.body.day_name_of_booking,
+                from: req.body.from,
+                to: req.body.to,
+                duration: req.body.duration
             }
-        })
+            if (
+                req.body.shop_service_name != "" &&
+                req.body.shop_service_name != null &&
+                typeof req.body.shop_service_name != "undefined"
+            ) {
+                saveData1.shop_service_name = req.body.shop_service_name
+            }
+            // if (
+            //     req.body.shop_service_category!="" && 
+            //     req.body.shop_service_category!=null && 
+            //     typeof req.body.shop_service_category!="undefined"
+            //     ) {
+            //     saveData1.shop_service_category = req.body.shop_service_category
+            // }
+            if (
+                req.body.price != "" &&
+                req.body.price != null &&
+                typeof req.body.price != "undefined"
+            ) {
+                saveData1.price = req.body.price
+            }
+            if (req.body.image == "" || req.body.image == null || typeof req.body.image == "undefined") {
+                saveData1.image = null
+            } else {
+                saveData1.image = req.body.image
+            }
+
+            const USER_BOOKED_SLOT = new UserBookedSlot(saveData1);
+
+            USER_BOOKED_SLOT.save(async (err, docs) => {
+                if (!err) {
+                    console.log("User booking info: ", docs)
+
+                    let sellerBookingData = {
+                        _id: mongoose.Types.ObjectId(),
+                        user_booking_id: docs._id,
+                        user_id: docs.user_id,
+                        slot_id: docs.slot_id,
+                        shop_service_id: docs.shop_service_id,
+                        seller_id: docs.seller_id,
+                        date_of_booking: docs.date_of_booking,
+                        day_name_of_booking: docs.day_name_of_booking,
+                        from: docs.from,
+                        to: docs.to,
+                        duration: docs.duration
+                    }
+
+                    let cartData = {
+                        _id: mongoose.Types.ObjectId(),
+                        user_id: docs.user_id,
+                        user_booking_id: docs._id,
+                        seller_id: docs.seller_id,
+                        service_id: docs.shop_service_id,
+                        slot_id: docs.slot_id,
+                        service_name: docs.shop_service_name,
+                        price: docs.price
+                    }
+                    // if (
+                    //     docs.shop_service_category!="" && 
+                    //     docs.shop_service_category!=null && 
+                    //     typeof docs.shop_service_category!="undefined"
+                    //     ) {
+                    //     cartData.service_category = docs.shop_service_category
+                    // }
+                    if (docs.image == "" || docs.image == null || typeof docs.image == "undefined") {
+                        cartData.image = null
+                    } else {
+                        cartData.image = docs.image
+                    }
+
+                    const SELLER_BOOKING = new SellerBookings(sellerBookingData)
+                    const SERVICE_CART = new ServiceCart(cartData)
+
+                    var saveInSellerBookings = await SELLER_BOOKING.save()
+
+                    SERVICE_CART.save()
+                        .then(data2 => {
+                            //   var updateSlotBookingStatus = ServiceSlots.findOneAndUpdate(
+                            //       {
+                            //           _id: {$in: [mongoose.Types.ObjectId(req.body.slot_id)]},
+                            //           // weekday_name: req.body.day_name_of_booking
+                            //       },
+                            //       { $set: { booking_status: true } },
+                            //       { returnNewDocument: true }
+                            //   ).exec()
+
+                            res.status(200).json({
+                                status: true,
+                                message: "Slot booking successfull. Awaiting seller confirmation.",
+                                data: docs
+                            })
+                        })
+                        .catch(fault => {
+                            res.status(500).json({
+                                status: false,
+                                message: "Couldn't book slot. Server error",
+                                error: fault.message
+                            })
+                        })
+                }
+                else {
+                    res.send({
+                        status: false,
+                        msg: "Server error. Please try again",
+                        error: err.message
+                    })
+                }
+            })
+        }
     }
 }
 
