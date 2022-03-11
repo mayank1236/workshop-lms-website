@@ -47,6 +47,10 @@ const userBookedSlot = new Schema({
     seller_confirmed:{
         type: Boolean,
         default: false
+    },
+    paid: {
+        type: Boolean,
+        default: false
     }
 });
 

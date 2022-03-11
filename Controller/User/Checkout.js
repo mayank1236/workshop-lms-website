@@ -1,8 +1,9 @@
 var mongoose = require('mongoose')
+const { Validator } = require('node-input-validator')
+
 var Checkout = require('../../Models/checkout')
 var ServiceCart = require('../../Models/service_cart')
-
-const { Validator } = require('node-input-validator')
+var UserBookedSlot = require('../../Models/Slot/user_booked_slot')
 
 var create = async (req, res) => {
     const V = new Validator(req.body, {
@@ -142,6 +143,20 @@ var create = async (req, res) => {
                     }
                 }
             );
+
+            UserBookedSlot.updateMany(
+                {
+                    user_id: data.user_id,
+                    paid: false
+                },
+                { $set: { paid: true} }, 
+                { multi: true }, 
+                (fault,result) => {
+                    if (fault) {
+                        console.log(fault.message);
+                    }
+                }
+            ).exec();
 
             res.status(200).json({
                 status: true,

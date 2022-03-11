@@ -132,8 +132,9 @@ var viewSlotsForADay = async (req, res) => {
                                 $and: [
                                     { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] },
                                     { $eq: ["$from", "$$from"] },
+                                    { $eq: ["$paid", true] }, 
                                     { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()] },
-                                    { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()] },
+                                    { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()] }
                                 ]
                             }
                         }
@@ -163,12 +164,18 @@ var viewSlotsForADay = async (req, res) => {
 
 /** Api for both slot booking and add to cart */
 var bookAppointment = async (req, res, next) => {
-    var user_bookings = await UserBookedSlot.findOne({
-        slot_id: mongoose.Types.ObjectId(req.body.slot_id), 
-        date_of_booking: new Date(req.body.date_of_booking)
+    // var user_bookings = await UserBookedSlot.findOne({
+    //     slot_id: mongoose.Types.ObjectId(req.body.slot_id), 
+    //     date_of_booking: new Date(req.body.date_of_booking)
+    // }).exec()
+
+    var inCart = await ServiceCart.findOne({
+        slot_id: mongoose.Types.ObjectId(req.body.slot_id),
+        date_of_booking: req.body.date_of_booking,
+        status: false
     }).exec()
 
-    if (user_bookings != null) {
+    if (inCart != null) {
         return res.status(500).json({
             status: false,
             error: "Slot has already been booked.",
@@ -182,14 +189,15 @@ var bookAppointment = async (req, res, next) => {
             status: true
         }).exec()
         console.log("User's service cart: ", service_cart)
-
+        // Don't let users who have booked slots but not checked out make new slot booking.
         if (service_cart.length > 0) {
             res.status(500).json({
                 status: false,
-                message: "Previous service booking still pending completion.",
+                message: "Previous service bookings still pending payment.",
                 data: service_cart
             })
         }
+        // Otherwise let them.
         else {
             const V = new Validator(req.body, {
                 date_of_booking: 'required',
@@ -271,7 +279,8 @@ var bookAppointment = async (req, res, next) => {
                         service_id: docs.shop_service_id,
                         slot_id: docs.slot_id,
                         service_name: docs.shop_service_name,
-                        price: docs.price
+                        price: docs.price,
+                        date_of_booking: docs.date_of_booking
                     }
                     // if (
                     //     docs.shop_service_category!="" && 
