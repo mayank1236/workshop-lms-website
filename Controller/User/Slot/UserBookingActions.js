@@ -132,7 +132,6 @@ var viewSlotsForADay = async (req, res) => {
                                 $and: [
                                     { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] },
                                     { $eq: ["$from", "$$from"] },
-                                    { $eq: ["$paid", true] }, 
                                     { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()] },
                                     { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()] }
                                 ]
