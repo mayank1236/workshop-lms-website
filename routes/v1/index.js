@@ -25,6 +25,7 @@ const SafetyGuide = require('../../Controller/User/Website_info/SafetyGuide');
 const Associates = require('../../Controller/User/Website_info/Associates');
 const LegalNotice = require('../../Controller/User/Website_info/LegalNotice');
 const Careers = require('../../Controller/User/Website_info/Careers');
+const CmsController = require('../../Controller/User/Website_info/Cms');
 /**-----------------------Website info section end----------------------- */
 
 const middleware  = require('../../service/middleware').middleware;
@@ -91,6 +92,9 @@ router.get('/user/legal-notice/:id', LegalNotice.viewSegmentById);
 router.get('/user/careers', Careers.viewAllPostedJobs);
 router.get('/user/careers/:id', Careers.viewPostedJobById);
 router.post('/user/apply-to-job', upload.single("cv"), Careers.applyToJob);
+
+router.get('/user/faq', CmsController.viewAllFAQs);
+router.get('/user/faq/:id', CmsController.viewFAQById);
 /** ================================= without login url section end ================================ */
 
 router.use(middleware);
