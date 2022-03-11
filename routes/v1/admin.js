@@ -18,7 +18,6 @@ const ServiceRefund = require('../../Controller/Admin/ServiceRefund');    // add
 const MyAccountController = require('../../Controller/Admin/Myaccount');
 const AdminCommission = require('../../Controller/Admin/AdminCommision');
 const ReportController = require('../../Controller/Admin/Report');
-const BlogController = require('../../Controller/Admin/Blog');
 const GrievanceController = require('../../Controller/Admin/Grievance');
 const FeedbackController = require('../../Controller/Admin/Feedback');
 const JobApplications = require('../../Controller/Admin/JobApplications');
@@ -28,6 +27,7 @@ const csv_reports = require('../../service/csv_reports');
 /**-------------utility modules end--------------- */
 
 const AboutUs = require('../../Controller/Admin/Website_info/AboutUs');
+const BlogController = require('../../Controller/Admin/Blog');
 const TermsNConditn = require('../../Controller/Admin/Website_info/TermsNConditn');
 const PrivacyPolicy = require('../../Controller/Admin/Website_info/PrivacyPolicy');
 const SocialMediaInfo = require('../../Controller/Admin/Website_info/SocialMediaInfo');
@@ -36,6 +36,7 @@ const SafetyGuide = require('../../Controller/Admin/Website_info/SafetyGuide');
 const Associates = require('../../Controller/Admin/Website_info/Associates');
 const LegalNotice = require('../../Controller/Admin/Website_info/LegalNotice');
 const Careers = require('../../Controller/Admin/Website_info/Careers');
+const CmsController = require('../../Controller/Admin/Website_info/Cms');
 
 const AutomatedApi = require('../../Controller/Admin/AutomatedApi');
  
@@ -195,6 +196,12 @@ router.get('/careers', Careers.viewAllPostedJobs);
 router.get('/careers/:id', Careers.viewPostedJobById);
 router.put('/careers/:id', Careers.editPostedJob);
 router.delete('/careers/:id', Careers.deletePostedJob);
+
+router.post('/faq', CmsController.addFaq);
+router.get('/faq', CmsController.viewAllFAQs);
+router.get('/faq/:id', CmsController.viewFAQById);
+router.put('/faq/:id', CmsController.editFAQ);
+router.delete('/faq/:id', CmsController.deleteFAQ);
 /**========================CMS Section End======================== */
 
 /**===================================== Automated tasks =====================================*/
