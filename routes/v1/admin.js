@@ -179,6 +179,8 @@ router.get('/blog/:id', BlogController.viewBlogById);
 router.put('/blog/:id', BlogController.editBlog);
 router.delete('/blog/:id', BlogController.deleteBlog);
 
+router.get('/blog-comment', CmsController.viewAllBlogComments);
+
 router.post('/associate', Associates.addAssociate);
 router.post('/associate/image-upload', upload.single("image"), Associates.imageUpload);
 router.get('/associate', Associates.viewAllAssociates);
