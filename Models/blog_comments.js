@@ -11,6 +11,7 @@ const BLOG_COMMENT_SCHEMA = new Schema({
         type: String,
         required: true
     },
+    user_id: mongoose.Schema.Types.ObjectId,
     name: {
         type: String,
         required: true

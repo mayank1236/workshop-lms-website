@@ -22,6 +22,7 @@ var addComment = async (req, res) => {
         _id: mongoose.Types.ObjectId(),
         blog_id: mongoose.Types.ObjectId(req.body.blog_id),
         blog_type: req.body.blog_type,
+        user_id: mongoose.Types.ObjectId(req.body.user_id),
         name: req.body.name,
         email: req.body.email,
         message: req.body.message

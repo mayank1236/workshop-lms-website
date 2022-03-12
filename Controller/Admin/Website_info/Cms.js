@@ -179,6 +179,15 @@ var viewAllBlogComments = async (req,res) => {
     let comments = await BLOG_COMMENT.aggregate([
         {
             $lookup: {
+                from: "users",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "user_data"
+            }
+        },
+        { $unwind: "$user_data" }, 
+        {
+            $lookup: {
                 from: "blogs",
                 localField: "blog_id",
                 foreignField: "_id",

@@ -16,6 +16,7 @@ const Checkout = require('../../Controller/User/Checkout');
 const ServiceReview = require('../../Controller/User/ServiceReview');
 const GrievanceController = require('../../Controller/User/Grievance');
 const FeedbackController = require('../../Controller/User/Feedback');
+const BlogComments = require('../../Controller/User/BlogComments');
 /* Service schedule section start */
 const SellerTimingsController = require('../../Controller/User/Slot/SellerTimingsNSlots');// added by anirbank-93
 const UserBookingActions = require('../../Controller/User/Slot/UserBookingActions');// added by anirbank-93
@@ -176,6 +177,12 @@ router.post('/search-service', SearchController.Search);
 router.post('/complaint', upload1.single("attachment"), GrievanceController.addGrievance);
 
 router.post('/feedback', FeedbackController.addFeedback);
+
+router.post('/blog-comment', BlogComments.addComment);
+router.post('/blog-comment-img', upload1.single("image"), BlogComments.uploadImage);
+router.get('/blog-comment/:id', BlogComments.getCommentById);
+router.put('/blog-comment/:id', BlogComments.editComment);
+router.delete('/blog-comment/:id', BlogComments.delBlogComment);
 /** ================================= with login url section end ================================ */
 
 module.exports = router;
