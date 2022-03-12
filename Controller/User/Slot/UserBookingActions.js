@@ -135,6 +135,7 @@ var viewSlotsForADay = async (req, res) => {
                         $match: {
                             $expr: {
                                 $and: [
+                                    // if "paid: true", then slot will be red for user, else green
                                     { $eq: ["$user_id", "$$user_id"] }, 
                                     { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] }, 
                                     { $eq: ["$from", "$$from"] }, 
