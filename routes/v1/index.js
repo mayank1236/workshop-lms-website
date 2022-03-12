@@ -14,13 +14,14 @@ const UserSellersController = require('../../Controller/User/UserSellers');// ad
 const ShopServiceController = require('../../Controller/User/ShopServices');// added by anirbank-93
 const SearchController = require('../../Controller/User/Search');  // added by anirbank-93
 const UserContact = require('../../Controller/User/UserContact');  // added by anirbank-93
+const BlogController = require('../../Controller/User/Blog');
+const BlogComments = require('../../Controller/User/BlogComments');
 /**-------------------------Website info section------------------------- */
 const AboutUs = require('../../Controller/User/Website_info/AboutUs');
 const TermsNConditn = require('../../Controller/User/Website_info/TermsNConditn');
 const PrivacyPolicy = require('../../Controller/User/Website_info/PrivacyPolicy');
 const SocialMediaInfo = require('../../Controller/User/Website_info/SocialMediaInfo');
 const ContactUsInfo = require('../../Controller/User/Website_info/ContactUsInfo');
-const BlogController = require('../../Controller/User/Blog');
 const SafetyGuide = require('../../Controller/User/Website_info/SafetyGuide');
 const Associates = require('../../Controller/User/Website_info/Associates');
 const LegalNotice = require('../../Controller/User/Website_info/LegalNotice');
@@ -79,6 +80,11 @@ router.get('/user/contact-us-info/:id', ContactUsInfo.viewById);
 
 router.get('/user/blog', BlogController.viewAllBlogs);
 router.get('/user/blog/:id', BlogController.viewBlogById);
+
+router.post('/user/blog-comment', BlogComments.addComment);
+router.post('/user/blog-comment-img', upload.single("image"), BlogComments.uploadImage);
+router.get('/user/blog-comment', BlogComments.getAllComments);
+router.get('/user/blog-comment/:id', BlogComments.getCommentById);
 
 router.get('/user/safety-guide', SafetyGuide.viewAllSegments);
 router.get('/user/safety-guide/:id', SafetyGuide.viewSegmentById);

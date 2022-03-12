@@ -86,6 +86,7 @@ var checkAvailability = async (req, res) => {
 }
 
 var viewSlotsForADay = async (req, res) => {
+    var user_id = req.body.user_id
     var shop_service_id = req.body.shop_service_id
 
     // let slots = await ServiceSlots.find({
@@ -124,15 +125,21 @@ var viewSlotsForADay = async (req, res) => {
         {
             $lookup: {
                 from: "user_booked_slots",
-                let: { day_name_of_booking: "$weekday_name", from: "$timing.from" },
+                let: {
+                    user_id: mongoose.Types.ObjectId(user_id), 
+                    day_name_of_booking: "$weekday_name", 
+                    from: "$timing.from"
+                },
                 pipeline: [
                     {
                         $match: {
                             $expr: {
                                 $and: [
-                                    { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] },
-                                    { $eq: ["$from", "$$from"] },
-                                    { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()] },
+                                    // if "paid: true", then slot will be red for user, else green
+                                    { $eq: ["$user_id", "$$user_id"] }, 
+                                    { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] }, 
+                                    { $eq: ["$from", "$$from"] }, 
+                                    { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()] }, 
                                     { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()] }
                                 ]
                             }
