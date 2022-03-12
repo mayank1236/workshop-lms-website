@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 const { Validator } = require('node-input-validator');
 
 const FAQ = require('../../../Models/Website_info/faq');
+const BLOG_COMMENT = require('../../../Models/blog_comments');
 
 var Upload = require('../../../service/upload');
 
@@ -174,11 +175,51 @@ var deleteFAQ = async (req, res) => {
         });
 }
 
+var viewAllBlogComments = async (req,res) => {
+    let comments = await BLOG_COMMENT.aggregate([
+        {
+            $lookup: {
+                from: "users",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "user_data"
+            }
+        },
+        { $unwind: "$user_data" }, 
+        {
+            $lookup: {
+                from: "blogs",
+                localField: "blog_id",
+                foreignField: "_id",
+                as: "blog_data"
+            }
+        },
+        { $unwind: "$blog_data" }, 
+        { $project: { __v: 0 } }
+    ]).exec();
+
+    if (comments.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "All comments successfully get.",
+            data: comments
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No comments on any blog.",
+            data: comments
+        });
+    }
+}
+
 module.exports = {
     addFaq,
     imageUpload,
     viewAllFAQs,
     viewFAQById,
     editFAQ,
-    deleteFAQ
+    deleteFAQ,
+    viewAllBlogComments
 }

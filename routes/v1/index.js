@@ -81,10 +81,7 @@ router.get('/user/contact-us-info/:id', ContactUsInfo.viewById);
 router.get('/user/blog', BlogController.viewAllBlogs);
 router.get('/user/blog/:id', BlogController.viewBlogById);
 
-router.post('/user/blog-comment', BlogComments.addComment);
-router.post('/user/blog-comment-img', upload.single("image"), BlogComments.uploadImage);
 router.get('/user/blog-comment', BlogComments.getAllComments);
-router.get('/user/blog-comment/:id', BlogComments.getCommentById);
 
 router.get('/user/safety-guide', SafetyGuide.viewAllSegments);
 router.get('/user/safety-guide/:id', SafetyGuide.viewSegmentById);

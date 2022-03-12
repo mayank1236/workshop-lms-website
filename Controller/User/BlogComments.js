@@ -22,6 +22,7 @@ var addComment = async (req, res) => {
         _id: mongoose.Types.ObjectId(),
         blog_id: mongoose.Types.ObjectId(req.body.blog_id),
         blog_type: req.body.blog_type,
+        user_id: mongoose.Types.ObjectId(req.body.user_id),
         name: req.body.name,
         email: req.body.email,
         message: req.body.message
@@ -103,27 +104,67 @@ var getCommentById = async (req, res) => {
         });
 }
 
-// var editComment = async (req, res) => {
-//     var id = req.params.id;
+var editComment = async (req, res) => {
+    var id = req.params.id;
 
-//     const V = new Validator(req.body, {
-//         blog_type: 'required',
-//         name: 'required',
-//         email: 'required|email',
-//         message: 'required',
-//     });
-//     let matched = await V.check().then(val => val);
+    const V = new Validator(req.body, {
+        blog_type: 'required',
+        name: 'required',
+        email: 'required|email',
+        message: 'required',
+    });
+    let matched = await V.check().then(val => val);
 
-//     if (!matched) {
-//         return res.status(400).json({ status: false, errors: V.errors })
-//     }
+    if (!matched) {
+        return res.status(400).json({ status: false, errors: V.errors })
+    }
 
-//     return 
-// }
+    return BLOG_COMMENT.findByIdAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        req.body,
+        { new: true }
+    )
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data edited successfully",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
+var delBlogComment = async (req, res) => {
+    var id = req.params.id;
+
+    return BLOG_COMMENT.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data deleted successfully",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
 
 module.exports = {
     addComment,
     uploadImage,
     getAllComments,
-    getCommentById
+    getCommentById,
+    editComment,
+    delBlogComment
 }

@@ -193,5 +193,5 @@ module.exports = {
     viewAllBlogs,
     viewBlogById,
     editBlog,
-    deleteBlog
+    deleteBlog,
 }
