@@ -170,6 +170,15 @@ var viewSlotsForADay = async (req, res) => {
 
 /** Api for both slot booking and add to cart */
 var bookAppointment = async (req, res, next) => {
+    // const TODAY = new Date();
+    // var now = TODAY.setTime();
+    // console.log("This instant ", now);
+
+    // var booking_date_time = req.body.date_of_booking + ' ' + req.body.from;
+    // const DATE_OF_BOOKING = new Date(booking_date_time);
+    // var bookingMoment = DATE_OF_BOOKING.setTime();
+    // console.log("Booking time instant ", bookingMoment);
+
     // var user_bookings = await UserBookedSlot.findOne({
     //     slot_id: mongoose.Types.ObjectId(req.body.slot_id), 
     //     date_of_booking: new Date(req.body.date_of_booking)
