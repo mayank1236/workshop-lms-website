@@ -64,6 +64,7 @@ const viewServiceSubCategory = async (req, res) => {
 
 const viewShopServicesPerService = async (req, res) => {
     var id = req.params.id       // _id of 'service_categories' table in params
+    var user_id = req.params.user_id;
 
     const myCustomLabels = {
         totalDocs: 'itemCount',
@@ -97,11 +98,53 @@ const viewShopServicesPerService = async (req, res) => {
             else {
                 ShopService.aggregatePaginate(ShopService.aggregate(
                     [
+                        (req.query.servicename != "" && typeof req.query.servicename != "undefined") ?
+                            {
+                                $match: {
+                                    name: { $regex: ".*" + req.query.servicename + ".*", $options: "i" },
+                                    status: true
+                                }
+                            }
+                            : { $project: { __v: 0 } },
+                        // (req.query.serv_cat_name != "" && typeof req.query.serv_cat_name != "undefined") ?
+                        //     {
+                        //         $match: {
+                        //             category_name: { $regex: ".*" + req.query.serv_cat_name + ".*", $options: "i" },
+                        //             status: true
+                        //         },
+                        //     }
+                        //     : { $project: { __v: 0 } },
+                        (req.query.min != "" && typeof req.query.min != "undefined") ||
+                            (req.query.max != "" && typeof req.query.max != "undefined") ?
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $gte: ["$price", Number(req.query.min)] },
+                                            { $lte: ["$price", Number(req.query.max)] },
+                                            { status: true }
+                                        ]
+                                    }
+                                }
+                            }
+                            : { $project: { __v: 0 } },
                         {
                             $match: {
-                                category_id: { $in: [mongoose.Types.ObjectId(id)] }
+                                category_id: { $in: [mongoose.Types.ObjectId(id)] },
+                                status: true
                             }
                         },
+                        {
+                            $lookup: {
+                                from: "service_categories",
+                                localField: "category_id",
+                                foreignField: "_id",
+                                as: "category_details"
+                            }
+                        },
+                        // {
+                        //     $unwind: "$category_details"
+                        // },
                         {
                             $lookup: {
                                 from: "users",
@@ -111,6 +154,92 @@ const viewShopServicesPerService = async (req, res) => {
                             }
                         },
                         {
+                            $lookup: {
+                                from: "service_carts",
+                                let: {
+                                    service_id: "$_id",
+                                    user_id: mongoose.Types.ObjectId(user_id),
+                                    status: true
+                                },
+                                pipeline: [
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                $and: [
+                                                    { $eq: ["$service_id", "$$service_id"] },
+                                                    { $eq: ["$user_id", "$$user_id"] },
+                                                    { $eq: ["$status", "$$status"] }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                ],
+                                as: "cart_items"
+                            }
+                        },
+                        {
+                            $addFields: {
+                                totalAdded: {
+                                    $cond: {
+                                        if: { $isArray: "$cart_items" },
+                                        then: { $size: "$cart_items" },
+                                        else: null,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            $lookup: {
+                                from: "service_reviews",
+                                localField: "_id",
+                                foreignField: "service_id",
+                                as: "rev_data"
+                            }
+                        },
+                        {
+                            $addFields: {
+                                avgRating: {
+                                    $avg: {
+                                        $map: {
+                                            input: "$rev_data",
+                                            in: "$$this.rating"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        typeof req.query.shortby != "undefined" && req.query.shortby == "newarrivals"
+                            ? { $sort: { _id: -1 } }
+                            : { $project: { __v: 0 } },
+
+                        typeof req.query.shortby != "undefined" && req.query.shortby == "highlow"
+                            ? { $sort: { price: -1 } }
+                            : { $project: { __v: 0 } },
+
+                        typeof req.query.shortby != "undefined" && req.query.shortby == "lowhigh"
+                            ? { $sort: { price: 1 } }
+                            : { $project: { __v: 0 } },
+
+                        typeof req.query.shortby != "undefined" && req.query.shortby == "lowhighrev"
+                            ? { $sort: { avgRating: 1 } }
+                            : { $project: { __v: 0 } },
+
+                        typeof req.query.shortby != "undefined" && req.query.shortby == "highlowrev"
+                            ? { $sort: { avgRating: -1 } }
+                            : { $project: { __v: 0 } },
+
+                        typeof req.query.shortby != "undefined" && req.query.shortby == "bestselling"
+                            ? { $sort: { totalAdded: -1 } }
+                            : { $project: { __v: 0 } },
+
+                        typeof req.query.shortby != "undefined" && req.query.shortby == "lowhighsell"
+                            ? { $sort: { totalAdded: 1 } }
+                            : { $project: { __v: 0 } },
+
+                        typeof req.query.shortby != "undefined" && req.query.shortby == "highlowsell"
+                            ? { $sort: { totalAdded: -1 } }
+                            : { $project: { __v: 0 } },
+                        {
                             $project: {
                                 _v: 0
                             }
@@ -118,6 +247,7 @@ const viewShopServicesPerService = async (req, res) => {
                     ]
                 ), options, function (err, docs) {
                     if (!err) {
+                        console.log(docs);
                         res.status(200).json({
                             status: true,
                             message: "All services for this category get successfully.",
@@ -127,7 +257,7 @@ const viewShopServicesPerService = async (req, res) => {
                     else {
                         res.status(500).json({
                             status: false,
-                            message: "Failed to get data. Server error.",
+                            message: "Invalid id. Server error.",
                             error: err.message
                         })
                     }
