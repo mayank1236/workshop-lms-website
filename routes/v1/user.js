@@ -11,6 +11,7 @@ const SearchController = require('../../Controller/User/Search');
 const UserAccount = require('../../Controller/User/Myaccount');       // added by anirbank-93
 const SellerAccount = require('../../Controller/User/SellerMyaccount');   // added by anirbank-93
 const CartController = require('../../Controller/User/Cart');
+const CouponController = require('../../Controller/User/Coupons');
 const ServiceCart = require('../../Controller/User/ServiceCart');
 const Checkout = require('../../Controller/User/Checkout');
 const ServiceReview = require('../../Controller/User/ServiceReview');
@@ -18,9 +19,9 @@ const GrievanceController = require('../../Controller/User/Grievance');
 const FeedbackController = require('../../Controller/User/Feedback');
 const BlogComments = require('../../Controller/User/BlogComments');
 /* Service schedule section start */
-const SellerTimingsController = require('../../Controller/User/Slot/SellerTimingsNSlots');// added by anirbank-93
-const UserBookingActions = require('../../Controller/User/Slot/UserBookingActions');// added by anirbank-93
-const SellerBookingActions = require('../../Controller/User/Slot/SellerBookingActions');// added by anirbank-93
+const SellerTimingsController = require('../../Controller/User/Slot/SellerTimingsNSlots');
+const UserBookingActions = require('../../Controller/User/Slot/UserBookingActions');
+const SellerBookingActions = require('../../Controller/User/Slot/SellerBookingActions');
 /* Service schedule section end */
 
 const multer = require('multer');
@@ -142,6 +143,8 @@ router.post('/shop-service/book-slot', UserBookingActions.bookAppointment); // a
 router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart);
 router.delete('/delete-cart/:id', ServiceCart.DeleteCart);
 /**================Service cart api's end======================== */
+
+router.post('/apply-coupon', CouponController.applyCoupon);
 
 /**====================Checkout api's============================ */
 router.post('/shop-service/checkout', Checkout.create)

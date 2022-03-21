@@ -15,6 +15,7 @@ const SERVICE_CART_SCHEMA = new Schema({
     service_id: mongoose.Schema.Types.ObjectId,
     slot_id: mongoose.Schema.Types.ObjectId,
     order_id: Number,
+    coupon: String,
     rating: Number,
     service_name:{
         type: String,
