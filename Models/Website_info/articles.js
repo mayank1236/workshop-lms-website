@@ -14,10 +14,7 @@ const ARTICLE_SCHEMA = new Schema({
         type: String,
         required: true
     },
-    image: {
-        type: String,
-        required: true
-    },
+    image: String,
     author: String,
     dated: {
         type: Date,

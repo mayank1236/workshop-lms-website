@@ -208,7 +208,11 @@ router.get('/faq/:id', CmsController.viewFAQById);
 router.put('/faq/:id', CmsController.editFAQ);
 router.delete('/faq/:id', CmsController.deleteFAQ);
 
-router.post('/article', upload.single("image"), CmsController.addArticle);
+router.post('/articles', upload.single("image"), CmsController.addArticle);
+router.get('/articles', CmsController.viewAllArticles);
+router.get('/articles/:id', CmsController.viewArticleById);
+router.put('/articles/:id', upload.single("image"), CmsController.editArticle);
+router.delete('/articles/:id', CmsController.deleteArticle);
 /**========================CMS Section End======================== */
 
 /**===================================== Automated tasks =====================================*/
