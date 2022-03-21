@@ -176,7 +176,7 @@ var deleteFAQ = async (req, res) => {
         });
 }
 
-var viewAllBlogComments = async (req,res) => {
+var viewAllBlogComments = async (req, res) => {
     let comments = await BLOG_COMMENT.aggregate([
         {
             $lookup: {
@@ -186,7 +186,7 @@ var viewAllBlogComments = async (req,res) => {
                 as: "user_data"
             }
         },
-        { $unwind: "$user_data" }, 
+        { $unwind: "$user_data" },
         {
             $lookup: {
                 from: "blogs",
@@ -195,7 +195,7 @@ var viewAllBlogComments = async (req,res) => {
                 as: "blog_data"
             }
         },
-        { $unwind: "$blog_data" }, 
+        { $unwind: "$blog_data" },
         { $project: { __v: 0 } }
     ]).exec();
 
@@ -215,7 +215,7 @@ var viewAllBlogComments = async (req,res) => {
     }
 }
 
-var addArticle = async (req,res) => {
+var addArticle = async (req, res) => {
     const V = new Validator(req.body, {
         title: "required",
         details: "required"
@@ -269,6 +269,122 @@ var addArticle = async (req,res) => {
         });
 }
 
+var viewAllArticles = async (req, res) => {
+    let articles = await ARTICLES.find({}).exec();
+
+    if (articles.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            data: articles
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No articles published.",
+            data: articles
+        });
+    }
+}
+
+var viewArticleById = async (req, res) => {
+    var id = req.params.id;
+
+    return ARTICLES.findOne({ _id: mongoose.Types.ObjectId(id) })
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully get.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
+var editArticle = async (req, res) => {
+    var id = req.params.id;
+
+    const V = new Validator(req.body, {
+        title: "required",
+        details: "required"
+    });
+    let matched = await V.check().then(val => val);
+
+    if (!matched) {
+        return res.status(400).json({ status: false, errors: V.errors });
+    }
+
+    if (req.file == "" || req.file == null || typeof req.file == "undefined") {
+        return res.status(400).send({
+            status: false,
+            error: {
+                "image": {
+                    "message": "The 'image' field is mandatory.",
+                    "rule": "required"
+                }
+            }
+        });
+    }
+
+    var imageUrl = await Upload.uploadFile(req, "articles");
+
+    let saveData = {
+        title: req.body.title,
+        details: req.body.details,
+        image: imageUrl
+    }
+    if (req.body.author != "" || req.body.author != null || typeof req.body.author != "undefined") {
+        saveData.author = req.body.author;
+    }
+
+    return ARTICLES.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        saveData,
+        { new: true }
+    )
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully edited.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
+var deleteArticle = async (req, res) => {
+    var id = req.params.id;
+
+    return ARTICLES.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully deleted.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
 module.exports = {
     addFaq,
     imageUpload,
@@ -277,5 +393,9 @@ module.exports = {
     editFAQ,
     deleteFAQ,
     viewAllBlogComments,
-    addArticle
+    addArticle,
+    viewAllArticles,
+    viewArticleById,
+    editArticle,
+    deleteArticle
 }
