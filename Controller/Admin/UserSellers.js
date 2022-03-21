@@ -94,17 +94,17 @@ var selectTopSeller = async (req, res) => {
 
     return User.findOneAndUpdate(
         { _id: mongoose.Types.ObjectId(id) },
-        { $set: { top_seller: true } },
+        { $set: { top_seller: req.body.top_seller } },
         { new: true }
     )
-        .then(data=>{
+        .then(data => {
             res.status(200).json({
                 status: true,
                 message: "Data edited successfully.",
                 data: data
             });
         })
-        .catch(err=>{
+        .catch(err => {
             res.status(500).json({
                 status: false,
                 message: "Invalid id. Server error.",
@@ -114,7 +114,7 @@ var selectTopSeller = async (req, res) => {
 }
 
 var bookingNUserStat = async (req, res) => {
-    var findTotalBookings = await sellerBookings.find({ }).exec();
+    var findTotalBookings = await sellerBookings.find({}).exec();
 
     var totalBookingsCount = findTotalBookings.length;
 
@@ -131,8 +131,8 @@ var bookingNUserStat = async (req, res) => {
             new_booking: true,
             booking_accept: false,
         }).exec();
-        var findUsers = await User.find({type: "User"}).exec();
-        var findSellers = await User.find({type: "Seller"}).exec();
+        var findUsers = await User.find({ type: "User" }).exec();
+        var findSellers = await User.find({ type: "Seller" }).exec();
 
         var acceptedBookingsCount = findAcceptedBookings.length;
         var rejectedBookingsCount = findRejectedBookings.length;
