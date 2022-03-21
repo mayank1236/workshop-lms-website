@@ -7,6 +7,7 @@ var router = express.Router();
 const ProductController = require('../../Controller/Admin/Product');
 const CategoryController = require('../../Controller/Admin/Category');
 const SubscriptionController = require('../../Controller/Admin/Subscription');
+const CouponController = require('../../Controller/Admin/Coupons');
 const UserSellersController = require('../../Controller/Admin/UserSellers'); // added by anirbank-93
 const ServiceController = require('../../Controller/Admin/ServiceCategory'); // added by anirbank-93
 const OrderHistory = require('../../Controller/Admin/Orderhistory')
@@ -81,7 +82,9 @@ router.post('/subscription/purchasehistory',SubscriptionController.allSubscripti
 // single user subscription purchase history
 router.get('/subscription/purchasehistory/:id', SubscriptionController.oneSubscriptionHistory) // added by anirbank-93
 
-
+router.post('/coupons', CouponController.create); // added by anirbank-93
+router.get('/coupons', CouponController.viewAll); // added by anirbank-93
+router.delete('/coupons/:id', CouponController.Delete);// added by anirbank-93
 
 
 router.get('/userlist', UserSellersController.viewUserList)     // added by anirbank-93
