@@ -3,6 +3,7 @@ const { Validator } = require('node-input-validator');
 
 const FAQ = require('../../../Models/Website_info/faq');
 const BLOG_COMMENT = require('../../../Models/blog_comments');
+const ARTICLES = require('../../../Models/Website_info/articles');
 
 var Upload = require('../../../service/upload');
 
@@ -214,6 +215,60 @@ var viewAllBlogComments = async (req,res) => {
     }
 }
 
+var addArticle = async (req,res) => {
+    const V = new Validator(req.body, {
+        title: "required",
+        details: "required"
+    });
+    let matched = await V.check().then(val => val);
+
+    if (!matched) {
+        return res.status(400).json({ status: false, errors: V.errors });
+    }
+
+    if (req.file == "" || req.file == null || typeof req.file == "undefined") {
+        return res.status(400).send({
+            status: false,
+            error: {
+                "image": {
+                    "message": "The 'image' field is mandatory.",
+                    "rule": "required"
+                }
+            }
+        });
+    }
+
+    var imageUrl = await Upload.uploadFile(req, "articles");
+
+    let saveData = {
+        _id: mongoose.Types.ObjectId(),
+        title: req.body.title,
+        details: req.body.details,
+        image: imageUrl
+    }
+    if (req.body.author != "" || req.body.author != null || typeof req.body.author != "undefined") {
+        saveData.author = req.body.author;
+    }
+
+    const NEW_ARTICLE = new ARTICLES(saveData);
+
+    return NEW_ARTICLE.save()
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data saved successfully.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Failed to save data. Server error.",
+                error: err.message
+            });
+        });
+}
+
 module.exports = {
     addFaq,
     imageUpload,
@@ -221,5 +276,6 @@ module.exports = {
     viewFAQById,
     editFAQ,
     deleteFAQ,
-    viewAllBlogComments
+    viewAllBlogComments,
+    addArticle
 }

@@ -3,6 +3,7 @@ const { Validator } = require('node-input-validator')
 
 var Checkout = require('../../Models/checkout')
 var ServiceCart = require('../../Models/service_cart')
+var Coupon = require('../../Models/coupon')
 var UserBookedSlot = require('../../Models/Slot/user_booked_slot')
 
 var create = async (req, res) => {
@@ -125,7 +126,7 @@ var create = async (req, res) => {
     const checkout = new Checkout(saveData)
     return checkout
         .save()
-        .then(data => {
+        .then(async (data) => {
             // Update the cart items with order_id
             ServiceCart.updateMany(
                 { user_id: mongoose.Types.ObjectId(req.body.user_id), status: true },
@@ -144,14 +145,25 @@ var create = async (req, res) => {
                 }
             );
 
+            // Decrease the number of the coupon applied on checkout
+            if (data.coupon != null) {
+                let coupData = await Coupon.findOne({
+                    name: data.coupon.name,
+                    status: true
+                }).exec()
+
+                coupData.times -= 1
+                coupData.save()
+            }
+
             UserBookedSlot.updateMany(
                 {
                     user_id: data.user_id,
                     paid: false
                 },
-                { $set: { paid: true} }, 
-                { multi: true }, 
-                (fault,result) => {
+                { $set: { paid: true } },
+                { multi: true },
+                (fault, result) => {
                     if (fault) {
                         console.log(fault.message);
                     }

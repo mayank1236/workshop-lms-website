@@ -28,7 +28,7 @@ const CHECKOUT_SCHEMA = new Schema({
         required: false
     },
     coupon:{
-        type:String,
+        type: Object,
         required: false,
     },
     firstname:{

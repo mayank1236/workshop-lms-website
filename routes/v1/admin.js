@@ -207,6 +207,8 @@ router.get('/faq', CmsController.viewAllFAQs);
 router.get('/faq/:id', CmsController.viewFAQById);
 router.put('/faq/:id', CmsController.editFAQ);
 router.delete('/faq/:id', CmsController.deleteFAQ);
+
+router.post('/article', upload.single("image"), CmsController.addArticle);
 /**========================CMS Section End======================== */
 
 /**===================================== Automated tasks =====================================*/

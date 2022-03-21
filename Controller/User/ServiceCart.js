@@ -1,12 +1,9 @@
 var mongoose = require('mongoose')
+const { Validator } = require('node-input-validator')
+
 var ServiceCart = require('../../Models/service_cart')
-var Service = require('../../Models/shop_service')
 var sellerSlot = require('../../Models/Slot/seller_slots')
 var userBookedSlot = require('../../Models/Slot/user_booked_slot')
-const User = require('../../Models/user')
-const Upload = require('../../service/upload')
-
-const { Validator } = require('node-input-validator')
 
 var  getServiceCart = async (req,res)=>{
     return ServiceCart.aggregate([
@@ -25,10 +22,14 @@ var  getServiceCart = async (req,res)=>{
             }
         },
         {
-            $project:{
-                _v: 0
-            }
-        }
+          $lookup: {
+            from: "coupons",
+            localField: "coupon",
+            foreignField: "name",
+            as: "coupon_data"
+          }
+        },
+        { $project: { _v: 0 } }
     ]).then(data=>{
         if (data.length > 0) {
             res.status(200).json({
