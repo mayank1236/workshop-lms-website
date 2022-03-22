@@ -1,11 +1,14 @@
 var mongoose = require('mongoose');
+const { Validator } = require('node-input-validator');
+
 var Service = require('../../Models/service_category');
-var Shop = require('../../Models/shop');
 var Subcategory = require('../../Models/subcategory');
 var ShopService = require('../../Models/shop_service');
 
+var Upload = require('../../service/upload');
+
 const viewAllServices = async (req, res) => {
-    return Service.find()
+    return Service.find({ admin_approved: true })
         .then((docs) => {
             res.status(200).json({
                 status: true,
@@ -273,9 +276,58 @@ const viewShopServicesPerService = async (req, res) => {
         })
 }
 
+const sellerSuggestCategory = async (req, res) => {
+    const v = new Validator(req.body, {
+        name: "required",
+        description: "required"
+    });
+
+    let matched = await v.check().then((val) => val);
+    if (!matched) {
+        return res.status(400).send({ status: false, error: v.errors });
+    }
+    if (typeof (req.file) == 'undefined' || req.file == null) {
+        return res.status(200).send({
+            status: true,
+            error: {
+                "image": {
+                    "message": "The image field is mandatory.",
+                    "rule": "required"
+                }
+            }
+        });
+    }
+    let image_url = await Upload.uploadFile(req, "services");
+    let serviceData = {
+        _id: mongoose.Types.ObjectId(),
+        name: req.body.name,
+        description: req.body.description,
+        image: image_url
+    }
+
+    let service_category = await new Service(serviceData);
+
+    return service_category.save()
+        .then((data) => {
+            res.status(200).json({
+                status: true,
+                message: "Service category suggested.",
+                data: data
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                status: false,
+                message: "Server error. Please try again.",
+                error: err
+            });
+        });
+}
+
 module.exports = {
     viewAllServices,
     viewService,
     viewServiceSubCategory,
-    viewShopServicesPerService
+    viewShopServicesPerService,
+    sellerSuggestCategory
 }

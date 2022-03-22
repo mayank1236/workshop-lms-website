@@ -98,6 +98,8 @@ router.post('/service-category',upload.single("image"),ServiceController.create)
 router.get('/service-category', ServiceController.viewAllServices)              // added by anirbank-93
 router.put('/service-category/:id',upload.single("image"),ServiceController.update)// added by anirbank-93
 router.delete('/service-category/:id', ServiceController.Delete)                   // added by anirbank-93
+router.get('/suggested-category', ServiceController.suggestedCategories)           // added by anirbank-93
+router.put('/suggested-category/:id', ServiceController.approveSuggestedCategory)  // added by anirbank-93
 
 router.get('/service-category/shop-services/:cat_id', ServiceController.shopServicePerCategory)// added by anirbank-93
 

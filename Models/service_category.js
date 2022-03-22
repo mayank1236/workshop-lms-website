@@ -11,10 +11,17 @@ const ServiceSchema = new Schema({
         type: String,
         required: true,
     },
+    admin_added: {
+        type: Boolean,
+        default: false
+    },
+    admin_approved: {
+        type: Boolean,
+        default: false
+    },
     status:{
         type: Boolean,
         default: true,
-        required: true
     },
     image:{
         type: String,
