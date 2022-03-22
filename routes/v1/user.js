@@ -103,6 +103,7 @@ router.delete('/cartDelete/:id', CartController.Delete);
 router.get('/service-category', ServiceController.viewAllServices); // added by anirbank-93
 router.get('/service-category/:id', ServiceController.viewService); // added by anirbank-93
 router.get('/service/subcategory/:id', ServiceController.viewServiceSubCategory);// added by anirbank-93
+router.post('/suggested-category', upload1.single("image"), ServiceController.sellerSuggestCategory);// added by anirbank-93
 
 router.post('/shop', uploadMultiple1, ShopController.createNUpdate);// added by anirbank-93
 router.get('/shop', ShopController.viewAllShops);   // added by anirbank-93

@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
+const { Validator } = require('node-input-validator');
 
 var Service = require('../../Models/service_category');
 var ShopService = require('../../Models/shop_service');
-var Upload = require("../../service/upload");
 
-const { Validator } = require('node-input-validator');
+var Upload = require("../../service/upload");
 
 const create = async (req, res) => {
     const v = new Validator(req.body, {
@@ -35,6 +35,8 @@ const create = async (req, res) => {
         _id: mongoose.Types.ObjectId(),
         name: req.body.name,
         description: req.body.description,
+        admin_added: true,
+        admin_approved: true,
         image: image_url
     }
 
@@ -124,7 +126,7 @@ const update = async (req, res) => {
 }
 
 const Delete = async (req, res) => {
-    return Service.remove({ _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } })
+    return Service.findOneAndDelete({ _id: mongoose.Types.ObjectId(req.params.id) })
         .then((docs) => {
             res.status(200).json({
                 status: true,
@@ -187,10 +189,55 @@ const shopServicePerCategory = async (req, res) => {
     })
 }
 
+var suggestedCategories = async (req,res) => {
+    let suggestions =  await Service.find({ admin_added: false }).exec();
+
+    if (suggestions.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "Suggested categories successfully get.",
+            data: suggestions
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No suggested category.",
+            data: suggestions
+        });
+    }
+}
+
+var approveSuggestedCategory = async (req,res) => {
+    var id = req.params.id;
+
+    return Service.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) }, 
+        { $set: { admin_approved: req.body.approve } }, 
+        { new: true }
+    )
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Category approved",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
 module.exports = {
     create,
     viewAllServices,
     update,
     Delete,
-    shopServicePerCategory
+    shopServicePerCategory,
+    suggestedCategories,
+    approveSuggestedCategory
 }
