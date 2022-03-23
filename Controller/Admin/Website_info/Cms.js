@@ -4,6 +4,7 @@ const { Validator } = require('node-input-validator');
 const FAQ = require('../../../Models/Website_info/faq');
 const BLOG_COMMENT = require('../../../Models/blog_comments');
 const ARTICLES = require('../../../Models/Website_info/articles');
+const TESTIMONIALS = require('../../../Models/Website_info/testimonials');
 
 var Upload = require('../../../service/upload');
 
@@ -385,6 +386,170 @@ var deleteArticle = async (req, res) => {
         });
 }
 
+var addTestimonial = async (req, res) => {
+    const V = new Validator(req.body, {
+        heading: 'required',
+        description: 'required'
+    });
+    let matched = await V.check().then(val => val);
+
+    if (!matched) {
+        return res.status(400).json({ status: true, errors: V.errors });
+    }
+
+    if (req.file == "" || req.file == null || typeof req.file == "undefined") {
+        return res.status(400).send({
+            status: false,
+            error: {
+                "image": {
+                    "message": "The 'image' field is mandatory.",
+                    "rule": "required"
+                }
+            }
+        });
+    }
+
+    var imageUrl = await Upload.uploadFile(req, "testimonials");
+
+    let saveData = {
+        _id: mongoose.Types.ObjectId(),
+        heading: req.body.heading,
+        description: req.body.description,
+        image: imageUrl
+    }
+
+    const NEW_TESTIMONIAL = new TESTIMONIALS(saveData);
+
+    return NEW_TESTIMONIAL.save()
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully added.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Failed to add data. Server error.",
+                error: err.message
+            });
+        });
+}
+
+var viewAllTestimonials = async (req, res) => {
+    let testimonials = await TESTIMONIALS.find({}).exec();
+
+    if (testimonials.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            data: testimonials
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No testimonials.",
+            data: testimonials
+        });
+    }
+}
+
+var viewTestimonialById = async (req, res) => {
+    var id = req.params.id;
+
+    return TESTIMONIALS.findOne({ _id: mongoose.Types.ObjectId(id) })
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully get.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
+var editTestimonial = async (req, res) => {
+    var id = req.params.id;
+
+    const V = new Validator(req.body, {
+        heading: 'required',
+        description: 'required'
+    });
+    let matched = await V.check().then(val => val);
+
+    if (!matched) {
+        return res.status(400).json({ status: true, errors: V.errors });
+    }
+
+    if (req.file == "" || req.file == null || typeof req.file == "undefined") {
+        return res.status(400).send({
+            status: false,
+            error: {
+                "image": {
+                    "message": "The 'image' field is mandatory.",
+                    "rule": "required"
+                }
+            }
+        });
+    }
+
+    var imageUrl = await Upload.uploadFile(req, "testimonials");
+
+    let saveData = {
+        heading: req.body.heading,
+        description: req.body.description,
+        image: imageUrl
+    }
+
+    return TESTIMONIALS.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        saveData,
+        { new: true }
+    )
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully edited.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
+var deleteTestimonial = async (req, res) => {
+    var id = req.params.id;
+
+    return TESTIMONIALS.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully deleted.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
 module.exports = {
     addFaq,
     imageUpload,
@@ -397,5 +562,10 @@ module.exports = {
     viewAllArticles,
     viewArticleById,
     editArticle,
-    deleteArticle
+    deleteArticle,
+    addTestimonial,
+    viewAllTestimonials,
+    viewTestimonialById,
+    editTestimonial,
+    deleteTestimonial
 }

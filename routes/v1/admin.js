@@ -215,6 +215,12 @@ router.get('/articles', CmsController.viewAllArticles);
 router.get('/articles/:id', CmsController.viewArticleById);
 router.put('/articles/:id', upload.single("image"), CmsController.editArticle);
 router.delete('/articles/:id', CmsController.deleteArticle);
+
+router.post('/cms/testimonials', upload.single("image"), CmsController.addTestimonial);
+router.get('/cms/testimonials', CmsController.viewAllTestimonials);
+router.get('/cms/testimonials/:id', CmsController.viewTestimonialById);
+router.put('/cms/testimonials/:id', upload.single("image"), CmsController.editTestimonial);
+router.delete('/cms/testimonials/:id', CmsController.deleteTestimonial);
 /**========================CMS Section End======================== */
 
 /**===================================== Automated tasks =====================================*/
