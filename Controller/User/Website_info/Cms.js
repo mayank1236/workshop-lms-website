@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 const FAQ = require('../../../Models/Website_info/faq');
 const ARTICLES = require('../../../Models/Website_info/articles');
+const TESTIMONIALS = require('../../../Models/Website_info/testimonials');
 
 var viewAllFAQs = async (req, res) => {
     var faqs = await FAQ.find().exec();
@@ -81,9 +82,50 @@ var viewArticleById = async (req, res) => {
         });
 }
 
+var viewAllTestimonials = async (req, res) => {
+    let testimonials = await TESTIMONIALS.find({}).exec();
+
+    if (testimonials.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            data: testimonials
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No testimonials.",
+            data: testimonials
+        });
+    }
+}
+
+var viewTestimonialById = async (req, res) => {
+    var id = req.params.id;
+
+    return TESTIMONIALS.findOne({ _id: mongoose.Types.ObjectId(id) })
+        .then(docs => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully get.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        });
+}
+
 module.exports = {
     viewAllFAQs,
     viewFAQById,
     viewAllArticles,
-    viewArticleById
+    viewArticleById,
+    viewAllTestimonials,
+    viewTestimonialById
 }

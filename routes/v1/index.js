@@ -100,6 +100,8 @@ router.get('/user/faq', CmsController.viewAllFAQs);
 router.get('/user/faq/:id', CmsController.viewFAQById);
 router.get('/user/articles', CmsController.viewAllArticles);
 router.get('/user/articles/:id', CmsController.viewArticleById);
+router.get('/user/cms/testimonials', CmsController.viewAllTestimonials);
+router.get('/user/cms/testimonials/:id', CmsController.viewTestimonialById);
 /** ================================= without login url section end ================================ */
 
 router.use(middleware);
