@@ -5,6 +5,7 @@ var Checkout = require('../../Models/checkout')
 var ServiceCart = require('../../Models/service_cart')
 var Coupon = require('../../Models/coupon')
 var UserBookedSlot = require('../../Models/Slot/user_booked_slot')
+var SellerBookings = require('../../Models/Slot/seller_bookings')
 
 var create = async (req, res) => {
     const V = new Validator(req.body, {
@@ -137,7 +138,6 @@ var create = async (req, res) => {
                         discount_percent: data.discount_percent
                     }
                 },
-                { multi: true },
                 (err, writeResult) => {
                     if (err) {
                         console.log(err.message);
@@ -156,13 +156,24 @@ var create = async (req, res) => {
                 coupData.save()
             }
 
+            // Update the user bookings with payment status
             UserBookedSlot.updateMany(
                 {
                     user_id: data.user_id,
                     paid: false
                 },
                 { $set: { paid: true } },
-                { multi: true },
+                (fault, result) => {
+                    if (fault) {
+                        console.log(fault.message);
+                    }
+                }
+            ).exec();
+
+            // Update the seller bookings with payment status
+            SellerBookings.updateMany(
+                { user_id: data.user_id, new_booking: true, paid: false },
+                { $set: { paid: true } }, 
                 (fault, result) => {
                     if (fault) {
                         console.log(fault.message);

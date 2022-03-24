@@ -38,6 +38,10 @@ const sellerBookingSchema = new Schema({
         type: Boolean,
         default: false
     },
+    paid: {
+        type: Boolean,
+        default: false
+    },
     status: {
         type: Boolean,
         default: true
