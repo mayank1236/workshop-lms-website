@@ -53,6 +53,8 @@ var applyToJob = async (req, res) => {
     const V = new Validator(req.body, {
         firstName: 'required',
         lastName: 'required',
+        about_yourself: 'required',
+        experience: 'required',
         email: 'required|email',
         contact: 'required',
         cv: 'required'
@@ -88,6 +90,8 @@ var applyToJob = async (req, res) => {
                 _id: mongoose.Types.ObjectId(),
                 job_id: mongoose.Types.ObjectId(req.body.job_id),
                 firstName: req.body.firstName,
+                about_yourself: req.body.about_yourself,
+                experience: req.body.experience,
                 lastName: req.body.lastName,
                 email: req.body.email,
                 contact: Number(req.body.contact),

@@ -41,4 +41,4 @@ sellerTimingSchema.methods.addSlots = function(data) {
     return SELLER_SLOTS.save()
 }
 
-module.exports = mongoose.model('seller_timings', sellerTimingSchema)
+module.exports = mongoose.model('seller_timing', sellerTimingSchema)
