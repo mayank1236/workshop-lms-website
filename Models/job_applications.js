@@ -12,6 +12,14 @@ const APPLICATION_SCHEMA = new Schema({
         type: String,
         required: true
     },
+    about_yourself: {
+        type: String,
+        required: true
+    },
+    experience: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true
