@@ -16,7 +16,8 @@ var newBookings = async (req, res) => {
                 $match: {
                     seller_id: mongoose.Types.ObjectId(req.params.seller_id),
                     new_booking: true,
-                    booking_accept: false
+                    booking_accept: false,
+                    paid: true
                 }
             },
             {
@@ -73,13 +74,13 @@ var acceptNewBooking = async (req, res) => {
     await sellerBookings.findOne({ _id: mongoose.Types.ObjectId(id) })
         .then(async (data) => {
             // console.log("Seller booking details ", data);
-            var payment_status = await userServiceCart.findOne(
-                {
-                    user_booking_id: data.user_booking_id,
-                    status: false
-                }
-            ).exec();
-            console.log("Service cart data ", payment_status);
+            // var payment_status = await userServiceCart.findOne(
+            //     {
+            //         user_booking_id: data.user_booking_id,
+            //         status: false
+            //     }
+            // ).exec();
+            // console.log("Service cart data ", payment_status);
 
             // Should be done after updating status of seller slot booking
             // but due to repeated problems shifted here
@@ -92,114 +93,113 @@ var acceptNewBooking = async (req, res) => {
                 { returnNewDocument: true }
             ).exec();
 
-            if (payment_status == null || payment_status == "") {
-                return res.status(500).json({
-                    status: false,
-                    message: "Payment not yet made. Can't accept booking.",
-                    data: "Item still in cart. Order not placed."
-                });
-            }
-            else {
-                return sellerBookings.findOneAndUpdate(
-                    {
-                        _id: mongoose.Types.ObjectId(req.params.id),
-                        new_booking: true,
-                        booking_accept: false
-                    },
-                    {
-                        $set: {
-                            new_booking: false,
-                            booking_accept: true
-                        }
-                    },
-                    { new: true }
-                )
-                    .then(async (docs) => {
-                        console.log("Updated seller booking ", docs);
+            // if (payment_status == null || payment_status == "") {
+            //     return res.status(500).json({
+            //         status: false,
+            //         message: "Payment not yet made. Can't accept booking.",
+            //         data: "Item still in cart. Order not placed."
+            //     });
+            // }
+            // else {}
+            return sellerBookings.findOneAndUpdate(
+                {
+                    _id: mongoose.Types.ObjectId(req.params.id),
+                    new_booking: true,
+                    booking_accept: false
+                },
+                {
+                    $set: {
+                        new_booking: false,
+                        booking_accept: true
+                    }
+                },
+                { new: true }
+            )
+                .then(async (docs) => {
+                    console.log("Updated seller booking ", docs);
 
-                        // Updating user booking slot was facing intermittent problem here
+                    // Updating user booking slot was facing intermittent problem here
 
-                        var serviceCartData = await userServiceCart.findOneAndUpdate(
-                            {
-                                user_booking_id: docs.user_booking_id,
-                                slot_id: docs.slot_id
-                            },
-                            { $set: { seller_confirmed: true } },
-                            { new: true }
-                        ).exec();
-
-
-                        /** ---- CALCULATE EARNINGS USING SHOP SERVICE COMMISSION TO ADMIN - SELLER, ADMIN ---- */
-                        var admin_commission = await adminCommission.findOne({ service_id: docs.shop_service_id }).exec();
-                        console.log("Admin commission ", admin_commission);
-
-                        var seller_earning = 0;
-
-                        if (
-                            payment_status.discount_percent != "" ||
-                            payment_status.discount_percent != null ||
-                            typeof payment_status.discount_percent != "undefined"
-                        ) {
-                            var discountAmt = (payment_status.price*payment_status.discount_percent)/100;
-                            var adminCommissionAmt = (payment_status.price*admin_commission.percentage)/100;
-                            seller_earning = payment_status.price - (discountAmt + adminCommissionAmt);
-                        }
-                        else {
-                            var adminCommissionAmt = (payment_status.price*admin_commission.percentage)/100;
-                            seller_earning = payment_status.price - adminCommissionAmt;
-                        }
-
-                        let obj1 = {
-                            seller_booking_id: docs._id,
-                            seller_id: docs.seller_id,
-                            service_id: docs.shop_service_id,
+                    var serviceCartData = await userServiceCart.findOneAndUpdate(
+                        {
                             user_booking_id: docs.user_booking_id,
-                            user_id: docs.user_id,
-                            cart_id: payment_status._id,
-                            order_id: Number(payment_status.order_id),
-                            seller_commission: Number(seller_earning)
+                            slot_id: docs.slot_id
+                        },
+                        { $set: { seller_confirmed: true } },
+                        { new: true }
+                    ).exec();
+
+
+                    /** ---- CALCULATE EARNINGS USING SHOP SERVICE COMMISSION TO ADMIN - SELLER, ADMIN ---- */
+                    var admin_commission = await adminCommission.findOne({ service_id: docs.shop_service_id }).exec();
+                    console.log("Admin commission ", admin_commission);
+
+                    var seller_earning = 0;
+
+                    if (
+                        payment_status.discount_percent != "" ||
+                        payment_status.discount_percent != null ||
+                        typeof payment_status.discount_percent != "undefined"
+                    ) {
+                        var discountAmt = (payment_status.price * payment_status.discount_percent) / 100;
+                        var adminCommissionAmt = (payment_status.price * admin_commission.percentage) / 100;
+                        seller_earning = payment_status.price - (discountAmt + adminCommissionAmt);
+                    }
+                    else {
+                        var adminCommissionAmt = (payment_status.price * admin_commission.percentage) / 100;
+                        seller_earning = payment_status.price - adminCommissionAmt;
+                    }
+
+                    let obj1 = {
+                        seller_booking_id: docs._id,
+                        seller_id: docs.seller_id,
+                        service_id: docs.shop_service_id,
+                        user_booking_id: docs.user_booking_id,
+                        user_id: docs.user_id,
+                        cart_id: payment_status._id,
+                        order_id: Number(payment_status.order_id),
+                        seller_commission: Number(seller_earning)
+                    }
+                    const NEW_SERVICE_EARNING = new serviceSaleCommission(obj1);
+                    NEW_SERVICE_EARNING.save();
+
+                    // Also update the total earning (varying with accept,withdraw, refund)
+                    let totalEarningData = await sellerTotalEarning.findOne({ seller_id: docs.seller_id }).exec();
+
+                    if (totalEarningData == null || totalEarningData == "") {
+                        let obj2 = {
+                            seller_id: docs.seller_id,
+                            total_earning: Number(seller_earning)
                         }
-                        const NEW_SERVICE_EARNING = new serviceSaleCommission(obj1);
-                        NEW_SERVICE_EARNING.save();
+                        const NEW_TOTAL_EARNING = new sellerTotalEarning(obj2);
+                        NEW_TOTAL_EARNING.save()
+                    }
+                    else {
+                        // var newTotal = parseInt(totalEarningData.total_earning) + parseInt(seller_earning);
 
-                        // Also update the total earning (varying with accept,withdraw, refund)
-                        let totalEarningData = await sellerTotalEarning.findOne({ seller_id: docs.seller_id }).exec();
+                        // sellerTotalEarning.findOneAndUpdate(
+                        //     { seller_id: docs.seller_id },
+                        //     { $set: { total_earning: newTotal } },
+                        //     { new: true }
+                        // ).exec();
+                        totalEarningData.total_earning += seller_earning;
+                        totalEarningData.save();
+                    }
+                    /** ---------------------------------------------------------------------------------- */
 
-                        if (totalEarningData == null || totalEarningData == "") {
-                            let obj2 = {
-                                seller_id: docs.seller_id,
-                                total_earning: Number(seller_earning)
-                            }
-                            const NEW_TOTAL_EARNING = new sellerTotalEarning(obj2);
-                            NEW_TOTAL_EARNING.save()
-                        }
-                        else {
-                            // var newTotal = parseInt(totalEarningData.total_earning) + parseInt(seller_earning);
-
-                            // sellerTotalEarning.findOneAndUpdate(
-                            //     { seller_id: docs.seller_id },
-                            //     { $set: { total_earning: newTotal } },
-                            //     { new: true }
-                            // ).exec();
-                            totalEarningData.total_earning += seller_earning;
-                            totalEarningData.save();
-                        }
-                        /** ---------------------------------------------------------------------------------- */
-
-                        res.status(200).json({
-                            status: true,
-                            message: "Booking accepted.",
-                            data: docs
-                        });
-                    })
-                    .catch(err => {
-                        res.status(500).json({
-                            status: false,
-                            message: "Failed to accept booking. Server error.",
-                            error: err.message
-                        });
+                    res.status(200).json({
+                        status: true,
+                        message: "Booking accepted.",
+                        data: docs
                     });
-            }
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        status: false,
+                        message: "Failed to accept booking. Server error.",
+                        error: err.message
+                    });
+                });
         })
         .catch(fault => {
             res.status(500).json({
