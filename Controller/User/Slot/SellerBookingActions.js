@@ -74,13 +74,13 @@ var acceptNewBooking = async (req, res) => {
     await sellerBookings.findOne({ _id: mongoose.Types.ObjectId(id) })
         .then(async (data) => {
             // console.log("Seller booking details ", data);
-            // var payment_status = await userServiceCart.findOne(
-            //     {
-            //         user_booking_id: data.user_booking_id,
-            //         status: false
-            //     }
-            // ).exec();
-            // console.log("Service cart data ", payment_status);
+            var payment_status = await userServiceCart.findOne(
+                {
+                    user_booking_id: data.user_booking_id,
+                    status: false
+                }
+            ).exec();
+            console.log("Service cart data ", payment_status);
 
             // Should be done after updating status of seller slot booking
             // but due to repeated problems shifted here
