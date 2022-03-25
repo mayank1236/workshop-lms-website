@@ -81,6 +81,9 @@ router.use((req, res, next) => {
 });
 
 /** ================================= WITH LOGIN URL ================================= */
+router.post('/apply-for-seller', upload1.single("image"), UserSellerController.applyForSeller);
+router.get('/seller-approval-status/:id', UserSellerController.getSellerApprovalStatus);
+
 router.post('/request_category',ProductController.create)
 router.get("/listSubs/:id", SubscriptionController.viewAllsubscription);
 router.get("/subscription/check-subscription/:id", SubscriptionController.checkUserSubscription);

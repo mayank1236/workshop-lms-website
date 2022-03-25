@@ -89,6 +89,9 @@ router.delete('/coupons/:id', CouponController.Delete);// added by anirbank-93
 
 router.get('/userlist', UserSellersController.viewUserList)     // added by anirbank-93
 router.get('/viewuser/:id', UserSellersController.viewUser)     // added by anirbank-93
+router.get('/seller-requests', UserSellersController.getSellerRequest);// added by anirbank-93
+router.put('/approve-seller-requests/:id', UserSellersController.approveSellerRequest);// added by anirbank-93
+router.put('/reject-seller-requests/:id', UserSellersController.rejectSellerRequest);// added by anirbank-93
 router.get('/sellerlist', UserSellersController.viewSellerList) // added by anirbank-93
 router.get('/viewseller/:id', UserSellersController.viewSeller)  // added by anirbank-93
 router.put('/top-sellers/:id', UserSellersController.selectTopSeller);
