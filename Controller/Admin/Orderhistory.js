@@ -1,7 +1,5 @@
 var mongoose = require('mongoose')
 var Checkout = require('../../Models/checkout')
-var User = require('../../Models/user')
-var ServiceCart = require('../../Models/service_cart')
 
 var viewAll = async (req,res)=>{
     return Checkout.aggregate(
@@ -15,6 +13,12 @@ var viewAll = async (req,res)=>{
                 }
             },
             {
+                $unwind: {
+                    path: "$user_data",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
                 $lookup:{
                     from: "service_carts",
                     localField: "order_id",
@@ -23,10 +27,39 @@ var viewAll = async (req,res)=>{
                 },
             },
             {
-                $project:{
-                    _v:0
+                $unwind: {
+                    path: "$cart_data",
+                    preserveNullAndEmptyArrays: true
                 }
-            }
+            },
+            // { $sort: { "cart_data.booking_date": -1 } },
+            {
+                $lookup: {
+                    from: "user_booked_slots",
+                    localField: "cart_data.user_booking_id",
+                    foreignField: "_id",
+                    as: "cart_data.booked_slot_data"
+                }
+            },
+            // {
+            //     $unwind: {
+            //         path: "$cart_data.booked_slot_data",
+            //         preserveNullAndEmptyArrays: true
+            //     }
+            // },
+            { $project:{ _id: 0 } }, 
+            {
+                $group: {
+                    _id: "$order_id",
+                    // payment_mode: { $push: "$paymenttype"}, 
+                    order_subtotal: { $sum: "$cart_data.price" },
+                    discount: { $avg: "$cart_data.discount_percent" },
+                    user_data: { $push: "$user_data" },
+                    cart_data: { $push: "$cart_data" },
+                    // service_refund: { $push: "$service_refund" }
+                }
+            },
+            { $sort: { _id: -1 } }
         ]
     )
     .then(data=>{
