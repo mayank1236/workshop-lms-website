@@ -2,16 +2,16 @@ const mongoose = require('mongoose');
 const passwordHash = require('password-hash');
 
 let UserSchema = new mongoose.Schema({
-    _id:mongoose.Schema.Types.ObjectId,
-    firstName:{
+    _id: mongoose.Schema.Types.ObjectId,
+    firstName: {
         type: String,
         required: true
     },
-    lastName:{
+    lastName: {
         type: String,
         required: true
     },
-    email:{
+    email: {
         type: String,
         required: true,
         unique: true
@@ -22,21 +22,21 @@ let UserSchema = new mongoose.Schema({
         required: true
     },
     about: String,
-    token:{
-        type:String,
-        required:false,
-        unique:true
+    token: {
+        type: String,
+        required: false,
+        unique: true
     },
-    type:{
-        type:String,
-        required:false,
-        default:'User'
+    type: {
+        type: String,
+        required: false,
+        default: 'User'
     },
     start: {
-		type: Date,
-		default: Date.now,
-		required: false
-	},
+        type: Date,
+        default: Date.now,
+        required: false
+    },
     profile: {        // single image attribute
         type: String,
         default: ''
@@ -49,22 +49,30 @@ let UserSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    cart:{
+    seller_request: {
+        type: Boolean,
+        default: false
+    },
+    seller_approval: {
+        type: Boolean,
+        default: false
+    },
+    cart: {
         items: [{
-            prod_id:{
+            prod_id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'product',
                 required: false//
             },
-            prod_name:{
+            prod_name: {
                 type: String,
                 required: false//
             },
-            prod_price:{
+            prod_price: {
                 type: Number,
                 required: false//
             },
-            qty:{
+            qty: {
                 type: Number,
                 required: false//
             }
@@ -73,19 +81,19 @@ let UserSchema = new mongoose.Schema({
     }
 });
 
-UserSchema.methods.addToCart2 = function(product){
+UserSchema.methods.addToCart2 = function (product) {
     let cart = this.cart
 
     if (cart.items.length == 0) {
-        cart.items.push({prod_id:product._id, prod_name:product.name, prod_price:product.price, qty:1})
+        cart.items.push({ prod_id: product._id, prod_name: product.name, prod_price: product.price, qty: 1 })
         cart.totalPrice = product.price;
     }
     else {
         const isExisting = cart.items.findIndex(objInItems => {
             return new String(objInItems.prod_id).trim() == new String(product._id).trim()
         })
-        if(isExisting == -1) {
-            cart.items.push({prod_id: product._id, prod_name:product.name, prod_price:product.price,qty: 1})
+        if (isExisting == -1) {
+            cart.items.push({ prod_id: product._id, prod_name: product.name, prod_price: product.price, qty: 1 })
             cart.totalPrice += product.price
         }
         else {

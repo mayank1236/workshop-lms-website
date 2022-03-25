@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var User = require('../../Models/user');
+var Seller = require('../../Models/seller');
 var sellerBookings = require('../../Models/Slot/seller_bookings');
 
 const viewUserList = async (req, res) => {
@@ -43,6 +44,91 @@ const viewUser = async (req, res) => {
                     data: docs
                 });
             }
+        });
+}
+
+var getSellerRequest = async (req, res) => {
+    let requests = await Seller.find({}).exec();
+
+    if (requests.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            data: requests
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No pending requests.",
+            data: []
+        });
+    }
+}
+
+var approveSellerRequest = async (req, res) => {
+    var id = req.params.id;
+
+    return Seller.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        { $set: { seller_status: true } },
+        { new: true }
+    )
+        .then(data => {
+            User.findOneAndUpdate(
+                { _id: mongoose.Types.ObjectId(data.seller_id) },
+                {
+                    $set: {
+                        type: "Seller",
+                        seller_approval: true
+                    }
+                }
+            )
+                .then(docs => {
+                    res.status(200).json({
+                        status: true,
+                        message: "Data successfully edited.",
+                        data: data
+                    });
+                })
+                .catch(fault => {
+                    res.status(500).json({
+                        status: false,
+                        message: "Invalid id. Server error 2.",
+                        error: err
+                    });
+                });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error 1.",
+                error: err
+            });
+        });
+}
+
+var rejectSellerRequest = async (req, res) => {
+    var id = req.params.id;
+
+    return Seller.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        { $set: { ask_permission: false } },
+        { new: true }
+    )
+        .then(data => {
+            res.status(200).json({
+                status: true,
+                message: "Data successfully edited.",
+                data: data
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err
+            });
         });
 }
 
@@ -168,6 +254,9 @@ var bookingNUserStat = async (req, res) => {
 module.exports = {
     viewUserList,
     viewUser,
+    getSellerRequest,
+    approveSellerRequest,
+    rejectSellerRequest,
     viewSellerList,
     viewSeller,
     selectTopSeller,
