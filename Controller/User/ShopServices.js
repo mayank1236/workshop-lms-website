@@ -388,11 +388,27 @@ const viewShopServiceDetails = async (req, res) => {
                             as: "seller_details"
                         }
                     },
-                    {
-                        $project: {
-                            _v: 0
+                    { 
+                        $lookup: {
+                            from: "service_reviews",
+                            localField: "_id",
+                            foreignField: "service_id",
+                            as: "review_data"   
                         }
-                    }
+                    },
+                    {
+                        $addFields: {
+                            avgRating: {
+                                $avg: {
+                                    $map: {
+                                        input: "$review_data",
+                                        in: "$$this.rating"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    { $project: { _v: 0 } }
                 ]
             )
                 .then(result => {
