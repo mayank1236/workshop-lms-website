@@ -127,6 +127,7 @@ var viewSlotsForADay = async (req, res) => {
                 from: "user_booked_slots",
                 let: {
                     // user_id: mongoose.Types.ObjectId(user_id), 
+                    shop_service_id: mongoose.Types.ObjectId(shop_service_id), 
                     day_name_of_booking: "$weekday_name", 
                     from: "$timing.from"
                 },
@@ -137,8 +138,10 @@ var viewSlotsForADay = async (req, res) => {
                                 $and: [
                                     // if "paid: true", then slot will be red for user, else green
                                     // { $eq: ["$user_id", "$$user_id"] }, 
+                                    { $eq: ["$shop_service_id", "$$shop_service_id"] }, 
                                     { $eq: ["$day_name_of_booking", "$$day_name_of_booking"] }, 
                                     { $eq: ["$from", "$$from"] }, 
+                                    { $eq: ["$paid", true] }, 
                                     { $gte: ["$date_of_booking", moment.utc(req.body.date).startOf('day').toDate()] }, 
                                     { $lte: ["$date_of_booking", moment.utc(req.body.date).endOf('day').toDate()] }
                                 ]
