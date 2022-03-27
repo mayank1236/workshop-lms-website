@@ -1,8 +1,7 @@
 var mongoose = require('mongoose')
 // var moment = require('moment-timezone')
-var Schema = mongoose.Schema
 
-var SellerBookings = require('./seller_bookings')
+var Schema = mongoose.Schema
 
 const userBookedSlot = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
