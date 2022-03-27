@@ -39,9 +39,9 @@ const SERVICE_CART_SCHEMA = new Schema({
         type:Boolean,
         default:true
     },
-    refund_claim: {       // whether buyer can claim refund. Duration 3 days of seller accept
-        type: Boolean,
-        default: true
+    refund_claim: {       // Refund can only be claimed after seller accepts service order
+        type: Boolean,    // and within 3 days of seller accepting service order
+        default: false
     },
     refund_request: {     // whether buyer has requested refund (within 3 ays of seller accept)
         type: String,

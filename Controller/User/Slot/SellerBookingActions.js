@@ -125,7 +125,12 @@ var acceptNewBooking = async (req, res) => {
                             user_booking_id: docs.user_booking_id,
                             slot_id: docs.slot_id
                         },
-                        { $set: { seller_confirmed: true } },
+                        {
+                            $set: {
+                                seller_confirmed: true,
+                                refund_claim: true
+                            }
+                        },
                         { new: true }
                     ).exec();
 
