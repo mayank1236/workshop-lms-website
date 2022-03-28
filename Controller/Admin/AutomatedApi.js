@@ -9,7 +9,6 @@ var payForServOrNot = async (req, res) => {
             claim_status: false
         },
         { $set: { claim_status: true } },
-        { multi: true },
         (err, result) => {
             if (!err) {
                 console.log("Newly completed and not refunded seller earning cleared.");
@@ -28,7 +27,6 @@ var payForService = async (req, res) => {
             seller_apply: true
         },
         { $set: { paystatus: true } },
-        { multi: true },
         (err, result) => {
             if (!err) {
                 console.log("Seller claimed earnings paid.");
@@ -53,20 +51,35 @@ var clearServiceRefunds = async (req, res) => {
     return SERVICE_REFUND.updateMany(
         { refund_status: false }, 
         { $set: { refund_status: true } },
-        { multi: true },
         (err, result) => {
             if (!err) {
                 console.log("Product refunds cleared.");
             }
             else {
-                console.log("Failed to clear product refunds due to: ", err.name);
+                console.log("Failed to clear product refunds due to: ", err.message);
             }
         }
     );
 }
 
+var resetRefundClaimStatus = async (req,res) => {
+    return SERVICE_CART.updateMany(
+        { refund_claim: true }, 
+        { $set: { refund_claim: false } }, 
+        (err,result) => {
+            if (!err) {
+                console.log("Refund claim statuses have been reset.");
+            }
+            else {
+                console.log("Failed to reset refund claim statuses due to ", err.message);
+            }
+        }
+    )
+}
+
 module.exports = {
     payForServOrNot,
     payForService,
-    clearServiceRefunds
+    clearServiceRefunds,
+    resetRefundClaimStatus
 }

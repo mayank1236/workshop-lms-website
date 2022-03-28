@@ -1,8 +1,7 @@
 var mongoose = require('mongoose')
 // var moment = require('moment-timezone')
-var Schema = mongoose.Schema
 
-var SellerBookings = require('./seller_bookings')
+var Schema = mongoose.Schema
 
 const userBookedSlot = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -54,27 +53,8 @@ const userBookedSlot = new Schema({
     }
 });
 
-// userBookedSlot.methods.addToSellerBooking = function (slot_book){
-//     console.log('data_from_booking_controller', slot_book)
-//     let saveData = {
-//         _id: mongoose.Types.ObjectId(),
-//         seller_id: slot_book.seller_id,
-//         user_id: slot_book.user_id,
-//         user_booking_id: slot_book._id,
-//         date: slot_book.date,
-//         day_name: slot_book.day_name,
-//         duration: slot_book.duration
-//     }
-//     console.log('booking_data', saveData);
-//     let user_booking_data = new SellerBookings(saveData)
-
-//     var insert = user_booking_data.save().exec()
-//     if(insert){
-//         return true
-//     }
-//     else{
-//         return false
-//     }
+// userBookedSlot.methods.pushToArray = function (emp_arr) {
+//     return emp_arr.push(this);
 // }
 
 module.exports = mongoose.model('user_booked_slot', userBookedSlot)

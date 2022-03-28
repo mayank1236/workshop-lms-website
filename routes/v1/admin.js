@@ -231,6 +231,7 @@ router.delete('/cms/testimonials/:id', CmsController.deleteTestimonial);
 const clearDueEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForServOrNot);
 const payClaimedEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForService);
 const clearServiceRefund = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.clearServiceRefunds);
+const resetRefundClaimStatus = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.resetRefundClaimStatus);
 /**-----------------------------------------------------------------------------*/
 /**===========================================================================================*/
 
