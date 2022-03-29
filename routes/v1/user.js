@@ -15,6 +15,7 @@ const CouponController = require('../../Controller/User/Coupons');
 const ServiceCart = require('../../Controller/User/ServiceCart');
 const Checkout = require('../../Controller/User/Checkout');
 const ServiceReview = require('../../Controller/User/ServiceReview');
+const ChatServiceReview = require('../../Controller/User/SellerChatReviews');
 const GrievanceController = require('../../Controller/User/Grievance');
 const FeedbackController = require('../../Controller/User/Feedback');
 const BlogComments = require('../../Controller/User/BlogComments');
@@ -164,8 +165,10 @@ router.put('/myaccount/refund/:id', UserAccount.serviceRefund);
 
 /**=================Service review api's========================= */
 router.post('/seller-service/reviews', ServiceReview.giveOrderReview); // rating of a successfully completed order
-//
 router.get('/seller-service/reviews/:seller_id', ServiceReview.getReviews);
+router.post('/chat-img-upload', upload1.single('image'), ChatServiceReview.chatImageUrl);
+router.post('/add-chat-review', ChatServiceReview.addChatReview);
+router.post('/get-chat-review', ChatServiceReview.getChatReview);
 /**===============Service review api end========================= */
 
 router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
