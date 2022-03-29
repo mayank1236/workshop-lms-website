@@ -537,6 +537,8 @@ const viewTopServiceProvider = async (req, res) => {
                         }
                     }
                 },
+                { $sort: { avgRating: -1 } }, 
+                { $limit: 8 }
             ]
         )
         .then(data => {
