@@ -1,11 +1,13 @@
+var mongoose = require('mongoose');
+
 const SELLER_CHAT_REVIEW = require('../../Models/seller_chat_review');
 
 var Upload = require('../../service/upload');
 
-var addChatReview = async (req,res) => {
+var addChatReview = async (req, res) => {
     let adminCheck = await SELLER_CHAT_REVIEW.findOne({
-        user_id: req.body.user_id,
-        seller_id: req.body.seller_id
+        user_id: mongoose.Types.ObjectId(req.body.user_id),
+        seller_id: mongoose.Types.ObjectId(req.body.seller_id)
     }).exec();
 
     if (adminCheck != null) {
@@ -16,6 +18,12 @@ var addChatReview = async (req,res) => {
         });
     }
     else {
+        let saveData = {
+            _id: mongoose.Types.ObjectId(),
+            user_id: mongoose.Types.ObjectId(req.body.user_id),
+            seller_id: mongoose.Types.ObjectId(req.body.seller_id),
+            rating: req.body.rating
+        }
         if (req.body.comment != "" || req.body.comment != null || typeof req.body.comment != "undefined") {
             req.body.comment = req.body.comment;
         }
@@ -23,7 +31,7 @@ var addChatReview = async (req,res) => {
             req.body.image = req.body.image;
         }
 
-        const NEW_CHAT_REVIEW = new SELLER_CHAT_REVIEW(req.body);
+        const NEW_CHAT_REVIEW = new SELLER_CHAT_REVIEW(saveData);
 
         return NEW_CHAT_REVIEW.save()
             .then(docs => {
@@ -57,7 +65,7 @@ var chatImageUrl = async (req, res) => {
     });
 }
 
-var getChatReview = async (req,res) => {
+var getChatReview = async (req, res) => {
     let review = await SELLER_CHAT_REVIEW.find({
         user_id: req.body.user_id,
         seller_id: req.body.seller_id
