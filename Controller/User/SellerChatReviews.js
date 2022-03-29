@@ -25,10 +25,10 @@ var addChatReview = async (req, res) => {
             rating: req.body.rating
         }
         if (req.body.comment != "" || req.body.comment != null || typeof req.body.comment != "undefined") {
-            req.body.comment = req.body.comment;
+            saveData.comment = req.body.comment;
         }
         if (req.body.image != "" || req.body.image != null || typeof req.body.image != "undefined") {
-            req.body.image = req.body.image;
+            saveData.image = req.body.image;
         }
 
         const NEW_CHAT_REVIEW = new SELLER_CHAT_REVIEW(saveData);
