@@ -1,14 +1,8 @@
 var mongoose = require("mongoose");
-var passwordHash = require("password-hash");
-var Subsciption = require("../../Models/subscription");
-var SubscribedBy = require("../../Models/subscr_purchase");
-var User = require("../../Models/user");
-
-var jwt = require("jsonwebtoken");
-
 const { Validator } = require("node-input-validator");
 
-var uuidv1 = require("uuid").v1;
+var Subsciption = require("../../Models/subscription");
+var SubscribedBy = require("../../Models/subscr_purchase");
 
 const create = async (req, res) => {
   let v = new Validator(req.body, {
@@ -17,8 +11,7 @@ const create = async (req, res) => {
     seller_comission: "required",
     duration: "required",
     price: "required",
-    type: "required",
-    no_of_listing: "required"
+    type: "required"
   });
 
   let matched = await v.check().then((val) => val);
@@ -38,7 +31,10 @@ const create = async (req, res) => {
     price: req.body.price,
     type: req.body.type,
     no_of_listing: req.body.no_of_listing
-  };
+  }
+  if (req.body.no_of_listing != "" || req.body.no_of_listing != null || typeof req.body.no_of_listing != "undefined") {
+    subdata.no_of_listing = req.body.no_of_listing
+  }
 
   let subscriptionSchema = new Subsciption(subdata);
 

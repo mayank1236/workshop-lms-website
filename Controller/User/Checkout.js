@@ -1,11 +1,10 @@
 var mongoose = require('mongoose')
-var moment = require('moment')
 const { Validator } = require('node-input-validator')
 
 var Checkout = require('../../Models/checkout')
+var UserBookedSlot = require('../../Models/Slot/user_booked_slot')
 var ServiceCart = require('../../Models/service_cart')
 var Coupon = require('../../Models/coupon')
-var UserBookedSlot = require('../../Models/Slot/user_booked_slot')
 var SellerBookings = require('../../Models/Slot/seller_bookings')
 
 var create = async (req, res) => {
@@ -35,7 +34,7 @@ var create = async (req, res) => {
                 bookedServices = bookedServices + ', ' + alreadyBooked[i].shop_service_name
             }
         }
-        console.log("Booked services are ", bookedServices);
+        console.log("Booked services are ", bookedServices)
 
         return res.status(500).json({
             status: false,

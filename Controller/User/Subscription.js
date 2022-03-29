@@ -1,7 +1,5 @@
 var mongoose = require("mongoose");
 var moment = require("moment-timezone");
-var jwt = require("jsonwebtoken");
-var uuidv1 = require("uuid").v1;
 
 var Subsciption = require("../../Models/subscription");
 var SubscribedBy = require("../../Models/subscr_purchase");
