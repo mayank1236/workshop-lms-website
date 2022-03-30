@@ -388,12 +388,12 @@ const viewShopServiceDetails = async (req, res) => {
                             as: "seller_details"
                         }
                     },
-                    { 
+                    {
                         $lookup: {
                             from: "service_reviews",
                             localField: "_id",
                             foreignField: "service_id",
-                            as: "review_data"   
+                            as: "review_data"
                         }
                     },
                     {
@@ -537,24 +537,33 @@ const viewTopServiceProvider = async (req, res) => {
                         }
                     }
                 },
-                { $sort: { avgRating: -1 } }, 
+                { $sort: { avgRating: -1 } },
                 { $limit: 8 }
             ]
         )
-        .then(data => {
-            res.status(200).json({
-                status: true,
-                message: "Popular services get successfully",
-                data: data
-            })
+    .then(data => {
+        res.status(200).json({
+            status: true,
+            message: "Popular services get successfully",
+            data: data
         })
-        .catch(err => {
-            res.status(500).json({
-                status: false,
-                message: "Failed to get popular shop service data. Server error.",
-                error: err
-            });
-        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            status: false,
+            message: "Failed to get popular shop service data. Server error.",
+            error: err
+        });
+    })
+    // .explain((err, data) => {
+    //     if (!err) {
+    //         res.status(200).json({
+    //             status: true,
+    //             message: "Popular services get successfully",
+    //             data: data
+    //         })
+    //     }
+    // })
 }
 
 module.exports = {

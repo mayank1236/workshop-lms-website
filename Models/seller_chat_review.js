@@ -13,6 +13,11 @@ const SELLER_CHAT_SCHEMA = new Schema({
         required: true
     },
     comment: String,
+    tip: {
+        type: Number,
+        default: 0
+    },
+    currency: String,
     image: Array,
     created_on: {
         type: Date,
