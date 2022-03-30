@@ -9,6 +9,7 @@ var addChatReview = async (req, res) => {
         user_id: mongoose.Types.ObjectId(req.body.user_id),
         seller_id: mongoose.Types.ObjectId(req.body.seller_id)
     }).exec();
+    console.log(adminCheck);
 
     if (adminCheck != null) {
         return res.status(500).json({
@@ -26,6 +27,12 @@ var addChatReview = async (req, res) => {
         }
         if (req.body.comment != "" || req.body.comment != null || typeof req.body.comment != "undefined") {
             saveData.comment = req.body.comment;
+        }
+        if (req.body.tip != "" || req.body.tip != null || typeof req.body.tip != "undefined") {
+            saveData.tip = req.body.tip;
+        }
+        if (req.body.currency != "" || req.body.currency != null || typeof req.body.currency != "undefined") {
+            saveData.currency = req.body.currency;
         }
         if (req.body.image != "" || req.body.image != null || typeof req.body.image != "undefined") {
             saveData.image = req.body.image;
