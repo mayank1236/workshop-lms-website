@@ -136,7 +136,7 @@ router.put('/seller-service/accept-booking/:id', SellerBookingActions.acceptNewB
 router.get('/seller-service/accepted-bookings/:seller_id', SellerBookingActions.viewAcceptedBookings);
 router.put('/seller-service/reject-booking/:id', SellerBookingActions.rejectNewBooking);// added by anirbank-93
 router.get('/seller-service/rejected-bookings/:seller_id', SellerBookingActions.viewRejectedBookings);
-router.put('/seller-service/complete-booking/:id', SellerBookingActions.completeBooking);// added by anirbank-93
+router.put('/seller-service/complete-booking/:id', SellerBookingActions.completeBooking); // added by anirbank-93
 // ------------------>Slot management section end
 
 router.post('/shop-service/availability', UserBookingActions.checkAvailability);// added by anirbank-93

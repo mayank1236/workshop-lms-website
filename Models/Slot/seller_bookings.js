@@ -38,7 +38,7 @@ const sellerBookingSchema = new Schema({
         type: Boolean,
         default: false
     },
-    completestatus: {
+    completestatus: {  // after "complete" status, refund can be claimed
         type: String,
         default: ""
     },
