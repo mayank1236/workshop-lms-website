@@ -479,6 +479,7 @@ var viewRejectedBookings = async (req, res) => {
     }
 };
 
+// Complete service booking
 var completeBooking = async (req, res) => {
     var id = req.params.id;
 
