@@ -34,9 +34,13 @@ const sellerBookingSchema = new Schema({
         type: Boolean,
         default: true
     },
-    booking_accept:{
+    booking_accept: {
         type: Boolean,
         default: false
+    },
+    completestatus: {
+        type: String,
+        default: ""
     },
     paid: {
         type: Boolean,

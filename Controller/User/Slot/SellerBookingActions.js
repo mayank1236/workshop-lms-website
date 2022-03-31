@@ -127,8 +127,8 @@ var acceptNewBooking = async (req, res) => {
                         },
                         {
                             $set: {
-                                seller_confirmed: true,
-                                refund_claim: true
+                                seller_confirmed: true
+                                // refund_claim: true
                             }
                         },
                         { new: true }
@@ -479,10 +479,40 @@ var viewRejectedBookings = async (req, res) => {
     }
 };
 
+var completeBooking = async (req, res) => {
+    var id = req.params.id;
+
+    return sellerBookings.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        { $set: { completestatus: "complete" } },
+        { new: true }
+    )
+        .then(async (docs) => {
+            let enableUserRefund = await userServiceCart.findOneAndUpdate(
+                { user_booking_id: docs.user_booking_id},
+                { refund_claim: true }
+            ).exec();
+
+            res.status(200).json({
+                status: true,
+                message: "Service request completed.",
+                data: docs
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Invalid id. Server error.",
+                error: err.message
+            });
+        })
+}
+
 module.exports = {
     newBookings,
     acceptNewBooking,
     viewAcceptedBookings,
     rejectNewBooking,
-    viewRejectedBookings
+    viewRejectedBookings,
+    completeBooking
 }
