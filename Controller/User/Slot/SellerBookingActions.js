@@ -483,15 +483,20 @@ var viewRejectedBookings = async (req, res) => {
 var completeBooking = async (req, res) => {
     var id = req.params.id;
 
-    return sellerBookings.findOneAndUpdate(
+    return userServiceCart.findOneAndUpdate(
         { _id: mongoose.Types.ObjectId(id) },
-        { $set: { completestatus: "complete" } },
+        {
+            $set: {
+                completestatus: "complete",
+                refund_claim: true
+            }
+        },
         { new: true }
     )
         .then(async (docs) => {
-            let enableUserRefund = await userServiceCart.findOneAndUpdate(
-                { user_booking_id: docs.user_booking_id},
-                { refund_claim: true }
+            let enableUserRefund = await sellerBookings.findOneAndUpdate(
+                { user_booking_id: docs.user_booking_id },
+                { completestatus: "complete" }
             ).exec();
 
             res.status(200).json({

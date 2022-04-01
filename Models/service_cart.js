@@ -39,11 +39,15 @@ const SERVICE_CART_SCHEMA = new Schema({
         type:Boolean,
         default:true
     },
-    refund_claim: {       // Refund can only be claimed after seller accepts service order
-        type: Boolean,    // and within 3 days of seller accepting service order
+    completestatus: {  // after "complete" status, refund can be claimed
+        type: String,
+        default: ""
+    },
+    refund_claim: {       // Refund can only be claimed after seller completes service order
+        type: Boolean,    // and within 3 days of seller completing service order
         default: false
     },
-    refund_request: {     // whether buyer has requested refund (within 3 ays of seller accept)
+    refund_request: {     // whether buyer has requested refund (within 3 ays of seller complete)
         type: String,
         default: ""
     },
