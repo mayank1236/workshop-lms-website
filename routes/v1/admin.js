@@ -96,6 +96,8 @@ router.get('/sellerlist', UserSellersController.viewSellerList) // added by anir
 router.get('/viewseller/:id', UserSellersController.viewSeller)  // added by anirbank-93
 router.put('/top-sellers/:id', UserSellersController.selectTopSeller);
 router.get('/booking-and-user-stat', UserSellersController.bookingNUserStat);
+router.delete('/userDelete/:id', UserSellersController.Delete);// added by anirbank-93
+
 
 router.post('/service-category',upload.single("image"),ServiceController.create)// added by anirbank-93
 router.get('/service-category', ServiceController.viewAllServices)              // added by anirbank-93
