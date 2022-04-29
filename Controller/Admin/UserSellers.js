@@ -47,6 +47,26 @@ const viewUser = async (req, res) => {
         });
 }
 
+const Delete = async(req,res)=>{
+    return User.remove(
+        {_id: { $in : [mongoose.Types.ObjectId(req.params.id)]}})
+        .then((data)=>{
+            return res.status(200).json({
+                status: true,
+                message: 'User delete successfully',
+                data: data
+            });
+        })
+        .catch((err)=>{
+            res.status(500).json({
+                status: false,
+                message: 'Server error. Please try again.',
+                error: error,
+            });
+        })
+    
+}
+
 var getSellerRequest = async (req, res) => {
     let requests = await Seller.find({}).exec();
 
@@ -260,5 +280,6 @@ module.exports = {
     viewSellerList,
     viewSeller,
     selectTopSeller,
-    bookingNUserStat
+    bookingNUserStat,
+    Delete
 }
