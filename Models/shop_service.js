@@ -35,6 +35,7 @@ const ShopServiceSchema = new Schema({
     },
     user_id: mongoose.Schema.Types.ObjectId,
     hashtags: [],
+    highlights: [],
     image: Array,
     video: String,
     status:{

@@ -48,6 +48,16 @@ const create = async (req, res) => {
         shopServiceData.hashtags = JSON.parse(req.body.hashtags)
     }
     if (
+        typeof (req.body.highlights) == 'undefined' ||
+        req.body.highlights == '' ||
+        req.body.highlights == null
+    ) {
+        shopServiceData.highlights = null
+    }
+    else {
+        shopServiceData.highlights = JSON.parse(req.body.highlights)
+    }
+    if (
         typeof (req.body.image) == 'undefined' ||
         req.body.image == '' ||
         req.body.image == null
@@ -147,6 +157,13 @@ const update = async (req, res) => {
         req.body.hashtags != null
     ) {
         req.body.hashtags = JSON.parse(req.body.hashtags)
+    }
+    if (
+        typeof (req.body.highlights) != 'undefined' ||
+        req.body.highlights != '' ||
+        req.body.highlights != null
+    ) {
+        req.body.highlights = JSON.parse(req.body.highlights)
     }
     if (
         typeof (req.body.image) == 'undefined' ||
