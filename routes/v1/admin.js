@@ -123,6 +123,8 @@ router.get('/seller-service/rejected-bookings', SellerBookingController.viewReje
 // ------------------>Slot management section end
 
 router.get('/seller-service/reviews', SellerReviews.getReviews);
+router.put('/seller-service/reviews/:id', SellerReviews.update);
+
 
 router.put('/myaccount/update-password/:id', MyAccountController.updatePassword);
 

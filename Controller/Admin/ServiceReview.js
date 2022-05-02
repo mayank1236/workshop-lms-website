@@ -46,6 +46,37 @@ var getReviews = async (req, res) => {
         });
 };
 
+
+const update = async(req,res)=>{
+    return serviceReview.findOneAndUpdate(
+        { _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } },
+        req.body,
+        async (err, data) => {
+          if (err) {
+            res.status(500).json({
+              status: false,
+              message: "Server error. Please try again.",
+              error: err,
+            });
+          } else if (data != null) {
+            data = { ...req.body, ...data._doc };
+            res.status(200).json({
+              status: true,
+              message: "Review update successful",
+              data: data,
+            });
+          } else {
+            res.status(500).json({
+              status: false,
+              message: "User not match",
+              data: null,
+            });
+          }
+        }
+      );
+    };
+
 module.exports = {
-    getReviews
+    getReviews,
+    update
 }
