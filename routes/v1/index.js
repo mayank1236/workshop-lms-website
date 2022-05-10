@@ -102,6 +102,9 @@ router.get('/user/articles', CmsController.viewAllArticles);
 router.get('/user/articles/:id', CmsController.viewArticleById);
 router.get('/user/cms/testimonials', CmsController.viewAllTestimonials);
 router.get('/user/cms/testimonials/:id', CmsController.viewTestimonialById);
+
+router.get('/user/shop/shopservice-details/:id', ShopServiceController.viewShopServiceDetails); // added by anirbank-93
+
 /** ================================= without login url section end ================================ */
 
 router.use(middleware);
