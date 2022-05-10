@@ -124,6 +124,8 @@ router.get('/seller-service/rejected-bookings', SellerBookingController.viewReje
 
 router.get('/seller-service/reviews', SellerReviews.getReviews);
 router.put('/seller-service/reviews/:id', SellerReviews.update);
+router.delete('/seller-service/reviews/:id', SellerReviews.Delete);
+
 
 
 router.put('/myaccount/update-password/:id', MyAccountController.updatePassword);

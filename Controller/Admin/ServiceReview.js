@@ -84,7 +84,28 @@ const update = async(req,res)=>{
       );
     };
 
+    const Delete = async(req,res)=>{
+        return serviceReview.remove(
+            {_id: { $in : [mongoose.Types.ObjectId(req.params.id)]}})
+            .then((data)=>{
+                return res.status(200).json({
+                    status: true,
+                    message: 'Review delete successfully',
+                    data: data
+                });
+            })
+            .catch((err)=>{
+                res.status(500).json({
+                    status: false,
+                    message: 'Server error. Please try again.',
+                    error: error,
+                });
+            })
+        
+    }
+
 module.exports = {
     getReviews,
-    update
+    update,
+    Delete
 }
