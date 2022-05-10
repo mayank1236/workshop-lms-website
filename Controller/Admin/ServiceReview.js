@@ -15,6 +15,14 @@ var getReviews = async (req, res) => {
             },
             { $unwind: "$user_data" },
             {
+                $lookup:{
+                    from:"shop_services",
+                    localField:"service_id",
+                    foreignField:"_id",
+                    as :"service_data"
+                }
+            },
+            {
                 $project: {
                     __v: 0
                 }
