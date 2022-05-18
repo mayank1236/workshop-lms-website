@@ -13,6 +13,7 @@ const create = async (req, res) => {
         name: "required",
         price: "required",
         details: "required",
+        currency:"required"
     })
     let matched = v.check().then((val) => val)
     if (!matched) {
@@ -28,7 +29,8 @@ const create = async (req, res) => {
         details: req.body.details,
         category_id: mongoose.Types.ObjectId(req.body.category_id),
         category_name: req.body.category_name,
-        user_id: mongoose.Types.ObjectId(req.body.user_id)
+        user_id: mongoose.Types.ObjectId(req.body.user_id),
+        currency:req.body.currency
     }
     if (
         typeof (req.body.personalization) != 'undefined' ||
