@@ -7,6 +7,8 @@ var AdminCommission = require('../../Models/admin_commission')
 var Upload = require('../../service/upload')
 
 const { Validator } = require('node-input-validator')
+var currconvert = require("../../service/currencyconverter")
+
 
 const create = async (req, res) => {
     const v = new Validator(req.body, {
@@ -575,11 +577,29 @@ const viewTopServiceProvider = async (req, res) => {
                 { $limit: 8 }
             ]
         )
-    .then(data => {
+    .then(async data => {
+
+        let newRes = data;
+
+                        for (let index = 0; index < newRes.length; index++) {
+                        var element = newRes[index];
+                        
+
+                        if (req.query.currency != '' && typeof req.query.currency != 'undefined' && typeof element.service_data.currency!=='undefined' && element.service_data.currency != req.query.currency) {
+                            
+                            console.log(element.service_data.price)
+                       
+                            let resuss = await currconvert.currencyConvTR(element.service_data.price,element.service_data.currency,req.query.currency)
+                            console.log(resuss)
+                            newRes[index].service_data.price = resuss
+                            
+                        }
+                        }
+
         res.status(200).json({
             status: true,
             message: "Popular services get successfully",
-            data: data
+            data: newRes
         })
     })
     .catch(err => {
