@@ -32,6 +32,10 @@ let UserSchema = new mongoose.Schema({
         required: false,
         default: 'User'
     },
+    currency: {
+        type: String,
+        required: true,
+    },
     start: {
         type: Date,
         default: Date.now,
