@@ -193,6 +193,13 @@ router.get('/blog/:id', BlogController.viewBlogById);
 router.put('/blog/:id', BlogController.editBlog);
 router.delete('/blog/:id', BlogController.deleteBlog);
 
+router.post('/bannercontent', BlogController.addhomeBanner);
+router.get('/bannercontent', BlogController.viewAllBAnner);
+router.put('/bannercontent/:id', BlogController.editBanner);
+
+
+
+
 router.get('/blog-comment', CmsController.viewAllBlogComments);
 
 router.post('/associate', Associates.addAssociate);

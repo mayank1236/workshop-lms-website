@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 const { Validator } = require('node-input-validator');
 
 const BLOG = require('../../Models/blog');
+const HOMEBANNER = require('../../Models/homebanner');
+
 var Upload = require('../../service/upload');
 
 var addBlog = async (req, res) => {
@@ -187,6 +189,98 @@ var deleteBlog = async (req, res) => {
         });
 }
 
+var addhomeBanner = async (req, res) => {
+    const V = new Validator(req.body, {
+        heading: 'required',
+        content: 'required',
+    });
+    let matched = V.check().then(val => val);
+
+    if (!matched) {
+        return res.status(400).json({ status: false, errors: V.errors });
+    }
+
+    let blogData = {
+        _id: mongoose.Types.ObjectId(),
+        heading: req.body.heading,
+        content: req.body.content
+    }
+
+    const NEW_BLOG = new HOMEBANNER(blogData);
+
+    return NEW_BLOG.save((err, docs) => {
+        if (!err) {
+            res.status(200).json({
+                status: true,
+                message: "New Banner Content added successfully!",
+                data: docs
+            });
+        }
+        else {
+            res.status(500).json({
+                status: false,
+                message: "Failed to add. Server error.",
+                error: err
+            });
+        }
+    });
+}
+
+var editBanner = async (req, res) => {
+    const V = new Validator(req.body, {
+        heading: 'required',
+        content: 'required',
+    });
+    let matched = V.check().then(val => val);
+
+    if (!matched) {
+        return res.status(400).json({ status: false, errors: V.errors });
+    }
+
+    var id = req.params.id;
+
+    return HOMEBANNER.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(id) },
+        req.body,
+        { new: true },
+        (err, docs) => {
+            if (!err) {
+                res.status(200).json({
+                    status: true,
+                    message: "Banner Content successfully edited.",
+                    data: docs
+                });
+            }
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Invalid id.",
+                    error: err.message
+                });
+            }
+        }
+    );
+}
+
+var viewAllBAnner = async (req, res) => {
+    var blogs = await HOMEBANNER.find().exec();
+
+    if (blogs.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "All blogs successfully get.",
+            data: blogs
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No contact information to show.",
+            data: null
+        });
+    }
+}
+
 module.exports = {
     addBlog,
     imageUpload,
@@ -194,4 +288,7 @@ module.exports = {
     viewBlogById,
     editBlog,
     deleteBlog,
+    addhomeBanner,
+    viewAllBAnner,
+    editBanner
 }
