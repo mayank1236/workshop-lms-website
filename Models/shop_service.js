@@ -27,6 +27,10 @@ const ShopServiceSchema = new Schema({
         type: String,
         required: false
     },
+    currency: {
+        type: String,
+        required: true,
+    },
     category_id: mongoose.Schema.Types.ObjectId,
     category_name:{
         type: String,
