@@ -197,6 +197,10 @@ router.post('/bannercontent', BlogController.addhomeBanner);
 router.get('/bannercontent', BlogController.viewAllBAnner);
 router.put('/bannercontent/:id', BlogController.editBanner);
 
+router.post('/bannerAbout', BlogController.addaboutBanner);
+router.get('/bannerAbout', BlogController.viewAllaboutBAnner);
+router.put('/bannerAbout/:id', BlogController.editaboutBanner);
+
 
 
 
