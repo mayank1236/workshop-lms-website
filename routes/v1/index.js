@@ -105,6 +105,9 @@ router.get('/user/cms/testimonials/:id', CmsController.viewTestimonialById);
 
 router.get('/user/shop/shopservice-details/:id', ShopServiceController.viewShopServiceDetails); // added by anirbank-93
 
+router.get('/user/bannercontent', BlogComments.viewAllBAnner);
+
+
 /** ================================= without login url section end ================================ */
 
 router.use(middleware);
