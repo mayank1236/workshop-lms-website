@@ -6,6 +6,8 @@ var Subcategory = require('../../Models/subcategory');
 var ShopService = require('../../Models/shop_service');
 
 var Upload = require('../../service/upload');
+var currconvert = require("../../service/currencyconverter")
+
 
 const viewAllServices = async (req, res) => {
     return Service.find({ admin_approved: true })
@@ -117,20 +119,20 @@ const viewShopServicesPerService = async (req, res) => {
                         //         },
                         //     }
                         //     : { $project: { __v: 0 } },
-                        (req.query.min != "" && typeof req.query.min != "undefined") ||
-                            (req.query.max != "" && typeof req.query.max != "undefined") ?
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
-                                            { $gte: ["$price", Number(req.query.min)] },
-                                            { $lte: ["$price", Number(req.query.max)] },
-                                            { status: true }
-                                        ]
-                                    }
-                                }
-                            }
-                            : { $project: { __v: 0 } },
+                        // (req.query.min != "" && typeof req.query.min != "undefined") ||
+                        //     (req.query.max != "" && typeof req.query.max != "undefined") ?
+                        //     {
+                        //         $match: {
+                        //             $expr: {
+                        //                 $and: [
+                        //                     { $gte: ["$price", Number(req.query.min)] },
+                        //                     { $lte: ["$price", Number(req.query.max)] },
+                        //                     { status: true }
+                        //                 ]
+                        //             }
+                        //         }
+                        //     }
+                        //     : { $project: { __v: 0 } },
                         {
                             $match: {
                                 category_id: { $in: [mongoose.Types.ObjectId(id)] },
@@ -248,13 +250,49 @@ const viewShopServicesPerService = async (req, res) => {
                             }
                         }
                     ]
-                ), options, function (err, docs) {
+                ), options,async function (err, docs) {
                     if (!err) {
+                        let newRes = docs;
+                                
+        for (let index = 0; index < newRes.itemsList.length; index++) {
+            var element = newRes.itemsList[index];
+  
+            if (req.query.currency != '' && typeof req.query.currency != 'undefined' && element.currency != req.query.currency) {
+  
+              // var total = val * element.selling_price;
+              let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
+  
+              // console.log(resuss)
+  
+              newRes.itemsList[index].price = resuss 
+ 
+  
+  
+          }  
+
+        }
+  
+        if((req.query.min != "" && typeof req.query.min != "undefined") ||
+          (req.query.max != "" && typeof req.query.max != "undefined"))
+          {
+            console.log('a')
+            for (let index = 0; index < newRes.itemsList.length; index++) {
+              var element = newRes.itemsList[index];
+              if(Number(element.price) >= req.query.min && Number(element.price) <= req.query.max)
+              {
+                // newRes = newRes
+                console.log(element)
+                newRes.itemsList = element
+              }
+            }
+     
+            
+          }
                         console.log(docs);
                         res.status(200).json({
                             status: true,
                             message: "All services for this category get successfully.",
-                            data: docs
+                            data: newRes
                         })
                     }
                     else {
