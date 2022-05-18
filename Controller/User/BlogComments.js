@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 const { Validator } = require('node-input-validator');
 
 const BLOG_COMMENT = require('../../Models/blog_comments');
+const HOMEBANNER = require('../../Models/homebanner');
+
 
 var Upload = require('../../service/upload');
 
@@ -160,11 +162,32 @@ var delBlogComment = async (req, res) => {
         });
 }
 
+var viewAllBAnner = async (req, res) => {
+    var blogs = await HOMEBANNER.find().exec();
+
+    if (blogs.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "All blogs successfully get.",
+            data: blogs
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No contact information to show.",
+            data: null
+        });
+    }
+}
+
+
 module.exports = {
     addComment,
     uploadImage,
     getAllComments,
     getCommentById,
     editComment,
-    delBlogComment
+    delBlogComment,
+    viewAllBAnner
 }

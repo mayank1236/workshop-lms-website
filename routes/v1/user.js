@@ -192,6 +192,7 @@ router.post('/blog-comment-img', upload1.single("image"), BlogComments.uploadIma
 router.get('/blog-comment/:id', BlogComments.getCommentById);
 router.put('/blog-comment/:id', BlogComments.editComment);
 router.delete('/blog-comment/:id', BlogComments.delBlogComment);
+
 /** ================================= with login url section end ================================ */
 
 module.exports = router;
