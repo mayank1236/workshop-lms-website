@@ -430,11 +430,26 @@ const viewShopServiceDetails = async (req, res) => {
                     { $project: { _v: 0 } }
                 ]
             )
-                .then(result => {
+                .then(async result => {
+                    let newRes = result;
+
+                        for (let index = 0; index < newRes.length; index++) {
+                        var element = newRes[index];
+
+                        if (req.query.currency != '' && typeof req.query.currency != 'undefined' && element.currency != req.query.currency) {
+                            
+                            // let resus = await converter.convert(element.currency,req.query.currency,element.selling_price);
+                            // console.log(resus)
+                            let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
+
+                            newRes[index].price = resuss
+                            
+                        }
+                        }
                     res.status(200).json({
                         status: true,
                         message: "Shop service details successfully get.",
-                        data: result
+                        data: newRes
                     })
                 })
                 .catch(fault => {
