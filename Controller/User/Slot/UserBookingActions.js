@@ -299,7 +299,9 @@ var bookAppointment = async (req, res, next) => {
                         service_name: docs.shop_service_name,
                         price: docs.price,
                         date_of_booking: docs.date_of_booking,
+                        // currency:req.body.currency
                         currency:req.body.currency
+
                     }
                     // if (
                     //     docs.shop_service_category!="" && 
