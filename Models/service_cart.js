@@ -26,6 +26,9 @@ const SERVICE_CART_SCHEMA = new Schema({
         type: Number,
         required: true
     },
+    currency:{
+        type: String
+    },
     discount_percent: {
         type: Number,
         default: 0
