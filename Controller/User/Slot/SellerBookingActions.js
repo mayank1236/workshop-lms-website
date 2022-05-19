@@ -8,6 +8,8 @@ var adminCommission = require('../../../Models/admin_commission');
 var serviceSaleCommission = require('../../../Models/earnings/service_sale_earnings');
 var sellerTotalEarning = require('../../../Models/earnings/seller_total_earning');
 // var adminEarnings = require('../../../Models/earnings/admin_earnings');
+var currconvert = require("../../../service/currencyconverter")
+
 
 var newBookings = async (req, res) => {
     var new_bookings = await sellerBookings.aggregate(
@@ -69,7 +71,7 @@ var newBookings = async (req, res) => {
 };
 
 var acceptNewBooking = async (req, res) => {
-    var id = req.params.id;
+    var id = req.body.id;
 
     await sellerBookings.findOne({ _id: mongoose.Types.ObjectId(id) })
         .then(async (data) => {
@@ -103,7 +105,7 @@ var acceptNewBooking = async (req, res) => {
             // else {}
             return sellerBookings.findOneAndUpdate(
                 {
-                    _id: mongoose.Types.ObjectId(req.params.id),
+                    _id: mongoose.Types.ObjectId(req.body.id),
                     new_booking: true,
                     booking_accept: false
                 },
@@ -154,6 +156,21 @@ var acceptNewBooking = async (req, res) => {
                         var adminCommissionAmt = (payment_status.price * admin_commission.percentage) / 100;
                         seller_earning = payment_status.price - adminCommissionAmt;
                     }
+                    console.log("before convert",seller_earning)
+                    let newCom = 0
+                
+
+                    if(req.body.currencyy!=payment_status.currency)
+                    {
+                        
+                        newCom = await currconvert.currencyConvTR(seller_earning,payment_status.currency,req.body.currencyy)
+        
+                    }
+                    else
+                    {
+                        newCom = seller_earning
+               
+                    }
 
                     let obj1 = {
                         seller_booking_id: docs._id,
@@ -163,8 +180,9 @@ var acceptNewBooking = async (req, res) => {
                         user_id: docs.user_id,
                         cart_id: payment_status._id,
                         order_id: Number(payment_status.order_id),
-                        seller_commission: Number(seller_earning)
+                        seller_commission: Number(newCom)
                     }
+                    console.log("after convert",obj1)
                     const NEW_SERVICE_EARNING = new serviceSaleCommission(obj1);
                     NEW_SERVICE_EARNING.save();
 
