@@ -272,6 +272,7 @@ var viewSlotsAllDay = async (req, res) => {
     //   console.log(event)
     } else {
       let booking_infolength = 0;
+      let slotlength = slots.length
       slots.forEach((element) => {
         if (element.booking_info.length > 0) {
           booking_infolength = parseInt(booking_infolength) + parseInt(1);
@@ -279,7 +280,12 @@ var viewSlotsAllDay = async (req, res) => {
       });
       if (booking_infolength == 0) {
         event.push({ title: "", date: days, color: "#378006" });
-      } else {
+      }
+      else if(booking_infolength < slotlength)
+      {
+        event.push({ title: "", date: days, color: "#378006" });
+      } 
+      else {
         event.push({ title: "", date: days, color: "#FF0000" });
       }
     }
