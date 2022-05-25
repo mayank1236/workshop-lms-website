@@ -251,6 +251,7 @@ const viewShopServicesPerService = async (req, res) => {
                         }
                     ]
                 ), options,async function (err, docs) {
+                    console.log(docs)
                     if (!err) {
                         let newRes = docs;
                                 
