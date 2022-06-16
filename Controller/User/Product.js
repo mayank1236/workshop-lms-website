@@ -3,6 +3,10 @@ var jwt = require('jsonwebtoken');
 var uuidv1 = require('uuid').v1;
 var Product = require('../../Models/product');
 var RequestCategory = require('../../Models/request_product');
+var Curvalue = require("../../Models/currvalue");
+var currconvert = require("../../service/currencyconverter");
+
+
 
 const { Validator } = require('node-input-validator');
 
@@ -105,8 +109,60 @@ const create = async(req,res)=>{
         })
 }
 
+const rates = async () => {
+
+  
+    // Curvalue.remove({})
+  
+   var arr1 = ["USD","INR","EUR","CAD","GBP"]
+   var arr2 = ["USD","INR","EUR","CAD","GBP"]
+  
+   for (let index = 0; index < arr1.length; index++) {
+     const element = arr1[index];
+     for (let index2 = 0; index2 < arr2.length; index2++) {
+       const element2 = arr2[index2];
+  
+  
+        if(element!=element2)
+        {
+          let resuss = await currconvert.currencyFetch(
+            element,
+            element2
+          );
+          let datass = await Curvalue.find({from:element,to:element2}).exec()
+          // console.log(datass)
+  
+                 let data = {
+                //    _id:mongoose.Types.ObjectId(),
+           from:element,
+           to:element2,
+           value:resuss
+         }
+  
+          Curvalue.findOneAndUpdate(
+            { _id: { $in: [mongoose.Types.ObjectId(datass[0]._id)] } },
+            data,
+            async (err, data) => {
+              
+            })
+  
+  
+        //  let currVal = new Curvalue(data)
+        //  currVal.save()
+        }
+       
+     }
+     
+   }
+  
+   
+  
+  
+  };
+
 module.exports = {
     viewProductList,
     viewSingleProduct,
-    create
+    create,
+    rates
 }

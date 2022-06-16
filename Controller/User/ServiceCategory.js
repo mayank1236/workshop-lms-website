@@ -7,6 +7,8 @@ var ShopService = require('../../Models/shop_service');
 
 var Upload = require('../../service/upload');
 var currconvert = require("../../service/currencyconverter")
+var Curvalue = require("../../Models/currvalue");
+
 
 
 const viewAllServices = async (req, res) => {
@@ -251,21 +253,28 @@ const viewShopServicesPerService = async (req, res) => {
                         }
                     ]
                 ), options,async function (err, docs) {
-                    console.log(docs)
+                    // console.log(docs)
                     if (!err) {
                         let newRes = docs;
                                 
         for (let index = 0; index < newRes.itemsList.length; index++) {
             var element = newRes.itemsList[index];
   
-            if (req.query.currency != '' && typeof req.query.currency != 'undefined' && element.currency != req.query.currency) {
+            if (req.query.currency != '' && typeof req.query.currency != 'undefined' && typeof element.currency!="undefined" &&  element.currency!="" &&  element.currency!="undefined" && element.currency != req.query.currency) {
   
+                // console.log(element)
               // var total = val * element.selling_price;
-              let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
+            //   let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
   
               // console.log(resuss)
   
-              newRes.itemsList[index].price = resuss 
+            //   newRes.itemsList[index].price = resuss 
+            let datass = await Curvalue.find({from:element.currency,to:req.query.currency}).exec()
+            // console.log(datass)
+
+            let resuss = element.price * datass[0].value
+
+            newRes.itemsList[index].price = resuss 
  
   
   
@@ -282,14 +291,14 @@ const viewShopServicesPerService = async (req, res) => {
               if(Number(element.price) >= req.query.min && Number(element.price) <= req.query.max)
               {
                 // newRes = newRes
-                console.log(element)
+                // console.log(element)
                 newRes.itemsList = element
               }
             }
      
             
           }
-                        console.log(docs);
+                        // console.log(docs);
                         res.status(200).json({
                             status: true,
                             message: "All services for this category get successfully.",

@@ -52,6 +52,8 @@ router.get('/user/viewproduct/:id', ProductController.viewSingleProduct);   // a
 
 router.get('/user/service-category', ServiceController.viewAllServices);// added by anirbank-93
 router.get('/user/service-category/:id', ServiceController.viewService);// added by anirbank-93
+router.get('/user/rates', ProductController.rates);
+
 
 router.get('/user/service-category/shop-services/:user_id/:id/:page', ServiceController.viewShopServicesPerService);// added by anirbank-93
 
