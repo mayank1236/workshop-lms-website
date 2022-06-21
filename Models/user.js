@@ -1,9 +1,10 @@
+const { MongoServerClosedError } = require('mongodb');
 const mongoose = require('mongoose');
 const passwordHash = require('password-hash');
 
 let UserSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    firstName: {
+       firstName: {
         type: String,
         required: true
     },
@@ -82,7 +83,11 @@ let UserSchema = new mongoose.Schema({
             }
         }],
         totalPrice: Number
-    }
+    },
+    mobile_code:{
+        type:String,
+        required:true     
+   },
 });
 
 UserSchema.methods.addToCart2 = function (product) {

@@ -178,7 +178,8 @@ var updateProfile = async (req, res) => {
     firstName: "required",
     lastName: "required",
     email: "required|email",
-    password: "required"
+    password: "required",
+    mobile_code:"required"
   });
   let matched = V.check().then(val => val);
   if (!matched) {
