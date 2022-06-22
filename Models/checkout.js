@@ -87,6 +87,11 @@ const CHECKOUT_SCHEMA = new Schema({
     status:{
         type:String,
         default:true
+    },
+    order_status:{
+        type:String,
+        default:'',
+        required:false
     }
 })
 
