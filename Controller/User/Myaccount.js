@@ -136,6 +136,36 @@ var viewAll = async (req, res) => {
     })
 }
 
+var cancelOrder = async (req, res) => {
+  return Checkout.findOneAndUpdate(
+
+    { _id: mongoose.Types.ObjectId(req.params.id) },
+    { $set: { order_status: 'cancelled' } },
+    { new: true },
+    (err, data) => {
+      console.log(data);
+      if (!err) {
+        res.status(200).json({
+          status: true,
+          message: "Ordered cancelled successfully.",
+          data: data
+        })
+      }
+      else {
+
+        res.status(400).json({
+          status: true,
+          message: "Failed to cancel order. Server error.",
+          data: err
+        })
+      }
+    }
+  )
+
+
+
+}
+
 var cancelBooking = async (req, res) => {
   return Checkout.findOneAndUpdate(
     { _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } },
@@ -184,7 +214,7 @@ var updateProfile = async (req, res) => {
     lastName: "required",
     email: "required|email",
     password: "required",
-    mobile_code:"required"
+    mobile_code: "required"
   });
   let matched = V.check().then(val => val);
   if (!matched) {
@@ -508,5 +538,6 @@ module.exports = {
   updatePassword,
   deleteProfile,
   imageurlApi,
-  serviceRefund
+  serviceRefund,
+  cancelOrder
 }

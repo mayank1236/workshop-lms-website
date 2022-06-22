@@ -160,6 +160,7 @@ router.post('/shop-service/checkout', Checkout.create)
 
 router.get('/myaccount/service-order-history/:user_id', UserAccount.viewAll);
 router.put('/myaccount/cancel-booking/:id', UserAccount.cancelBooking);
+router.put('/myaccount/cancel-order/:id',UserAccount.cancelOrder);
 router.put('/myaccount/update-profile/:id', UserAccount.updateProfile);
 router.put('/myaccount/update-password/:id', UserAccount.updatePassword);
 router.delete('/myaccount/delete-profile/:id', UserAccount.deleteProfile);
