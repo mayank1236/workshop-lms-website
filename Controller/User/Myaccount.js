@@ -98,11 +98,7 @@ var viewAll = async (req, res) => {
       //     preserveNullAndEmptyArrays: true
       //   }
       // },
-      {
-        $project: {
-          _id: 0
-        }
-      },
+    
       {
         $group: {
           _id: "$order_id",
@@ -115,6 +111,11 @@ var viewAll = async (req, res) => {
       {
         $sort: {
           booking_date: -1
+        }
+      },
+      {
+        $project: {
+         _id:0
         }
       },
       // { $sort: { _id: -1 } }
@@ -137,7 +138,7 @@ var viewAll = async (req, res) => {
 }
 
 var cancelOrder = async (req, res) => {
-  return Checkout.findOneAndUpdate(
+  return ServiceCart.findOneAndUpdate(
 
     { _id: mongoose.Types.ObjectId(req.params.id) },
     { $set: { order_status: 'cancelled' } },
@@ -147,7 +148,7 @@ var cancelOrder = async (req, res) => {
       if (!err) {
         res.status(200).json({
           status: true,
-          message: "Ordered cancelled successfully.",
+          message: "Order cancelled successfully.",
           data: data
         })
       }

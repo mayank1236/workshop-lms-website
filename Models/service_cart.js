@@ -58,6 +58,13 @@ const SERVICE_CART_SCHEMA = new Schema({
         type: Date,
         default: dateKolkata
     },
+    
+      order_status:{
+            type:String,
+            default:'',
+            required:false
+        },
+    
     date_of_booking: Date
 })
 

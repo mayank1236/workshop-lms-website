@@ -88,11 +88,7 @@ const CHECKOUT_SCHEMA = new Schema({
         type:String,
         default:true
     },
-    order_status:{
-        type:String,
-        default:'',
-        required:false
-    }
+  
 })
 
 module.exports = mongoose.model("checkouts", CHECKOUT_SCHEMA)
