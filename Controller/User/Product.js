@@ -117,6 +117,7 @@ const rates = async () => {
    var arr1 = ["USD","INR","EUR","CAD","GBP"]
    var arr2 = ["USD","INR","EUR","CAD","GBP"]
   
+   let i = 0;
    for (let index = 0; index < arr1.length; index++) {
      const element = arr1[index];
      for (let index2 = 0; index2 < arr2.length; index2++) {
@@ -152,9 +153,14 @@ const rates = async () => {
         }
        
      }
+     i++
      
    }
-  
+   
+   if(i==arr1.length)
+   {
+     console.log("task done")
+   }
    
   
   
