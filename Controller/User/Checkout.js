@@ -156,6 +156,13 @@ var create = async (req, res) => {
         ) {
             saveData.cvv = req.body.cvv
         }
+        if (
+            req.body.phone != "" &&
+            req.body.phone != null &&
+            typeof (req.body.phone) != undefined
+        ) {
+            saveData.phone = req.body.phone
+        }
         
         console.log("Checkout data", saveData);
         

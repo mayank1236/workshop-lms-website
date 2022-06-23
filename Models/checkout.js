@@ -88,6 +88,10 @@ const CHECKOUT_SCHEMA = new Schema({
         type:String,
         default:true
     },
+    phone:{
+        type:Number,
+        required:false
+    }
   
 })
 
