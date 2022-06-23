@@ -86,7 +86,7 @@ let UserSchema = new mongoose.Schema({
     },
     mobile_code:{
         type:String,
-        required:true     
+        required:false     
    },
 });
 
