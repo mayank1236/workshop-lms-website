@@ -1,5 +1,7 @@
 const express = require('express');
 const multer = require('multer');
+var nodeCron = require('node-cron');
+
 
 const router = express.Router();
 
@@ -109,6 +111,9 @@ router.get('/user/shop/shopservice-details/:id', ShopServiceController.viewShopS
 
 router.get('/user/bannercontent', BlogComments.viewAllBAnner);
 router.get('/user/bannerAbout', BlogComments.viewAllaboutBAnner);
+
+nodeCron.schedule('0 0 * * *', ProductController.rates);
+
 
 
 
