@@ -50,7 +50,8 @@ const userBookedSlot = new Schema({
     paid: {
         type: Boolean,
         default: false
-    }
+    },
+   
 });
 
 // userBookedSlot.methods.pushToArray = function (emp_arr) {
