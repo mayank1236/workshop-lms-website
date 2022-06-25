@@ -158,18 +158,17 @@ var acceptNewBooking = async (req, res) => {
                     }
                     console.log("before convert",seller_earning)
                     let newCom = 0
-                
+
 
                     if(req.body.currencyy!=payment_status.currency)
                     {
-                        
-                        newCom = await currconvert.currencyConvTR(seller_earning,payment_status.currency,req.body.currencyy)
-        
-                    }
+
+                     newCom = await currconvert.currencyConvTR(seller_earning, payment_status.currency, req.body.currencyy)
+                     }
                     else
                     {
                         newCom = seller_earning
-               
+
                     }
 
                     let obj1 = {
@@ -352,9 +351,9 @@ var viewAcceptedBookings = async (req, res) => {
 var rejectNewBooking = async (req, res) => {
     return sellerBookings.findOneAndUpdate(
         {
-            _id: mongoose.Types.ObjectId(req.params.id),
-            new_booking: true,
-            booking_accept: false
+            _id: mongoose.Types.ObjectId(req.params.id),        
+            // new_booking: true,
+            // booking_accept: false
         },
         {
             $set: {
@@ -372,7 +371,7 @@ var rejectNewBooking = async (req, res) => {
                 var sellerSlotData = sellerSlots.findOneAndUpdate(
                     {
                         _id: docs.slot_id,
-                        booking_status: true
+                        // booking_status: true
                     },
                     { $set: { booking_status: false } },
                     { returnNewDocument: true }
@@ -404,9 +403,9 @@ var rejectNewBooking = async (req, res) => {
                     var bookingStatus = userServiceCart.findOneAndUpdate(
                         {
                             user_booking_id: docs.user_booking_id,
-                            status: true
+                            // status: true
                         },
-                        { $set: { status: false, seller_confirmed: 'cancelled' } },
+                        { $set: { status: false, seller_confirmed: false, seller_reject:true } },
                         { returnNewDocument: true }
                     ).exec();
                 }
@@ -415,9 +414,9 @@ var rejectNewBooking = async (req, res) => {
                     var bookingStatus = userServiceCart.findOneAndUpdate(
                         {
                             user_booking_id: docs.user_booking_id,
-                            status: false
+                            // status: false
                         },
-                        { $set: { seller_confirmed: 'cancelled' } },
+                        { $set: { seller_confirmed: false , seller_reject:true} },
                         { returnNewDocument: true }
                     ).exec();
                 }
