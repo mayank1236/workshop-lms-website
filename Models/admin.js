@@ -13,6 +13,18 @@ const AdminSchema = new mongoose.Schema({
         required:false,
         unique:true
     },
+    phone:{
+        type:Number,
+        required:false
+    },
+    address:{
+        type:String,
+        required:true
+    },
+    image:{
+        type:String,
+        required:false
+    },
     password:{
         type:String,
         required:true

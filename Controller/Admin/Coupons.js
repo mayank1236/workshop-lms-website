@@ -84,6 +84,32 @@ var viewAll = async (req, res) => {
         })
 }
 
+var update = async (req, res) => {
+    Coupon.findOneAndUpdate({
+        _id: { $in: [mongoose.Types.ObjectId(req.params.id)] }
+    },
+        req.body,
+        { new: true },
+        (err, data) => {
+            if (err) {
+                res.status(400).json({
+                    status: false,
+                    message: "Server error .please try again ",
+                    error: err
+                })
+            }
+            else {
+                res.status(200).json({
+                    status: true,
+                    message: "Data updated successfully",
+                    data: data
+                })
+            }
+        })
+
+
+}
+
 var Delete = async (req, res) => {
     var id = req.params.id;
 
@@ -107,5 +133,6 @@ var Delete = async (req, res) => {
 module.exports = {
     create,
     viewAll,
-    Delete
+    Delete,
+    update
 }

@@ -1,6 +1,8 @@
 var mongoose = require('mongoose')
 var passwordHash = require('password-hash');
 var jwt = require('jsonwebtoken');
+
+var Upload=require('../../service/upload');
 // const { Validator } = require('node-input-validator');
 
 const ADMIN = require('../../Models/admin');
@@ -28,9 +30,17 @@ const register = async (req, res) => {
         _id: mongoose.Types.ObjectId(),
         fullname: req.body.fullname,
         email: req.body.email,
+        phone: req.body.phone,
+        address: req.body.address,
         password: passwordHash.generate(req.body.password),
         admin_type: req.body.admin_type,
         token: createToken(req.body)
+    }
+
+    if (req.file != null || req.file != '' || typeof (req.file) != "undefined") {
+        let imageUrl = await Upload.uploadFile(req, 'admin')
+        adminData.image = imageUrl;
+
     }
     //image: imageUrl,
 

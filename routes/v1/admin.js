@@ -85,6 +85,7 @@ router.get('/subscription/purchasehistory/:id', SubscriptionController.oneSubscr
 router.post('/coupons', CouponController.create); // added by anirbank-93
 router.get('/coupons', CouponController.viewAll); // added by anirbank-93
 router.delete('/coupons/:id', CouponController.Delete);// added by anirbank-93
+router.put('/coupons/:id',CouponController.update);
 
 
 router.get('/userlist', UserSellersController.viewUserList)     // added by anirbank-93
@@ -146,7 +147,7 @@ router.get('/received-applications/:id', JobApplications.viewById);
 
 router.get('/contact-us', UserContacts.getAllContacts);
 
-router.post('/personnel-register', RefundPersonnel.register);
+router.post('/personnel-register',upload.single('image') , RefundPersonnel.register);
 router.get('/refund-personnel', RefundPersonnel.refundPersonnelList);
 router.put('/refund-personnel/:id', RefundPersonnel.setStatus);
 
