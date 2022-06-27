@@ -70,7 +70,7 @@ const SERVICE_CART_SCHEMA = new Schema({
         default:false
 
     },
-    
+   
     
     date_of_booking: Date
 })
