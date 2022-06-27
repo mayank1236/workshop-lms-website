@@ -211,8 +211,8 @@ var viewSlotsAllDay = async (req, res) => {
   let dates = getDatesInRange(d1, d2);
   let event = [];
   for (let index = 0; index < dates.length; index++) {
-      const element = dates[index];
-      let days = moment(element).format("YYYY-MM-DD");
+    const element = dates[index];
+    let days = moment(element).format("YYYY-MM-DD");
     let dayname = moment(element, "YYYY-MM-DD").format("dddd");
     //    console.log(dayname);
 
@@ -267,9 +267,9 @@ var viewSlotsAllDay = async (req, res) => {
     ]).exec();
     // console.log(days+' '+slots.length);
     if (slots.length == 0) {
-        // console.log("1")
+      // console.log("1")
       event.push({ "title": "", "date": days, "color": "#FF0000" });
-    //   console.log(event)
+      //   console.log(event)
     } else {
       let booking_infolength = 0;
       let slotlength = slots.length
@@ -284,17 +284,17 @@ var viewSlotsAllDay = async (req, res) => {
       else if(booking_infolength < slotlength)
       {
         event.push({ title: "", date: days, color: "#378006" });
-      } 
+      }
       else {
         event.push({ title: "", date: days, color: "#FF0000" });
       }
     }
-      
+
   }
   return res.json({
-      status:true,
-      data:event,
-      error :null
+    status:true,
+    data:event,
+    error :null
 
   })
 };
@@ -333,7 +333,7 @@ var bookAppointment = async (req, res, next) => {
       service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
       status: true,
     }).exec();
-    console.log("User's service cart: ", service_cart);
+    // console.log("User's service cart: ", service_cart);
     // Don't let users who have booked slots but not checked out make new slot booking.
     if (service_cart.length > 0) {
       res.status(500).json({
@@ -342,21 +342,78 @@ var bookAppointment = async (req, res, next) => {
         data: service_cart,
       });
     }
-    // Otherwise let them.
+   // Otherwise let them.
     else {
-      const V = new Validator(req.body, {
-        date_of_booking: "required",
-        day_name_of_booking: "required",
-        from: "required",
-        to: "required",
-        duration: "required",
-      });
-      let matched = V.check().then((val) => val);
+    const V = new Validator(req.body, {
+      date_of_booking: "required",
+      day_name_of_booking: "required",
+      from: "required",
+      to: "required",
+      duration: "required",
+    });
+    let matched = V.check().then((val) => val);
 
-      if (!matched) {
-        res.status(400).json({ status: false, error: V.errors });
+    if (!matched) {
+      res.status(400).json({ status: false, error: V.errors });
+    }
+
+    function getTimeAsNumberOfMinutes(time)
+    {
+        var timeParts = time.split(":");
+    
+        var timeInMinutes = (timeParts[0] * 60) + timeParts[1];
+    
+        return timeInMinutes;
+    }
+
+    var convertedStartTime = moment(req.body.from, 'hh:mm A').format('HH:mm')
+    // console.log(convertedStartTime);
+
+
+    var convertedEndTime = moment(req.body.to, 'hh:mm A').format('HH:mm')
+    // console.log(convertedEndTime);
+
+    var slotBookTime = await UserBookedSlot.find({
+      date_of_booking: req.body.date_of_booking,
+    }).exec();
+
+    var checkslot=false;
+    for (let i = 0; i < slotBookTime.length; i++) {
+
+      var slotStartTime = moment(slotBookTime[i].from, 'hh:mm A').format('HH:mm')
+      // console.log(slotStartTime);
+
+
+      var slotEndTime = moment(slotBookTime[i].to, 'hh:mm A').format('HH:mm')
+      // console.log(slotEndTime);
+      // console.log("completed" + i);
+      
+      if ((getTimeAsNumberOfMinutes(slotStartTime) <=
+        getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(convertedStartTime) <=
+        getTimeAsNumberOfMinutes(slotEndTime)) ||
+        (getTimeAsNumberOfMinutes(slotStartTime) <=
+          getTimeAsNumberOfMinutes(convertedEndTime) && getTimeAsNumberOfMinutes(convertedEndTime) <=
+          getTimeAsNumberOfMinutes(slotEndTime))) {
+            checkslot=true;
+           break;
+     
       }
+   
 
+
+    }
+
+    if (checkslot) {
+        return res.status(500).json({
+          status: false,
+          error: "Slot time has already been booked.",
+          data: slotBookTime,
+        });
+    }
+    // else{
+    //   console.log("available");
+    // }
+    else {
       let saveData1 = {
         _id: mongoose.Types.ObjectId(),
         user_id: mongoose.Types.ObjectId(req.body.user_id),
@@ -375,14 +432,7 @@ var bookAppointment = async (req, res, next) => {
         typeof req.body.shop_service_name != "undefined"
       ) {
         saveData1.shop_service_name = req.body.shop_service_name;
-      }
-      // if (
-      //     req.body.shop_service_category!="" &&
-      //     req.body.shop_service_category!=null &&
-      //     typeof req.body.shop_service_category!="undefined"
-      //     ) {
-      //     saveData1.shop_service_category = req.body.shop_service_category
-      // }
+      }   
       if (
         req.body.price != "" &&
         req.body.price != null &&
@@ -433,13 +483,7 @@ var bookAppointment = async (req, res, next) => {
             // currency:req.body.currency
             currency: req.body.currency,
           };
-          // if (
-          //     docs.shop_service_category!="" &&
-          //     docs.shop_service_category!=null &&
-          //     typeof docs.shop_service_category!="undefined"
-          //     ) {
-          //     cartData.service_category = docs.shop_service_category
-          // }
+        
           if (
             docs.image == "" ||
             docs.image == null ||
@@ -457,14 +501,7 @@ var bookAppointment = async (req, res, next) => {
 
           SERVICE_CART.save()
             .then((data2) => {
-              //   var updateSlotBookingStatus = ServiceSlots.findOneAndUpdate(
-              //       {
-              //           _id: {$in: [mongoose.Types.ObjectId(req.body.slot_id)]},
-              //           // weekday_name: req.body.day_name_of_booking
-              //       },
-              //       { $set: { booking_status: true } },
-              //       { returnNewDocument: true }
-              //   ).exec()
+      
 
               res.status(200).json({
                 status: true,
@@ -488,6 +525,7 @@ var bookAppointment = async (req, res, next) => {
           });
         }
       });
+    }
     }
   }
 };
