@@ -342,7 +342,7 @@ var bookAppointment = async (req, res, next) => {
         data: service_cart,
       });
     }
-   // Otherwise let them.
+ // Otherwise let them.
     else {
     const V = new Validator(req.body, {
       date_of_booking: "required",
@@ -388,11 +388,11 @@ var bookAppointment = async (req, res, next) => {
       // console.log(slotEndTime);
       // console.log("completed" + i);
       
-      if ((getTimeAsNumberOfMinutes(slotStartTime) <=
-        getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(convertedStartTime) <=
+      if ((getTimeAsNumberOfMinutes(slotStartTime) <
+        getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(convertedStartTime) <
         getTimeAsNumberOfMinutes(slotEndTime)) ||
-        (getTimeAsNumberOfMinutes(slotStartTime) <=
-          getTimeAsNumberOfMinutes(convertedEndTime) && getTimeAsNumberOfMinutes(convertedEndTime) <=
+        (getTimeAsNumberOfMinutes(slotStartTime) <
+          getTimeAsNumberOfMinutes(convertedEndTime) && getTimeAsNumberOfMinutes(convertedEndTime) <
           getTimeAsNumberOfMinutes(slotEndTime))) {
             checkslot=true;
            break;
