@@ -153,6 +153,11 @@ router.put('/refund-personnel/:id', RefundPersonnel.setStatus);
 router.put('/update/:id', AdminController.update); //admin data update api
 router.post('/uploadImage',upload.single('image'),AdminController.uploadImage);
 router.get('/viewAll',AdminController.viewAll);
+router.post('/addBlogData',AdminController.addBlogData);
+router.get('/viewBlogData',AdminController.viewBlogData);
+router.put('/editBlogData/:id',AdminController.editBlogData);
+router.delete('/deleteBlogData/:id',AdminController.deleteBlogData);
+
 
 router.get('/service-refund-requests', ServiceRefund.getAllRefundRequests);
 router.put('/approve-service-refund/:id', ServiceRefund.approveRefund);
