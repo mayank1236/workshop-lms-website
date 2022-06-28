@@ -13,13 +13,13 @@ const AdminSchema = new mongoose.Schema({
         required:false,
         unique:true
     },
-    phone:{
+    mobile:{
         type:Number,
         required:false
     },
     address:{
         type:String,
-        required:true
+        required:false
     },
     image:{
         type:String,

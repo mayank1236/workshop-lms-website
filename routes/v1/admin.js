@@ -3,7 +3,7 @@ var multer = require('multer');
 var nodeCron = require('node-cron');
 
 var router = express.Router();
-
+const AdminController=require('../../Controller/Auth/Admin');
 const ProductController = require('../../Controller/Admin/Product');
 const CategoryController = require('../../Controller/Admin/Category');
 const SubscriptionController = require('../../Controller/Admin/Subscription');
@@ -147,9 +147,11 @@ router.get('/received-applications/:id', JobApplications.viewById);
 
 router.get('/contact-us', UserContacts.getAllContacts);
 
-router.post('/personnel-register',upload.single('image') , RefundPersonnel.register);
+router.post('/personnel-register', RefundPersonnel.register);
 router.get('/refund-personnel', RefundPersonnel.refundPersonnelList);
 router.put('/refund-personnel/:id', RefundPersonnel.setStatus);
+router.put('/update/:id', AdminController.update); //admin data update api
+router.post('/uploadImage',upload.single('image'),AdminController.uploadImage);
 
 router.get('/service-refund-requests', ServiceRefund.getAllRefundRequests);
 router.put('/approve-service-refund/:id', ServiceRefund.approveRefund);
