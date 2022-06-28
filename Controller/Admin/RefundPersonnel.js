@@ -25,23 +25,33 @@ const register = async (req, res) => {
     // }
 
     // let imageUrl = await Upload.uploadFile(req, "refund_personnel");
-
+// console.log(req.body);
     let adminData = {
         _id: mongoose.Types.ObjectId(),
         fullname: req.body.fullname,
         email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
         password: passwordHash.generate(req.body.password),
         admin_type: req.body.admin_type,
         token: createToken(req.body)
     }
 
-    if (req.file != null || req.file != '' || typeof (req.file) != "undefined") {
-        let imageUrl = await Upload.uploadFile(req, 'admin')
-        adminData.image = imageUrl;
+  
 
-    }
+    // if(req.body.mobile!=null||req.body.mobile != '' || typeof (req.body.mobile) != "undefined"){
+    //     adminData.mobile=req.body.mobile;
+    // }
+
+    // if(req.body.address!=null||req.body.address != '' || typeof (req.body.address) != "undefined"){
+    //     adminData.address=req.body.address;
+    // }
+
+    // if (req.file != null || req.file != '' || typeof (req.file) != "undefined") {
+    //     let imageUrl = await Upload.uploadFile(req, 'admin')
+    //     adminData.image = imageUrl;
+
+    // }
+
+
     //image: imageUrl,
 
     const NEW_REFUND_PERSONNEL = new ADMIN(adminData)
@@ -87,6 +97,8 @@ var refundPersonnelList = async (req, res) => {
     }
 }
 
+
+
 var setStatus = async (req,res) => {
     var id = req.params.id;
 
@@ -114,5 +126,6 @@ var setStatus = async (req,res) => {
 module.exports = {
     register,
     refundPersonnelList,
-    setStatus
+    setStatus,
+    
 }
