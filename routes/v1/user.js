@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-
+const UserController=require('../../Controller/Auth/User');
 const ProductController = require("../../Controller/User/Product");
 const UserSellerController = require('../../Controller/User/UserSellers');//added by anirbank-93
 const SubscriptionController = require("../../Controller/User/Subscription");// added by anirbank-93
@@ -195,6 +195,8 @@ router.post('/blog-comment-img', upload1.single("image"), BlogComments.uploadIma
 router.get('/blog-comment/:id', BlogComments.getCommentById);
 router.put('/blog-comment/:id', BlogComments.editComment);
 router.delete('/blog-comment/:id', BlogComments.delBlogComment);
+
+router.get('/viewBlogData',UserController.viewBlogData);
 
 /** ================================= with login url section end ================================ */
 

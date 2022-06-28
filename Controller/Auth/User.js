@@ -3,6 +3,7 @@ var jwt = require('jsonwebtoken');
 var passwordHash = require('password-hash');
 var User = require('../../Models/user');
 var Product = require('../../Models/product');
+const BlogType=require('../../Models/blogType');
 // var Upload = require('../../service/upload');
 
 const { Validator } = require('node-input-validator');
@@ -177,10 +178,31 @@ const viewAllsubscription = async (req, res) => {
         })
 }
 
+const viewBlogData = async (req, res) => {
+    let blogs = await BlogType.find().exec();
+
+    if (blogs.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "All blogs successfully get.",
+            data: blogs
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No information to show.",
+            data: null
+        });
+    }
+
+}
+
 module.exports = {
     getTokenData,
     register,
     login,
     viewProductList,
-    viewAllsubscription
+    viewAllsubscription,
+    viewBlogData
 }

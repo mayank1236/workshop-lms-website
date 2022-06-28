@@ -1,7 +1,9 @@
 var mongoose = require('mongoose')
 var Admin = require('../../Models/admin')
 var passwordHash = require('password-hash');
-const Upload=require('../../service/upload')
+const Upload = require('../../service/upload');
+const BlogType = require('../../Models/blogType');
+// const { Validator } = require('node-input-validator');
 // var AdminDetails=require('../../Models/admin_details');
 
 var jwt = require('jsonwebtoken');
@@ -42,21 +44,21 @@ const register = async(req,res)=>{
     const admin = new Admin(adminData)
 
     return admin.save().then((data)=>{
-            res.status(200).json({
+        res.status(200).json({
             status: true,
             success: true,
             message: 'New Admin created successfully',
             data: data,
         })
     })
-    .catch((error)=>{
-        res.status(200).json({
-            status: false,
-            success: false,
-            message: 'Server error. Please try again.',
-            error: error,
-        });
-    })
+        .catch((error)=>{
+            res.status(200).json({
+                status: false,
+                success: false,
+                message: 'Server error. Please try again.',
+                error: error,
+            });
+        })
 }
 
 const login = async(req,res) =>
@@ -103,34 +105,34 @@ const login = async(req,res) =>
     // })
     Admin.findOne({email:req.body.email})
         //   .exe()
-          .then(admin =>{
-                if(admin!=null && admin!='' && admin.length < 1 )
-                {
-                    return res.status(401).json({
-                            status: false,
-                            message: 'Server error. Please try again.',
-                            error: 'Server Error',
-                        });
-                }
-                if(admin!=null && admin!='' && admin.comparePassword(req.body.password))
-                {
-                    return res.status(200).json({
-                        status: true,
-                        message: 'Admin login successful',
-                        data: admin
-                    });
-                }
-                else
-                {
-                    return res.status(200).json({
-                        status: false,
-                        message: 'Server error. Please try again.',
-                        error: 'Server Error',
-                    });
-                }
+        .then(admin =>{
+            if(admin!=null && admin!='' && admin.length < 1 ) 
+            {
+                return res.status(401).json({
+                    status: false,
+                    message: 'Server error. Please try again.',
+                    error: 'Server Error',
+                });
             }
+            if(admin!=null && admin!='' && admin.comparePassword(req.body.password)) 
+            {
+                return res.status(200).json({
+                    status: true,
+                    message: 'Admin login successful',
+                    data: admin
+                });
+            }
+            else
+            {
+                return res.status(200).json({
+                    status: false,
+                    message: 'Server error. Please try again.',
+                    error: 'Server Error',
+                });
+            }
+        }
 
-          )
+        )
 }
 
 var uploadImage = async (req, res) => {
@@ -196,6 +198,99 @@ var viewAll = async (req, res) => {
     }
 }
 
+var addBlogData = async (req, res) => {
+    console.log(req.body);
+    let blogData = {
+        _id: mongoose.Types.ObjectId(),
+        blog_type: req.body.blog_type
+    }
+
+    const new_blog = new BlogType(blogData)
+    return new_blog.save((err, data) => {
+        if (!err) {
+            res.status(200).json({
+                status: true,
+                message: "New blog added successfully!",
+                data: data
+            });
+        }
+        else {
+            res.status(500).json({
+                status: false,
+                message: "Failed to add blog. Server error.",
+                error: err
+            });
+        }
+    })
+}
+
+const viewBlogData = async (req, res) => {
+    let blogs = await BlogType.find().exec();
+
+    if (blogs.length > 0) {
+        return res.status(200).json({
+            status: true,
+            message: "All blogs successfully get.",
+            data: blogs
+        });
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No information to show.",
+            data: null
+        });
+    }
+
+}
+
+const editBlogData = async (req, res) => {
+    return BlogType.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(req.params.id) },
+        req.body,
+        { new: true },
+        (err, data) => {
+            if (!err) {
+                res.status(200).json({
+                    status: true,
+                    message: "Blog successfully edited.",
+                    data: data
+                });
+            }
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Invalid id.",
+                    error: err
+                });
+            }
+
+
+        })
+}
+
+const deleteBlogData = async (req, res) => {
+    return BlogType.findByIdAndDelete(
+        { _id: mongoose.Types.ObjectId(req.params.id) },
+        (err, data) => {
+
+            if (!err) {
+                res.status(200).json({
+                    status: true,
+                    message: "Blog deleted successfully.",
+                    data: data
+                });
+            }
+            else {
+                res.status(500).json({
+                    status: false,
+                    message: "Invalid id.",
+                    error: err
+                });
+            }
+
+        })
+}
 
 module.exports = {
     register,
@@ -203,5 +298,9 @@ module.exports = {
     login,
     update,
     uploadImage,
-    viewAll
+    viewAll,
+    addBlogData,
+    viewBlogData,
+    editBlogData,
+    deleteBlogData
 }
