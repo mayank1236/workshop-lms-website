@@ -173,6 +173,28 @@ var update = async (req, res) => {
 
 }
 
+var viewAll = async (req, res) => {
+    let adminProfile = await Admin.find({
+        status: true,
+        admin_type: "Admin"
+    }).exec();
+
+    if (adminProfile.length > 0) {
+        res.status(200).json({
+            status: true,
+            message: "Data get successfully ",
+            data: adminProfile,
+
+        })
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "Currently no active data exists",
+            data: ''
+        });
+    }
+}
 
 
 module.exports = {
@@ -180,5 +202,6 @@ module.exports = {
     getTokenData,
     login,
     update,
-    uploadImage
+    uploadImage,
+    viewAll
 }

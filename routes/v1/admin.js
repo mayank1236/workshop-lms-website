@@ -152,6 +152,7 @@ router.get('/refund-personnel', RefundPersonnel.refundPersonnelList);
 router.put('/refund-personnel/:id', RefundPersonnel.setStatus);
 router.put('/update/:id', AdminController.update); //admin data update api
 router.post('/uploadImage',upload.single('image'),AdminController.uploadImage);
+router.get('/viewAll',AdminController.viewAll);
 
 router.get('/service-refund-requests', ServiceRefund.getAllRefundRequests);
 router.put('/approve-service-refund/:id', ServiceRefund.approveRefund);
