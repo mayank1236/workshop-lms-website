@@ -153,24 +153,70 @@ var rejectSellerRequest = async (req, res) => {
 }
 
 const viewSellerList = async (req, res) => {
-    return User.find(
-        { type: { $in: "Seller" } },
-        (err, docs) => {
-            if (err) {
-                res.status(400).json({
-                    status: false,
-                    message: "Server error. Data not available",
-                    error: err
-                });
+
+    return User.aggregate([
+        {
+            $match:
+                {
+                    type:"Seller"
+                }
+        },
+        {
+            $lookup: {
+                from: "shop_services",
+                localField: "_id",
+                foreignField: "user_id",
+                as: "seller_service"
             }
-            else {
-                res.status(200).json({
-                    status: true,
-                    message: "Sellers get successfully",
-                    data: docs
-                });
+        }, 
+        {
+            $lookup:{
+                from: "usersubscriptions",
+                localField: "_id",
+                foreignField: "userid",
+                as: "seller_subscription"
             }
+        },
+      
+        {
+            $project: {
+                __v: 0
+            }
+        }
+   
+    ]) .then(data => {
+        res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            data: data
         });
+    })
+    .catch(err => {
+        res.status(500).json({
+            status: false,
+            message: "Failed to get data. Server error.",
+            error: err
+        });
+    });
+
+    // return User.find(
+    //     { type: { $in: "Seller" } },
+    //     (err, docs) => {
+    //         if (err) {
+    //             res.status(400).json({
+    //                 status: false,
+    //                 message: "Server error. Data not available",
+    //                 error: err
+    //             });
+    //         }
+    //         else {
+    //             res.status(200).json({
+    //                 status: true,
+    //                 message: "Sellers get successfully",
+    //                 data: docs
+    //             });
+    //         }
+    //     });
 }
 
 const viewSeller = async (req, res) => {
