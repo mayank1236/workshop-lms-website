@@ -169,6 +169,7 @@ router.post('/about-us', AboutUs.addNEditSegment);
 router.get('/about-us', AboutUs.viewAllSegments);
 router.get('/about-us/:id', AboutUs.viewSegmentById);
 router.delete('/about-us/:id', AboutUs.deleteSegment);
+router.post('/about_us/uploadImage',upload.single('image'),AboutUs.uploadImage);
 
 router.post('/terms-and-condition', TermsNConditn.addNEditSegment);
 router.get('/terms-and-condition', TermsNConditn.viewAllSegments);

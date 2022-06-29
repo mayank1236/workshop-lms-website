@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 const { Validator } = require('node-input-validator');
 
 var aboutUs = require('../../../Models/Website_info/about_us');
+const Upload=require('../../../service/upload');
 
 var addNEditSegment = async (req, res) => {
     const V = new Validator(req.body, {
@@ -18,6 +19,16 @@ var addNEditSegment = async (req, res) => {
         _id: mongoose.Types.ObjectId(),
         description: req.body.description
     }
+
+    if (
+        req.body.image != "" ||
+        req.body.image != null ||
+        typeof req.body.image != "undefined"
+    ) {
+        segmentData.image = req.body.image;
+    }
+
+
     if (
         req.body.heading != "" ||
         req.body.heading != null ||
@@ -93,6 +104,20 @@ var viewAllSegments = async (req, res) => {
     }
 }
 
+var uploadImage=async(req,res)=>{
+    let image_url="";
+    let imageurl = await Upload.uploadFile(req, 'aboutUs')
+    if (req.file != null && req.file != '' && typeof (req.file) != 'undefined') {
+        image_url = imageurl;
+    }
+    return res.status(200).json({
+        status:true,
+        message:"image uploaded succcessfully",
+        image:image_url
+    })
+
+}
+
 var viewSegmentById = async (req, res) => {
     var id = req.params.id;
 
@@ -145,5 +170,6 @@ module.exports = {
     addNEditSegment,
     viewAllSegments,
     viewSegmentById,
-    deleteSegment
+    deleteSegment,
+    uploadImage
 }
