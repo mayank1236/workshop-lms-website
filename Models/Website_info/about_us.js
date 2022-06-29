@@ -7,6 +7,10 @@ const ABOUT_US_SCHEMA = new Schema({
     description:{
         type: String,
         required: true
+    },
+    image:{
+        type:String,
+        required:false
     }
 });
 
