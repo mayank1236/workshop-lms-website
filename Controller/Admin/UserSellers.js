@@ -5,24 +5,116 @@ var Seller = require('../../Models/seller');
 var sellerBookings = require('../../Models/Slot/seller_bookings');
 
 const viewUserList = async (req, res) => {
-    return User.find(
-        // { type: { $in: "User" } },
-        (err, docs) => {
-            if (err) {
-                res.status(400).json({
-                    status: false,
-                    message: "Server error. Data not available",
-                    error: err
-                });
+
+    return User.aggregate([
+
+
+        {
+            $lookup: {
+                from: "service_carts",
+                localField: "_id",
+                foreignField: "user_id",
+                pipeline: [
+
+                    { $match: { $expr: { $and: [
+                         { $eq: ["$refund_claim",false ]} ] } } },
+
+                    { $group: {
+                        _id: "$user_id",
+                        'total_amount': { $sum:"$price" }
+                     }}
+                ],      
+
+                as: "user_data_total"
+
+
             }
-            else {
-                res.status(200).json({
-                    status: true,
-                    message: "Users get successfully",
-                    data: docs
-                });
+
+
+        },
+        {
+            $unwind:
+            {
+
+                path: "$user_data_total",
+                preserveNullAndEmptyArrays: true,
+
             }
-        });
+        },
+
+
+        {
+            $lookup: {
+                from: "service_carts",
+                localField: "_id",
+                foreignField: "user_id",
+                pipeline: [
+
+                    { $match: { $expr: { $and: [
+                         { $eq: ["$refund_claim",true ]} ] } } },
+
+                    { $group: {
+                        _id: "$user_id",
+                        'refunded_amount': { $sum:"$price" }
+                     }}
+                ],      
+
+                as: "user_data_refunded"
+
+
+            }
+
+
+        },
+        {
+            $unwind:
+            {
+
+                path: "$user_data_refunded",
+                preserveNullAndEmptyArrays: true,
+
+            }
+        },
+
+        {
+            $project: {
+             _v:0
+            }
+          },
+    ]).then((docs) => {
+        res.status(200).json({
+          status: true,
+          message:"List successfully get.",
+          data: docs
+        })
+      })
+      .catch((err) => {
+        res.status(500).json({
+          status: false,
+          message: "Server error. Please try again.",
+          error: err
+        })
+      })
+
+
+    // return User.find(
+    //      { type: { $in: "User" } },
+    //     (err, docs) => {
+    //         if (err) {
+    //             res.status(400).json({
+    //                 status: false,
+    //                 message: "Server error. Data not available",
+    //                 error: err
+    //             });
+    //         }
+    //         else {
+    //             res.status(200).json({
+    //                 status: true,
+    //                 message: "Users get successfully",
+    //                 data: docs
+    //             });
+    //         }
+    //     });
 }
 
 const viewUser = async (req, res) => {
@@ -171,12 +263,41 @@ const viewSellerList = async (req, res) => {
         }, 
         {
             $lookup:{
+
                 from: "usersubscriptions",
-                localField: "_id",
-                foreignField: "userid",
+                let: { user_id: "$_id",status:true },
+                pipeline: [{ $match: { $expr: { $and: [
+                    { $eq: ["$userid", "$$user_id"] },
+                    { $eq: ["$status", "$$status"] },
+                ] } } }],
                 as: "seller_subscription"
             }
         },
+        {
+            $unwind:
+            {
+                path:"$seller_subscription",
+                preserveNullAndEmptyArrays: true,
+        },
+            
+        },
+    
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "seller_subscription.subscr_id",
+                foreignField: "_id",
+                as: "seller_subscription.subcription_data"
+            }
+        },
+        {
+            $unwind:"$seller_subscription.subcription_data",
+                
+        
+            
+        },
+
+       
       
         {
             $project: {
