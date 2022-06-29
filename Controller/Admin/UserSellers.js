@@ -6,7 +6,7 @@ var sellerBookings = require('../../Models/Slot/seller_bookings');
 
 const viewUserList = async (req, res) => {
     return User.find(
-        { type: { $in: "User" } },
+        // { type: { $in: "User" } },
         (err, docs) => {
             if (err) {
                 res.status(400).json({
