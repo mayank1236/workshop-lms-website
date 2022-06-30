@@ -367,34 +367,45 @@ var bookAppointment = async (req, res, next) => {
     }
 
     var convertedStartTime = moment(req.body.from, 'hh:mm A').format('HH:mm')
-    // console.log(convertedStartTime);
+    console.log(convertedStartTime);
 
 
     var convertedEndTime = moment(req.body.to, 'hh:mm A').format('HH:mm')
-    // console.log(convertedEndTime);
+     console.log(convertedEndTime);
 
     var slotBookTime = await UserBookedSlot.find({
       date_of_booking: req.body.date_of_booking,
     }).exec();
+    console.log(slotBookTime);
 
     var checkslot=false;
     for (let i = 0; i < slotBookTime.length; i++) {
 
       var slotStartTime = moment(slotBookTime[i].from, 'hh:mm A').format('HH:mm')
-      // console.log(slotStartTime);
+      console.log(slotStartTime);
 
 
       var slotEndTime = moment(slotBookTime[i].to, 'hh:mm A').format('HH:mm')
-      // console.log(slotEndTime);
+      console.log(slotEndTime);
       // console.log("completed" + i);
       
-      if ((getTimeAsNumberOfMinutes(slotStartTime) <
-        getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(convertedStartTime) <
-        getTimeAsNumberOfMinutes(slotEndTime)) ||
+      if (
+        (getTimeAsNumberOfMinutes(slotStartTime) <
+          getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(convertedStartTime) <
+          getTimeAsNumberOfMinutes(slotEndTime))
+        ||
         (getTimeAsNumberOfMinutes(slotStartTime) <
           getTimeAsNumberOfMinutes(convertedEndTime) && getTimeAsNumberOfMinutes(convertedEndTime) <
-          getTimeAsNumberOfMinutes(slotEndTime))) {
-            checkslot=true;
+          getTimeAsNumberOfMinutes(slotEndTime)) || 
+          ( getTimeAsNumberOfMinutes(slotStartTime) ==
+            getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(slotEndTime) ==
+            getTimeAsNumberOfMinutes(convertedEndTime))
+         
+          )
+          
+          {
+            checkslot=true;-
+            console.log("completed");
            break;
      
       }
@@ -528,7 +539,7 @@ var bookAppointment = async (req, res, next) => {
     }
     }
   }
-};
+}
 
 module.exports = {
   checkAvailability,
