@@ -8,7 +8,7 @@ var userServiceCart = require('../../../Models/service_cart');
 var serviceSaleCommission = require('../../../Models/earnings/service_sale_earnings');
 var sellerTotalEarning = require('../../../Models/earnings/seller_total_earning');
 const Usersubcription=require('../../../Models/subscr_purchase');
-const admin_commission=require('../../../Models/adminCommission');
+var admin_commission=require('../../../Models/adminCommission');
 // var adminEarnings = require('../../../Models/earnings/admin_earnings');
 const Curvalue = require("../../../Models/currvalue");
 

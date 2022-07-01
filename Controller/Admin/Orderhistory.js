@@ -4,6 +4,7 @@ var Checkout = require('../../Models/checkout')
 var viewAll = async (req,res)=>{
     return Checkout.aggregate(
         [
+          
             {
                 $lookup:{
                     from: "users",
@@ -18,6 +19,7 @@ var viewAll = async (req,res)=>{
                     preserveNullAndEmptyArrays: true
                 }
             },
+           
             {
                 $lookup:{
                     from: "service_carts",
@@ -59,6 +61,23 @@ var viewAll = async (req,res)=>{
                     // service_refund: { $push: "$service_refund" }
                 }
             },
+            {
+                  $lookup: {
+                    from: "admincommissions",
+                    localField: "cart_data.user_id",
+                    foreignField: "user_id",
+                    as: "admin_data"
+                }
+            },
+            {
+                $lookup: {
+                    from: "shop_services",
+                    localField:"cart_data.user_id",
+                    foreignField: "user_id",
+                    as: "category_data"
+                }
+            },
+          
             { $sort: { booking_date: -1 } }
         ]
     )
