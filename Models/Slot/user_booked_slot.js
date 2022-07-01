@@ -22,6 +22,10 @@ const userBookedSlot = new Schema({
     price:{
         type: Number
     },
+    price_cad:{
+        type:Number,
+
+    },
     image: Array,
     day_name_of_booking:{
         type: String,

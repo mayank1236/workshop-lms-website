@@ -6,6 +6,8 @@ var UserBookedSlot = require('../../Models/Slot/user_booked_slot')
 var ServiceCart = require('../../Models/service_cart')
 var Coupon = require('../../Models/coupon')
 var SellerBookings = require('../../Models/Slot/seller_bookings')
+var Curvalue = require("../../Models/currvalue");
+
 
 var create = async (req, res) => {
     var alreadyBooked = []
@@ -45,7 +47,7 @@ var create = async (req, res) => {
     else {
         const V = new Validator(req.body, {
             user_id: "required",
-            subtotal: "required",
+           // subtotal: "required",
             total: "required",
             firstname: "required",
             lastname: "required",
@@ -67,7 +69,7 @@ var create = async (req, res) => {
             order_id: Number(
                 `${new Date().getDate()}${new Date().getHours()}${new Date().getSeconds()}${new Date().getMilliseconds()}`
             ),
-            subtotal: req.body.subtotal,
+             subtotal: req.body.subtotal,
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             address1: req.body.address1,
@@ -76,6 +78,18 @@ var create = async (req, res) => {
             zip: req.body.zip
             // payment_type: req.body.payment_type,
         }
+
+        if(req.user.currency!="CAD")
+            {
+              let conVert = await Curvalue.find({from:req.user.currency,to:"CAD"}).exec()
+              let cal = req.body.subtotal * conVert[0].value
+              saveData.subtotal_cad = cal.toFixed(2)
+            }
+            else
+            {
+                saveData.subtotal_cad =req.body.subtotal
+            }
+
         if (
             req.body.discount_percent != "" &&
             req.body.discount_percent != null &&
@@ -85,6 +99,30 @@ var create = async (req, res) => {
         
             var payableAmt = req.body.subtotal - ((req.body.subtotal * req.body.discount_percent) / 100);
             saveData.total = payableAmt;
+            if(req.user.currency!="CAD")
+            {
+              let conVert = await Curvalue.find({from:req.user.currency,to:"CAD"}).exec()
+              let cal = payableAmt * conVert[0].value
+              saveData.price_cad = cal.toFixed(2)
+            }
+            else
+            {
+                saveData.price_cad =payableAmt
+            }
+        }
+        else
+        {
+            if(req.user.currency!="CAD")
+            {
+              let conVert = await Curvalue.find({from:req.user.currency,to:"CAD"}).exec()
+              let cal = req.body.subtotal * conVert[0].value
+              saveData.price_cad = cal.toFixed(2)
+            }
+            else
+            {
+                saveData.price_cad =req.body.subtotal
+            }
+        
         }
         if (
             req.body.coupon_id != "" &&

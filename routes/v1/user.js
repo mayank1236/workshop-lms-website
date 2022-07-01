@@ -131,6 +131,7 @@ router.get('/shop-service/weekly-timings/:id', SellerTimingsController.viewShopS
 router.put('/shop-service/timing/:id', SellerTimingsController.editTimingNSlots);// added by anirbank-93
 router.delete('/shop-service/timing/:id', SellerTimingsController.deleteTimingNSlots);// added by anirbank-93
 
+
 router.get('/seller-service/new-bookings/:seller_id', SellerBookingActions.newBookings);// added by anirbank-93
 router.post('/seller-service/accept-booking', SellerBookingActions.acceptNewBooking);// added by anirbank-93
 router.get('/seller-service/accepted-bookings/:seller_id', SellerBookingActions.viewAcceptedBookings);

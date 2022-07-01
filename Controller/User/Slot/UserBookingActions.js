@@ -7,6 +7,8 @@ var SellerBookings = require("../../../Models/Slot/seller_bookings");
 var SellerTimings = require("../../../Models/Slot/seller_timing");
 var ServiceSlots = require("../../../Models/Slot/seller_slots");
 var ServiceCart = require("../../../Models/service_cart");
+const Curvalue = require("../../../Models/currvalue");
+
 
 var checkAvailability = async (req, res) => {
   const USER_BOOKINGS = await UserBookedSlot.find({
@@ -18,8 +20,7 @@ var checkAvailability = async (req, res) => {
   console.log("User bookings", USER_BOOKINGS);
 
   var day_slot_total_time = [];
-
-  USER_BOOKINGS.forEach((element) => {
+      USER_BOOKINGS.forEach((element) => {
     day_slot_total_time.push(element.duration);
   });
   //console.log("Duration array", day_slot_total_time)
@@ -367,26 +368,26 @@ var bookAppointment = async (req, res, next) => {
     }
 
     var convertedStartTime = moment(req.body.from, 'hh:mm A').format('HH:mm')
-    console.log(convertedStartTime);
+   // console.log(convertedStartTime);
 
 
     var convertedEndTime = moment(req.body.to, 'hh:mm A').format('HH:mm')
-     console.log(convertedEndTime);
+   //  console.log(convertedEndTime);
 
     var slotBookTime = await UserBookedSlot.find({
       date_of_booking: req.body.date_of_booking,
     }).exec();
-    console.log(slotBookTime);
+   // console.log(slotBookTime);
 
     var checkslot=false;
     for (let i = 0; i < slotBookTime.length; i++) {
 
       var slotStartTime = moment(slotBookTime[i].from, 'hh:mm A').format('HH:mm')
-      console.log(slotStartTime);
+      //console.log(slotStartTime);
 
 
       var slotEndTime = moment(slotBookTime[i].to, 'hh:mm A').format('HH:mm')
-      console.log(slotEndTime);
+     // console.log(slotEndTime);
       // console.log("completed" + i);
       
       if (
@@ -404,7 +405,7 @@ var bookAppointment = async (req, res, next) => {
           )
           
           {
-            checkslot=true;-
+            checkslot=true;
             console.log("completed");
            break;
      
@@ -449,8 +450,22 @@ var bookAppointment = async (req, res, next) => {
         req.body.price != null &&
         typeof req.body.price != "undefined"
       ) {
-        saveData1.price = req.body.price;
+        saveData1.price = req.body.price
       }
+        if(req.user.currency!="CAD")
+        {
+          let conVert = await Curvalue.find({from:req.user.currency,to:"CAD"}).exec()
+
+          console.log("conVert"+req.body.price+ conVert[0].value);
+          let cal = req.body.price * conVert[0].value
+          saveData1.price_cad = cal.toFixed(2)
+        }
+        else
+        {
+          saveData1.price_cad = req.body.price
+        }
+        // saveData1.price = req.body.price;
+      // return false;
       if (
         req.body.image == "" ||
         req.body.image == null ||
@@ -493,6 +508,7 @@ var bookAppointment = async (req, res, next) => {
             date_of_booking: docs.date_of_booking,
             // currency:req.body.currency
             currency: req.body.currency,
+            price_cad:docs.price_cad
           };
         
           if (

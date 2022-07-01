@@ -23,8 +23,23 @@ var newBookings = async (req,res)=>{
                 $lookup:{
                     from: "shop_services",
                     localField: "shop_service_id",
-                    foreignField: "_id",
+                    foreignField: "_id",              
                     as: "shopservice_data"
+                }
+            },
+            {
+                $lookup:{
+                    from:"service_carts",
+                    localField: "seller_id",
+                    foreignField: "seller_id",
+                    as: "cart_data"
+
+                }
+            },
+            {
+                $unwind:{
+                    path:"$cart_data",
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {
@@ -76,6 +91,22 @@ var viewAcceptedBookings = async (req,res)=>{
                     as: "shopservice_data"
                 }
             },
+
+            {
+                $lookup:{
+                    from:"service_carts",
+                    localField: "seller_id",
+                    foreignField: "seller_id",
+                    as: "cart_data"
+
+                }
+            },
+            {
+                $unwind:{
+                    path:"$cart_data",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
             {
                 $project:{
                     __v: 0
@@ -124,6 +155,21 @@ var viewRejectedBookings = async (req,res)=>{
                     localField: "shop_service_id",
                     foreignField: "_id",
                     as: "shopservice_data"
+                }
+            },
+            {
+                $lookup:{
+                    from:"service_carts",
+                    localField: "seller_id",
+                    foreignField: "seller_id",
+                    as: "cart_data"
+
+                }
+            },
+            {
+                $unwind:{
+                    path:"$cart_data",
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {
