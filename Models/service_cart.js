@@ -26,6 +26,10 @@ const SERVICE_CART_SCHEMA = new Schema({
         type: Number,
         required: true
     },
+    price_cad:{
+        type:Number,
+
+    },
     currency:{
         type: String
     },

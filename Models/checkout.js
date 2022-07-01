@@ -19,7 +19,19 @@ const CHECKOUT_SCHEMA = new Schema({
     },
     subtotal:{
         type:Number,
-        required:true
+        required:false
+    },
+    subtotal_cad:{
+        type:Number
+
+    },
+    
+        total:{
+            type:Number
+        },
+
+    price_cad:{
+        type:Number
     },
     discount_percent: Number,
     total: Number,           // subtotal - discount amount

@@ -17,7 +17,8 @@ const viewUserList = async (req, res) => {
                 pipeline: [
 
                     { $match: { $expr: { $and: [
-                         { $eq: ["$refund_claim",false ]} ] } } },
+                         { $eq: ["$refund_claim",false ]},
+                        {$ne:["$order_status","cancelled"]} ] } } },
 
                     { $group: {
                         _id: "$user_id",

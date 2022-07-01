@@ -4,11 +4,13 @@ var sellerSlots = require('../../../Models/Slot/seller_slots');
 var sellerBookings = require('../../../Models/Slot/seller_bookings');
 var userBookedSlot = require('../../../Models/Slot/user_booked_slot');
 var userServiceCart = require('../../../Models/service_cart');
-var adminCommission = require('../../../Models/admin_commission');
+// var adminCommission = require('../../../Models/admin_commission');
 var serviceSaleCommission = require('../../../Models/earnings/service_sale_earnings');
 var sellerTotalEarning = require('../../../Models/earnings/seller_total_earning');
+const Usersubcription=require('../../../Models/subscr_purchase');
+const admin_commission=require('../../../Models/adminCommission');
 // var adminEarnings = require('../../../Models/earnings/admin_earnings');
-var currconvert = require("../../../service/currencyconverter")
+const Curvalue = require("../../../Models/currvalue");
 
 
 var newBookings = async (req, res) => {
@@ -70,12 +72,17 @@ var newBookings = async (req, res) => {
     }
 };
 
+
+
 var acceptNewBooking = async (req, res) => {
     var id = req.body.id;
+    var cur=req.body.currency;
+    console.log(cur);
+
 
     await sellerBookings.findOne({ _id: mongoose.Types.ObjectId(id) })
         .then(async (data) => {
-            // console.log("Seller booking details ", data);
+         
             var payment_status = await userServiceCart.findOne(
                 {
                     user_booking_id: data.user_booking_id,
@@ -83,9 +90,8 @@ var acceptNewBooking = async (req, res) => {
                 }
             ).exec();
             console.log("Service cart data ", payment_status);
-
-            // Should be done after updating status of seller slot booking
-            // but due to repeated problems shifted here
+                // return false
+      
             var userBookedSlotData = await userBookedSlot.findOneAndUpdate(
                 {
                     _id: payment_status.user_booking_id,
@@ -95,14 +101,6 @@ var acceptNewBooking = async (req, res) => {
                 { returnNewDocument: true }
             ).exec();
 
-            // if (payment_status == null || payment_status == "") {
-            //     return res.status(500).json({
-            //         status: false,
-            //         message: "Payment not yet made. Can't accept booking.",
-            //         data: "Item still in cart. Order not placed."
-            //     });
-            // }
-            // else {}
             return sellerBookings.findOneAndUpdate(
                 {
                     _id: mongoose.Types.ObjectId(req.body.id),
@@ -120,7 +118,6 @@ var acceptNewBooking = async (req, res) => {
                 .then(async (docs) => {
                     console.log("Updated seller booking ", docs);
 
-                    // Updating user booking slot was facing intermittent problem here
 
                     var serviceCartData = await userServiceCart.findOneAndUpdate(
                         {
@@ -130,18 +127,17 @@ var acceptNewBooking = async (req, res) => {
                         {
                             $set: {
                                 seller_confirmed: true
-                                // refund_claim: true
+                               
                             }
                         },
                         { new: true }
-                    ).exec();
+                    ).exec();  
 
-
-                    /** ---- CALCULATE EARNINGS USING SHOP SERVICE COMMISSION TO ADMIN - SELLER, ADMIN ---- */
-                    var admin_commission = await adminCommission.findOne({ service_id: docs.shop_service_id }).exec();
-                    console.log("Admin commission ", admin_commission);
+          var userSub=await Usersubcription.find({userid: mongoose.Types.ObjectId(docs.seller_id),status:true}).exec();            
+            
 
                     var seller_earning = 0;
+                    var admin_earning=0;
 
                     if (
                         payment_status.discount_percent != "" ||
@@ -149,27 +145,75 @@ var acceptNewBooking = async (req, res) => {
                         typeof payment_status.discount_percent != "undefined"
                     ) {
                         var discountAmt = (payment_status.price * payment_status.discount_percent) / 100;
-                        var adminCommissionAmt = (payment_status.price * admin_commission.percentage) / 100;
-                        seller_earning = payment_status.price - (discountAmt + adminCommissionAmt);
+                        
+                        let sellPrice = payment_status.price - discountAmt;
+                        seller_earning = (sellPrice * userSub[0].seller_comission)/100
+                        admin_earning = sellPrice - seller_earning
                     }
                     else {
-                        var adminCommissionAmt = (payment_status.price * admin_commission.percentage) / 100;
-                        seller_earning = payment_status.price - adminCommissionAmt;
+                        seller_earning = (payment_status.price * userSub[0].seller_comission)/100
+                        admin_earning = payment_status.price - seller_earning
                     }
-                    console.log("before convert",seller_earning)
-                    let newCom = 0
+                    console.log("before convert",seller_earning,admin_earning)
 
-
-                    if(req.body.currencyy!=payment_status.currency)
-                    {
-
-                     newCom = await currconvert.currencyConvTR(seller_earning, payment_status.currency, req.body.currencyy)
-                     }
-                    else
-                    {
-                        newCom = seller_earning
+                     let new_seller_com =0
+                     let new_admin_com = 0 ;  
+                    if(req.user.currency!=payment_status.currency){
+                      
+                      
+                        let convert=await Curvalue.find({from:payment_status.currency,to:req.user.currency}).exec()
+                        let val=seller_earning*convert[0].value
+                        
+                        new_seller_com=val.toFixed(2);
+                         
+                       
 
                     }
+                    else{
+
+                      
+                        new_seller_com=seller_earning;
+                       
+
+
+                    }
+
+                    if(payment_status.currency!="CAD"){
+                      
+                      
+                        let convert=await Curvalue.find({from:payment_status.currency,to:"CAD"}).exec()
+                        let val=admin_earning*convert[0].value
+                        
+                        new_admin_com=val.toFixed(2);
+                         
+                       
+
+                    }
+                    else{
+
+                      
+                        new_admin_com=admin_earning;
+                       
+
+
+                    }
+                   
+                    let obj = {
+                        seller_booking_id: docs._id,
+                        seller_id: docs.seller_id,
+                        service_id: docs.shop_service_id,
+                        user_booking_id: docs.user_booking_id,
+                        user_id: docs.user_id,
+                        cart_id: payment_status._id,
+                        order_id: Number(payment_status.order_id),
+                        admin_commission: Number(new_admin_com)
+                    }
+                    const New_Admin_Earning = new admin_commission(obj);
+                    New_Admin_Earning.save().then((data)=>{
+                       // console.log("data" +data);
+                    })
+
+                   
 
                     let obj1 = {
                         seller_booking_id: docs._id,
@@ -179,13 +223,14 @@ var acceptNewBooking = async (req, res) => {
                         user_id: docs.user_id,
                         cart_id: payment_status._id,
                         order_id: Number(payment_status.order_id),
-                        seller_commission: Number(newCom)
+                        seller_commission: Number(new_seller_com)
                     }
+               
                     console.log("after convert",obj1)
                     const NEW_SERVICE_EARNING = new serviceSaleCommission(obj1);
                     NEW_SERVICE_EARNING.save();
 
-                    // Also update the total earning (varying with accept,withdraw, refund)
+                   
                     let totalEarningData = await sellerTotalEarning.findOne({ seller_id: docs.seller_id }).exec();
 
                     if (totalEarningData == null || totalEarningData == "") {
@@ -197,17 +242,11 @@ var acceptNewBooking = async (req, res) => {
                         NEW_TOTAL_EARNING.save()
                     }
                     else {
-                        // var newTotal = parseInt(totalEarningData.total_earning) + parseInt(seller_earning);
-
-                        // sellerTotalEarning.findOneAndUpdate(
-                        //     { seller_id: docs.seller_id },
-                        //     { $set: { total_earning: newTotal } },
-                        //     { new: true }
-                        // ).exec();
+                       
                         totalEarningData.total_earning += seller_earning;
                         totalEarningData.save();
                     }
-                    /** ---------------------------------------------------------------------------------- */
+          
 
                     res.status(200).json({
                         status: true,
@@ -537,5 +576,6 @@ module.exports = {
     viewAcceptedBookings,
     rejectNewBooking,
     viewRejectedBookings,
-    completeBooking
+    completeBooking,
+    
 }

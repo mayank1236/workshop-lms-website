@@ -59,7 +59,7 @@ var viewAll = async (req,res)=>{
                     // service_refund: { $push: "$service_refund" }
                 }
             },
-            { $sort: { _id: -1 } }
+            { $sort: { booking_date: -1 } }
         ]
     )
     .then(data=>{
