@@ -78,7 +78,7 @@ router.get('/subscription',SubscriptionController.viewAll)
 router.put('/subscription/:id',SubscriptionController.update)
 router.delete('/subscription/:id',SubscriptionController.Delete)
 // all users subscription purchase history
-router.post('/subscription/purchasehistory',SubscriptionController.allSubscriptionHistory) // added by anirbank-93
+router.get('/subscription/purchasehistory',SubscriptionController.allSubscriptionHistory) // added by anirbank-93
 // single user subscription purchase history
 router.get('/subscription/purchasehistory/:id', SubscriptionController.oneSubscriptionHistory) // added by anirbank-93
 

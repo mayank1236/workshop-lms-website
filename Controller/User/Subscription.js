@@ -4,6 +4,7 @@ var moment = require("moment-timezone");
 var Subsciption = require("../../Models/subscription");
 var SubscribedBy = require("../../Models/subscr_purchase");
 var User = require("../../Models/user");
+const Curvalue = require("../../Models/currvalue");
 
 const viewAllsubscription = async (req, res) => {
   return Subsciption.aggregate([
@@ -110,30 +111,27 @@ const newSubscription = async (req, res) => {
       userid: mongoose.Types.ObjectId(req.body.userid),
       subscr_id: mongoose.Types.ObjectId(req.body.subscr_id),
       seller_comission: req.body.seller_comission,
-      price: req.body.price,
+     // price: req.body.price,
       subscribed_on: moment.tz(Date.now(), "Asia/Kolkata"),
       no_of_listing: req.body.no_of_listing
     }
-    // subscription = await Subsciption.findOne({_id: {$in: [mongoose.Types.ObjectId(req.body.subscr_id)]}});
-    // console.log(subscription)
-    // listing_info = subscription.no_of_listing
-    // console.log(listing_info)
-    // userData.no_of_listing = listing_info
+
+    if(req.query.currency!="CAD"){
+      let conVert=await Curvalue.find({from:req.query.currency,to:"CAD"}).exec()
+      let val=req.body.price*conVert[0].value
+      userData.price=val.toFixed(2)
+      
+    }
+    else{
+      userData.price=req.body.price
+    }
+
 
     let new_subscription = new SubscribedBy(userData);
 
     return new_subscription
       .save()
-      .then((data) => {
-        // User.findOneAndUpdate(
-        //   { _id: req.body.userid },
-        //   {
-        //     $set: { type: "Seller" },
-        //   },
-        //   {
-        //     returnNewDocument: true,
-        //   },
-        // );
+      .then((data) => {  
         res.status(200).json({
           status: true,
           success: true,
