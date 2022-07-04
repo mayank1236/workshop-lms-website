@@ -52,8 +52,8 @@ user.middleware = async (req, res, next) => {
            
             if (userData && userData != null) {
                     userData.password = null;
-                    userData.token = null;
-                    req.user = userData;
+                    userData.token = null;              
+                    req.user = userData;                   
                     req.userType= userType;
                     req.token = req.headers.authorization,
                     next();

@@ -9,6 +9,7 @@ var Upload = require('../../service/upload')
 
 const { Validator } = require('node-input-validator')
 var currconvert = require("../../service/currencyconverter")
+var Curvalue = require("../../Models/currvalue")
 
 
 
@@ -393,9 +394,13 @@ const viewOneService = async (req, res) => {
 }
 
 const viewShopServiceDetails = async (req, res) => {
+
+   // console.log(req);
     let id = req.params.id
     ShopService.findOne({ _id: { $in: [mongoose.Types.ObjectId(id)] } })
         .then(data => {
+           // console.log(data);
+         
             ShopService.aggregate(
                 [
                     {
@@ -435,17 +440,26 @@ const viewShopServiceDetails = async (req, res) => {
                 ]
             )
                 .then(async result => {
+                    console.log("result"+result);
                     let newRes = result;
 
                         for (let index = 0; index < newRes.length; index++) {
                         var element = newRes[index];
 
+                        console.log("element"+element);
+
                         if (req.query.currency != '' && typeof req.query.currency != 'undefined' && element.currency != req.query.currency) {
                             
                             // let resus = await converter.convert(element.currency,req.query.currency,element.selling_price);
                             // console.log(resus)
-                            let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
+                            console.log(req.query.currency);
+                            console.log(element.currency);
+                           // let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
+                         let datass = await Curvalue.find({from:element.currency,to:req.query.currency}).exec();
+                        // console.log(datass);
 
+                         let resuss = element.price * datass[0].value
+                        // console.log(resuss);
                             newRes[index].price = resuss
                             
                         }

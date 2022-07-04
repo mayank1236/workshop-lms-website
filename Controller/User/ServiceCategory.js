@@ -94,7 +94,7 @@ const viewShopServicesPerService = async (req, res) => {
     }
 
     ShopService.find({ category_id: { $in: [mongoose.Types.ObjectId(id)] } })
-        .then((data) => {
+        .then((data) => {            
             if (data == null || data == '') {
                 res.status(200).json({
                     status: true,
@@ -256,10 +256,10 @@ const viewShopServicesPerService = async (req, res) => {
                     // console.log(docs)
                     if (!err) {
                         let newRes = docs;
-                                
+                                       
         for (let index = 0; index < newRes.itemsList.length; index++) {
             var element = newRes.itemsList[index];
-  
+
             if (req.query.currency != '' && typeof req.query.currency != 'undefined' && typeof element.currency!="undefined" &&  element.currency!="" &&  element.currency!="undefined" && element.currency != req.query.currency) {
   
                 // console.log(element)
@@ -270,11 +270,10 @@ const viewShopServicesPerService = async (req, res) => {
   
             //   newRes.itemsList[index].price = resuss 
             let datass = await Curvalue.find({from:element.currency,to:req.query.currency}).exec()
-            // console.log(datass)
 
             let resuss = element.price * datass[0].value
 
-            newRes.itemsList[index].price = resuss 
+            newRes.itemsList[index].price = resuss   
  
   
   
