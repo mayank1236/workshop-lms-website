@@ -316,7 +316,7 @@ var bookAppointment = async (req, res, next) => {
   //     date_of_booking: new Date(req.body.date_of_booking)
   // }).exec()
 
-  var inCart = await ServiceCart.findOne({
+  var inCart = await ServiceCart.find({
     slot_id: mongoose.Types.ObjectId(req.body.slot_id),
     date_of_booking: req.body.date_of_booking,
     status: false,

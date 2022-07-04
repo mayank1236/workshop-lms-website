@@ -64,9 +64,15 @@ var viewAll = async (req,res)=>{
             {
                   $lookup: {
                     from: "admincommissions",
-                    localField: "cart_data.user_id",
-                    foreignField: "user_id",
+                    localField: "cart_data.order_id",
+                    foreignField: "order_id",
                     as: "admin_data"
+                }
+            },
+            {
+                $unwind:{
+                    path:"$admin_data",
+                    preserveNullAndEmptyArrays:true
                 }
             },
             {
@@ -75,6 +81,12 @@ var viewAll = async (req,res)=>{
                     localField:"cart_data.user_id",
                     foreignField: "user_id",
                     as: "category_data"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$category_data",
+                    preserveNullAndEmptyArrays: true
                 }
             },
           
