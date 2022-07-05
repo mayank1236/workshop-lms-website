@@ -44,11 +44,11 @@ const viewAllsubscription = async (req, res) => {
 
       for (let index = 0; index < newdata.length; index++) {
         var element = newdata[index];
-        console.log(element);
-        if (req.query.currency != "CAD") {
+        //console.log("element:"+element);
+        if (req.body.currency != "CAD") {
 
 
-          let datass =await Curvalue.find({ from: "CAD", to: req.query.currency }).exec()
+          let datass =await Curvalue.find({ from: "CAD", to: req.body.currency }).exec()
 
           console.log(datass);
 
@@ -56,15 +56,16 @@ const viewAllsubscription = async (req, res) => {
 
           newdata[index].price = resuss
 
-        
+        }
+      }
         res.status(200).json({
           status: true,
           message: "Subscription Data Get Successfully",
           data: newdata,
         });
    
-      }
-      }
+      
+      
 
 
 
@@ -137,20 +138,21 @@ const newSubscription = async (req, res) => {
       userid: mongoose.Types.ObjectId(req.body.userid),
       subscr_id: mongoose.Types.ObjectId(req.body.subscr_id),
       seller_comission: req.body.seller_comission,
-     // price: req.body.price,
+      price: req.body.price,
+      currency:req.body.currency,
       subscribed_on: moment.tz(Date.now(), "Asia/Kolkata"),
       no_of_listing: req.body.no_of_listing
     }
 
-    if(req.query.currency!="CAD"){
-      let conVert=await Curvalue.find({from:req.query.currency,to:"CAD"}).exec()
-      let val=req.body.price*conVert[0].value
-      userData.price=val.toFixed(2)
+    // if(req.query.currency!="CAD"){
+    //   let conVert=await Curvalue.find({from:req.query.currency,to:"CAD"}).exec()
+    //   let val=req.body.price*conVert[0].value
+    //   userData.price=val.toFixed(2)
       
-    }
-    else{
-      userData.price=req.body.price
-    }
+    // }
+    // else{
+    //   userData.price=req.body.price
+    // }
 
 
     let new_subscription = new SubscribedBy(userData);

@@ -33,6 +33,10 @@ var userSubsriptionSchema = new mongoose.Schema({
     required: false,
     default: true,
   },
+  currency:{
+    type:String,
+    required:true
+  }
 });
 
 module.exports = mongoose.model("usersubscriptions", userSubsriptionSchema);
