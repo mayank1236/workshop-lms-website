@@ -29,7 +29,7 @@ const create = async (req, res) => {
     description: req.body.description,
     seller_comission: req.body.seller_comission,
     duration: req.body.duration,
-    //price: req.body.price,
+    price: req.body.price,
     type: req.body.type,
     no_of_listing: req.body.no_of_listing
   }
@@ -37,20 +37,20 @@ const create = async (req, res) => {
     subdata.no_of_listing = req.body.no_of_listing
   }
 
-  if(req.query.currency!="CAD"){
+  // if(req.query.currency!="CAD"){
 
   
-    {
-      let conVert = await Curvalue.find({from:"CAD",to:req.query.currency}).exec()
+  //   {
+  //     let conVert = await Curvalue.find({from:"CAD",to:req.query.currency}).exec()
 
-      console.log("conVert"+req.body.price+ conVert[0].value);
-      let cal = req.body.price * conVert[0].value
-    subdata.price = cal.toFixed(2)
-    }
-  }
-  else{
-    subdata.price=req.body.price;
-  }
+  //     console.log("conVert"+req.body.price+ conVert[0].value);
+  //     let cal = req.body.price * conVert[0].value
+  //   subdata.price = cal.toFixed(2)
+  //   }
+  // }
+  // else{
+  //   subdata.price=req.body.price;
+  // }
 
   let subscriptionSchema = new Subsciption(subdata);
 
@@ -172,14 +172,42 @@ const allSubscriptionHistory = async (req, res) => {
       },
     },
   ])
-    .then((data) => {
+    .then(async data => {
       if (data != null && data != "") {
-        res.status(200).send({
-          status: true,
-          data: data,
-          error: null,
-          message: "Subscription History Data Get Successfully",
-        });
+  
+        let newdata=data;
+        
+        for (let index = 0; index < newdata.length; index++) {
+          var element = newdata[index];
+    
+          if (element.currency !=''&& typeof element.currency!="undefined" && element.currency != "CAD") {
+
+
+  
+  
+            let datass =await Curvalue.find({ from:element.currency, to:"CAD"  }).exec()
+  
+            //console.log(datass);
+  
+            let resuss = element.price * datass[0].value
+  
+            newdata[index].price = resuss
+          }
+        }
+            res.status(200).send({
+              status: true,
+              message: "Subscription History Data Get Successfully",
+              data: newdata,
+              error: null
+             
+            });
+  
+          
+        
+
+  
+        
+
       } else {
         res.status(400).send({
           status: false,
