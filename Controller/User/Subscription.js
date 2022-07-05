@@ -36,12 +36,38 @@ const viewAllsubscription = async (req, res) => {
       },
     },
   ])
-    .then((data) => {
-      res.status(200).json({
-        status: true,
-        message: "Subscription Data Get Successfully",
-        data: data,
-      });
+    .then(async data => {
+     
+
+      let newdata=data;
+     
+
+      for (let index = 0; index < newdata.length; index++) {
+        var element = newdata[index];
+        console.log(element);
+        if (req.query.currency != "CAD") {
+
+
+          let datass =await Curvalue.find({ from: "CAD", to: req.query.currency }).exec()
+
+          console.log(datass);
+
+          let resuss = element.price * datass[0].value
+
+          newdata[index].price = resuss
+
+        
+        res.status(200).json({
+          status: true,
+          message: "Subscription Data Get Successfully",
+          data: newdata,
+        });
+   
+      }
+      }
+
+
+
     })
     .catch((err) => {
       res.status(500).json({
