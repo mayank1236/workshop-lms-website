@@ -472,10 +472,10 @@ var serviceRefund = async (req, res) => {
         console.log("Cart ", docs);
         var refAmt = 0;   // this will go to 'refund_amount'
         if (docs.discount_percent == null || docs.discount_percent == "" || typeof docs.discount_percent == "undefined") {
-          refAmt = parseInt(docs.price_cad);
+          refAmt = parseInt(docs.price);
         }
         else {
-          refAmt = parseInt(docs.price_cad) - ((parseInt(docs.price_cad) * parseInt(docs.discount_percent)) / 100);
+          refAmt = parseInt(docs.price) - ((parseInt(docs.price) * parseInt(docs.discount_percent)) / 100);
         }
 
         let checkoutData = await Checkout.findOne({ order_id: docs.order_id }).exec();
@@ -487,7 +487,7 @@ var serviceRefund = async (req, res) => {
           serv_id: docs.service_id,
           cart_id: docs._id,
           order_id: docs.order_id,
-         refund_amount: refAmt,
+          refund_amount: refAmt,
           firstname: checkoutData.firstname,
           lastname: checkoutData.lastname,
           address1: checkoutData.address1,

@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 const SERVICE_REFUND = require('../../Models/service_refund');
 const SERVICE_SALE_EARNING = require('../../Models/earnings/service_sale_earnings');
 const SERVICE_CART = require('../../Models/service_cart');
+var Curvalue = require("../../Models/currvalue");
 
 var getAllRefundRequests = async (req, res) => {
     let requests = await SERVICE_REFUND.aggregate([
@@ -149,14 +150,30 @@ var getApprovedRefundList = async (req, res) => {
             }
         }
     ]).exec();
-    console.log("Approved refunds ", approvedRefunds);
+   // console.log("Approved refunds ", approvedRefunds);
+    
 
     if (approvedRefunds.length > 0) {
-        return res.status(200).json({
-            status: true,
-            message: "Data successfully get.",
-            data: approvedRefunds
-        });
+
+
+        let newRefund = approvedRefunds
+        for (let index = 0; index < newRefund.length; index++) {
+            let element = newRefund[index]
+
+            let data = await Curvalue.find({ from: element.cart_items.currency, to: "CAD" }).exec()
+            let result = element.refund_amount * data[0].value
+            newRefund[index].refund_amount = result.toFixed(2)
+
+
+            return res.status(200).json({
+                status: true,
+                message: "Data successfully get.",
+                data: newRefund
+            });
+
+        }
+
+     
     }
     else {
         return res.status(200).json({
