@@ -316,13 +316,14 @@ var bookAppointment = async (req, res, next) => {
   //     date_of_booking: new Date(req.body.date_of_booking)
   // }).exec()
 
-  var inCart = await ServiceCart.find({
+  var inCart = await ServiceCart.findOne ({
     slot_id: mongoose.Types.ObjectId(req.body.slot_id),
     date_of_booking: req.body.date_of_booking,
     status: false,
   }).exec();
 
   if (inCart != null) {
+
     return res.status(500).json({
       status: false,
       error: "Slot has already been booked.",
@@ -334,7 +335,7 @@ var bookAppointment = async (req, res, next) => {
       service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
       status: true,
     }).exec();
-    // console.log("User's service cart: ", service_cart);
+    //  console.log("User's service cart: ", service_cart);
     // Don't let users who have booked slots but not checked out make new slot booking.
     if (service_cart.length > 0) {
       res.status(500).json({
