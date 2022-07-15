@@ -7,7 +7,7 @@ var User = require("../../Models/user");
 const Curvalue = require("../../Models/currvalue");
 
 const viewAllsubscription = async (req, res) => {
-  return Subsciption.aggregate([
+  return  Subsciption.aggregate([
     {
       $lookup: {
         from: "usersubscriptions",
@@ -19,7 +19,7 @@ const viewAllsubscription = async (req, res) => {
             $match: {
               $expr: {
                 $and: [
-                  { $eq: ["$userid", mongoose.Types.ObjectId(req.params.id)] },
+                  { $eq: ["$subscr_id", mongoose.Types.ObjectId(req.params.id)] },
                   { $eq: ["$subscr_id", "$$subscr_id"] },
                   { $eq: ["$status", true] }
                 ],
@@ -27,41 +27,48 @@ const viewAllsubscription = async (req, res) => {
             },
           },
         ],
-        as: "speakers",
+        as: "subscribed_data",
       },
     },
+    {
+        $unwind: {
+          path: "$subscribed_data",
+          preserveNullAndEmptyArrays: true
+        }
+    },
+
     {
       $project: {
         _v: 0,
       },
     },
-  ])
-    .then(async data => {
+  ]).then( async data => {
+      //console.log(data);
      
 
-      let newdata=data;
+      // let newdata=data;
      
 
-      for (let index = 0; index < newdata.length; index++) {
-        var element = newdata[index];
-        //console.log("element:"+element);
-        if (req.body.currency != "CAD") {
+      // for (let index = 0; index < newdata.length; index++) {
+      //   var element = newdata[index];
+      //   //console.log("element:"+element);
+      //   if (req.body.currency != "CAD") {
 
 
-          let datass =await Curvalue.find({ from: "CAD", to: req.body.currency }).exec()
+      //     let datass =await Curvalue.find({ from: "CAD", to: req.body.currency }).exec()
 
-          console.log(datass);
+      //    // console.log(datass);
 
-          let resuss = element.price * datass[0].value
+      //     let resuss = element.price * datass[0].value
 
-          newdata[index].price = resuss
+      //     newdata[index].price = resuss
 
-        }
-      }
+      //   }
+      // }
         res.status(200).json({
           status: true,
           message: "Subscription Data Get Successfully",
-          data: newdata,
+          data: data,
         });
    
       
