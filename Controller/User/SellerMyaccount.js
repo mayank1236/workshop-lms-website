@@ -38,12 +38,21 @@ var viewAll = async (req, res) => {
             },
             {
                 $lookup: {
+                    from: "checkouts",
+                    localField: "user_id",
+                    foreignField: "user_id",
+                    as: "buyer_data"
+                }
+            },
+            {
+                $lookup: {
                     from: "admin_commissions",
                     localField: "service_id",
                     foreignField: "service_id",
                     as: "admin_commission"
                 }
             },
+        
             {
                 $project: {
                     __v: 0

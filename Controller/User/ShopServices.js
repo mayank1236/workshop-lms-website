@@ -421,13 +421,11 @@ const viewShopServiceDetails = async (req, res) => {
                         $lookup: {
                             from: "service_reviews",
                             localField: "_id",
-                            foreignField: "service_id",                       
+                            foreignField: "service_id",
                            
                             as: "review_data"
                         }
                     },                
-              
-                     
                     {
                         $addFields: {
                             avgRating: {
@@ -446,33 +444,14 @@ const viewShopServiceDetails = async (req, res) => {
                             preserveNullAndEmptyArrays: true
                           }
                     },
-                
                     {
                         $lookup: {
                             from: "users",
                             localField: "review_data.user_id",
                             foreignField: "_id",                       
-                        //     let: { userid: "$review_data.user_id",
-                        //  },
-                        //     pipeline: [{
-                                
-                        //         $match: {
-
-                        //             $expr: {
-                        //                 $and: [{ $eq: ["$_id", "$$userid"] },
-                                       
-                        //                 ]
-                        //             }
-                        //         }
-                        //     }],
                             as: "review_data.user_data"
                         }
-                          
                     },
-                 
-            
-
-                  
                     { $project: { _v: 0 } }
                 ]
             )
