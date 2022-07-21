@@ -41,6 +41,9 @@ var viewAll = async (req, res) => {
                     from: "checkouts",
                     localField: "user_id",
                     foreignField: "user_id",
+                    pipeline:[
+                        { $sort: { _id: -1 } },
+                    ],
                     as: "buyer_data"
                 }
             },
