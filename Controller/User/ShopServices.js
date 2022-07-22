@@ -422,7 +422,17 @@ const viewShopServiceDetails = async (req, res) => {
                             from: "service_reviews",
                             localField: "_id",
                             foreignField: "service_id",
-                           
+                            pipeline: [
+                                {
+                                    $lookup:{
+                                        from:"users",
+                                        localField:"user_id",
+                                        foreignField:"_id",                                        
+                                        as:"user_data"
+                                    }
+                                },
+                              ],                 
+                          
                             as: "review_data"
                         }
                     },                
@@ -438,20 +448,8 @@ const viewShopServiceDetails = async (req, res) => {
                             }
                         }
                     },
-                    {
-                        $unwind: {
-                            path: "$review_data",
-                            preserveNullAndEmptyArrays: true
-                          }
-                    },
-                    {
-                        $lookup: {
-                            from: "users",
-                            localField: "review_data.user_id",
-                            foreignField: "_id",                       
-                            as: "review_data.user_data"
-                        }
-                    },
+                  
+                 
                     { $project: { _v: 0 } }
                 ]
             )
@@ -468,15 +466,16 @@ const viewShopServiceDetails = async (req, res) => {
                             
                             // let resus = await converter.convert(element.currency,req.query.currency,element.selling_price);
                             // console.log(resus)
-                            console.log(req.query.currency);
-                            console.log(element.currency);
+                            //console.log(req.query.currency);
+                            //console.log(element.currency);
                            // let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
                          let datass = await Curvalue.find({from:element.currency,to:req.query.currency}).exec();
                         // console.log(datass);
 
                          let resuss = element.price * datass[0].value
-                        // console.log(resuss);
-                            newRes[index].price = resuss
+                         console.log(element.price);
+                         console.log(resuss.toFixed(2));
+                            newRes[index].price = resuss.toFixed(2)
                             
                         }
                         }
@@ -610,13 +609,14 @@ const viewTopServiceProvider = async (req, res) => {
             ]
         )
     .then(async data => {
+       // console.log(data)
 
         let newRes = data;
 
                         for (let index = 0; index < newRes.length; index++) {
                         var element = newRes[index];
                         
-
+                        console.log(req.query.currency);
                         if (req.query.currency != '' && typeof req.query.currency != 'undefined' && typeof element.service_data.currency!=='undefined' && element.service_data.currency != req.query.currency) {
                             
                             console.log(element.service_data.price)

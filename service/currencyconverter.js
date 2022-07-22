@@ -47,7 +47,9 @@ async function currencyFetch(fromCurr,toCurr)
 
             // var total = val * amount;
 
-            return Number(val.toFixed(2)) 
+            // return Number(val.toFixed(3)) 
+            
+            return Number(val) 
 }
 
 module.exports = {currencyConvTR,currencyFetch};
