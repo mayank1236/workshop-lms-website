@@ -253,27 +253,19 @@ const viewShopServicesPerService = async (req, res) => {
                         }
                     ]
                 ), options,async function (err, docs) {
-                    // console.log(docs)
                     if (!err) {
                         let newRes = docs;
-                                       
+
         for (let index = 0; index < newRes.itemsList.length; index++) {
             var element = newRes.itemsList[index];
 
             if (req.query.currency != '' && typeof req.query.currency != 'undefined' && typeof element.currency!="undefined" &&  element.currency!="" &&  element.currency!="undefined" && element.currency != req.query.currency) {
   
-                // console.log(element)
-              // var total = val * element.selling_price;
-            //   let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
-  
-              // console.log(resuss)
-  
-            //   newRes.itemsList[index].price = resuss 
-            let datass = await Curvalue.find({from:element.currency,to:req.query.currency}).exec()
-
+            let datass = await Curvalue.find({from:element.currency,to:req.query.currency}).exec();
+console.log(datass[0].value)
             let resuss = element.price * datass[0].value
 
-            newRes.itemsList[index].price = resuss   
+            newRes.itemsList[index].price = resuss.toFixed(2)
  
   
   
