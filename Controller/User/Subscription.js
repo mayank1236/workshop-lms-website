@@ -19,7 +19,7 @@ const viewAllsubscription = async (req, res) => {
             $match: {
               $expr: {
                 $and: [
-                  { $eq: ["$subscr_id", mongoose.Types.ObjectId(req.params.id)] },
+                  { $eq: ["$userid", mongoose.Types.ObjectId(req.params.id)] },
                   { $eq: ["$subscr_id", "$$subscr_id"] },
                   { $eq: ["$status", true] }
                 ],
