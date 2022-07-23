@@ -27,15 +27,15 @@ const viewAllsubscription = async (req, res) => {
             },
           },
         ],
-        as: "subscribed_data",
+        as: "speakers",
       },
     },
-    {
-        $unwind: {
-          path: "$subscribed_data",
-          preserveNullAndEmptyArrays: true
-        }
-    },
+    // {
+    //     $unwind: {
+    //       path: "$subscribed_data",
+    //       preserveNullAndEmptyArrays: true
+    //     }
+    // },
 
     {
       $project: {
