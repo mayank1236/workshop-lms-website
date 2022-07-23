@@ -90,7 +90,6 @@ var acceptNewBooking = async (req, res) => {
                 }
             ).exec();
             console.log("Service cart data ", payment_status);
-                // return false
       
             var userBookedSlotData = await userBookedSlot.findOneAndUpdate(
                 {
@@ -101,7 +100,7 @@ var acceptNewBooking = async (req, res) => {
                 { returnNewDocument: true }
             ).exec();
 
-            return sellerBookings.findOneAndUpdate(
+           return sellerBookings.findOneAndUpdate(
                 {
                     _id: mongoose.Types.ObjectId(req.body.id),
                     new_booking: true,
@@ -166,8 +165,6 @@ var acceptNewBooking = async (req, res) => {
                         
                         new_seller_com=val.toFixed(2);
                          
-                       
-
                     }
                     else{
 
