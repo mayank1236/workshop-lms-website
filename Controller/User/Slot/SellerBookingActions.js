@@ -82,10 +82,6 @@ var acceptNewBooking = async (req, res) => {
 
     await sellerBookings.findOne({ _id: mongoose.Types.ObjectId(id) })
         .then(async (data) => {
-            res.status(200).json({
-                           
-                data:data
-             });
          
             var payment_status = await userServiceCart.findOne(
                 {
@@ -124,7 +120,7 @@ var acceptNewBooking = async (req, res) => {
 
               
 
-                 return false
+        
              
                     var serviceCartData = await userServiceCart.findOneAndUpdate(
                         {
