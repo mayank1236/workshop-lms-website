@@ -59,7 +59,8 @@ router.use((req,res,next)=>{
         res.send({status: false, msg: "parmison not found" });
     }
 })
-
+router.put('/payforservice/:id',AutomatedApi.payForService)
+router.get('/viewpayservice',AutomatedApi.viewPayService)
 router.post('/product/Product',upload.single("image"),ProductController.create)
 router.get('/product/Product',ProductController.viewAll)
 router.put('/product/Product/:id',upload.single("image"),ProductController.update)
@@ -256,7 +257,7 @@ router.delete('/cms/testimonials/:id', CmsController.deleteTestimonial);
 /**===================================== Automated tasks =====================================*/
 /**---------------Clear all due payments every 3 days of a week ---------------*/
 const clearDueEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForServOrNot);
-const payClaimedEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForService);
+//const payClaimedEarnings = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.payForService);
 const clearServiceRefund = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.clearServiceRefunds);
 const resetRefundClaimStatus = nodeCron.schedule("59 59 23 * * 0-6/3", AutomatedApi.resetRefundClaimStatus);
 /**-----------------------------------------------------------------------------*/

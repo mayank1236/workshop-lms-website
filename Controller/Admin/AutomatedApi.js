@@ -1,6 +1,7 @@
 const SERVICE_SALE_EARNINGS = require('../../Models/earnings/service_sale_earnings');
 const SERVICE_CART = require('../../Models/service_cart');
 const SERVICE_REFUND = require('../../Models/service_refund');
+const mongoose=require('mongoose');
 
 var payForServOrNot = async (req, res) => {
     return SERVICE_SALE_EARNINGS.updateMany(
@@ -21,21 +22,55 @@ var payForServOrNot = async (req, res) => {
 }
 
 var payForService = async (req, res) => {
-    return SERVICE_SALE_EARNINGS.updateMany(
+    console.log(req)
+    return SERVICE_SALE_EARNINGS.findOneAndUpdate(
         {
-            claim_status: true,
-            seller_apply: true
-        },
+        _id: mongoose.Types.ObjectId(req.params.id),
+        claim_status: true,
+        seller_apply: true
+    },
         { $set: { paystatus: true } },
+        {new:true},
         (err, result) => {
             if (!err) {
-                console.log("Seller claimed earnings paid.");
+               res.status(200).json({
+                status:true,
+                data:result
+               })
             }
             else {
-                console.log("Failed to execute required payments due to ", err.message);
+                res.status(500).json({
+                    status:false,
+                    data:err
+                   })
             }
         }
     );
+}
+
+var viewPayService=async (req,res)=>{
+
+   let profile=await SERVICE_SALE_EARNINGS.find({
+    claim_status: true,
+    seller_apply: true    
+}).exec()
+   if(profile!=null && profile!=''){
+    res.status(200).json({
+        status:true,
+        message:"Data successfully get",
+        data:profile
+    })
+
+   }
+   else{
+    res.status(400).json({
+        status:false,
+        message:"profile not found",
+      
+    })
+
+   }
+
 }
 
 var clearServiceRefunds = async (req, res) => {
@@ -81,5 +116,6 @@ module.exports = {
     payForServOrNot,
     payForService,
     clearServiceRefunds,
-    resetRefundClaimStatus
+    resetRefundClaimStatus,
+    viewPayService
 }
