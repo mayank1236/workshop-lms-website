@@ -82,6 +82,10 @@ var acceptNewBooking = async (req, res) => {
 
     await sellerBookings.findOne({ _id: mongoose.Types.ObjectId(id) })
         .then(async (data) => {
+            res.status(200).json({
+                           
+                data:data
+             });
          
             var payment_status = await userServiceCart.findOne(
                 {
@@ -89,7 +93,8 @@ var acceptNewBooking = async (req, res) => {
                     status: false
                 }
             ).exec();
-            console.log("Service cart data ", payment_status);
+            // console.log("Service cart data ", payment_status);
+       
       
             var userBookedSlotData = await userBookedSlot.findOneAndUpdate(
                 {
@@ -115,9 +120,12 @@ var acceptNewBooking = async (req, res) => {
                 { new: true }
             )
                 .then(async (docs) => {
-                    console.log("Updated seller booking ", docs);
+                  //  console.log("Updated seller booking ", docs);
 
+              
 
+                 return false
+             
                     var serviceCartData = await userServiceCart.findOneAndUpdate(
                         {
                             user_booking_id: docs.user_booking_id,
@@ -133,7 +141,7 @@ var acceptNewBooking = async (req, res) => {
                     ).exec();  
 
           var userSub=await Usersubcription.find({userid: mongoose.Types.ObjectId(docs.seller_id),status:true}).exec();            
-            
+           
 
                     var seller_earning = 0;
                     var admin_earning=0;
@@ -428,13 +436,7 @@ var rejectNewBooking = async (req, res) => {
                     }
                 ).exec();
 
-                // var checkoutData = await Checkout.findOne(
-                //     {
-                //         user_booking_id: docs.user_booking_id,
-                //         service_id: docs.shop_service_id
-                //     }
-                // ).exec();
-
+           
                 if (inServiceCart != null && checkedOut == null) {
                     var bookingStatus = userServiceCart.findOneAndUpdate(
                         {
