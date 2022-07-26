@@ -3,7 +3,8 @@ var mongoose = require('mongoose')
 var ServiceCart = require('../../Models/service_cart')
 var SellerBookings = require('../../Models/Slot/seller_bookings')
 const SERVICE_SALE_EARNINGS = require('../../Models/earnings/service_sale_earnings');
-
+const Service_refund=require('../../Models/service_refund');
+const Curvalue=require('../../Models/currvalue');
 var viewAll = async (req, res) => {
     return ServiceCart.aggregate(
         [
@@ -200,13 +201,44 @@ var wallet = async (req, res) => {
     else {
         claimableEarning = 0
     }
-    /**--------------------------------------------------------------------------*/
+    /**--------------------------------refund amount------------------------------------------*/
+    let totalRefundsData = await Service_refund.findOne({
+        seller_id: mongoose.Types.ObjectId(id),
+      }).exec();
+    
+      let refundedAmount = 0;
+    
+      if (totalRefundsData == null) {
+        refundedAmount = 0;
+      } else {
+       var amount = totalRefundsData.refund_amount;
+
+        if(req.body.currency!="CAD"){
+
+            let convert=await Curvalue.find({from:"CAD",to:req.body.currency}).exec()
+            let val=amount*convert[0].value
+            
+            refundedAmount=val.toFixed(2);
+             
+           
+
+        }
+        else{
+
+          
+            refundedAmount=amount;
+           
+
+
+        }
+        
+      }
 
     res.send({
         total_earnings: totalEarnings,
         earning_settled: settledEarning,
         pending_settlement: pendingSettlement,
-        service_refund_amt: 0,
+        service_refund_amt: refundedAmount,
         claimable_earnings: claimableEarning
     })
 }
