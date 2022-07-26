@@ -108,17 +108,14 @@ var viewAll = async (req, res) => {
           cart_data: { $push: "$cart_data" }
         }
       },
-      {
-        $sort: {
-          booking_date: -1
-        }
-      },
+    
       {
         $project: {
-         _id:0
+         _v:0
         }
       },
-      // { $sort: { _id: -1 } }
+      { $sort: { "cart_data.booking_date": -1 } }
+      //{ $sort: { _id: -1 } }
     ]
   )
     .then((docs) => {
