@@ -178,7 +178,7 @@ router.post('/get-chat-review', ChatServiceReview.getChatReview);
 
 router.get('/seller_account/service-order-history/:seller_id', SellerAccount.viewAll);
 router.get('/seller_account/booking-stat/:seller_id', SellerAccount.serviceBookingStat);
-router.get('/wallet/:id', SellerAccount.wallet);
+router.post('/wallet/:id', SellerAccount.wallet);
 router.get('/claimable_commissions/:id', SellerAccount.claimableCommissions);
 router.put('/withdraw_one_commission/:id', SellerAccount.claimOneCommission);
 router.put('/withdraw_all_commission/:id', SellerAccount.claimAllCommissions);
