@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
-var Checkout = require('../../Models/checkout')
+var Checkout = require('../../Models/checkout');
+const  Curvalue=require('../../Models/currvalue')
 
 var viewAll = async (req,res)=>{
     return Checkout.aggregate(
@@ -93,7 +94,29 @@ var viewAll = async (req,res)=>{
             { $sort: { booking_date: -1 } }
         ]
     )
-    .then(data=>{
+    .then(async data=>{
+
+       // console.log(data[0].cart_data[0].currency);
+        
+
+        for (let index = 0; index < data.length; index++) {
+            var element = data[index];
+      
+            if (element.cart_data[0].currency!="CAD") {
+  
+               // console.log(element.cart_data[0].currency);
+    
+    
+              let datass =await Curvalue.find({ from:element.cart_data[0].currency, to:"CAD"  }).exec()
+    
+             // console.log(datass);
+    
+              let resuss = element.order_subtotal * datass[0].value
+    
+              data[index].order_subtotal = resuss
+            }
+          }
+
         res.status(200).json({
             status: true,
             message: "Order History found successfully",
