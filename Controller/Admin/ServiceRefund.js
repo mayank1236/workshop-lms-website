@@ -9,7 +9,8 @@ var getAllRefundRequests = async (req, res) => {
     let requests = await SERVICE_REFUND.aggregate([
         {
             $match: {
-                request_status: "new"
+                 request_status: "new"
+              
             }
         },
         {
@@ -17,6 +18,14 @@ var getAllRefundRequests = async (req, res) => {
                 from: "service_carts",
                 localField: "order_id",
                 foreignField: "order_id",
+                pipeline:[
+                    {
+                        $match: {
+                            refund_claim:true 
+                          
+                        }
+                    }, 
+                ],
                 as: "cart_items"
             }
         },
