@@ -128,9 +128,12 @@ var getApprovedRefundList = async (req, res) => {
                 as: "cart_items"
             }
         },
-        {
-            $unwind: "$cart_items"
-        },
+        // {
+        //       $unwind: {
+        //         path: "$cart_items",
+        //         preserveNullAndEmptyArrays: true
+        //       }
+        //     },
         {
             $lookup: {
                 from: "shop_services",
@@ -139,9 +142,12 @@ var getApprovedRefundList = async (req, res) => {
                 as: "service_data"
             }
         },
-        {
-            $unwind: "$service_data"
-        },
+        // {
+        //     $unwind: {
+        //       path: "$service_data",
+        //       preserveNullAndEmptyArrays: true
+        //     }
+        //   },
         {
             $lookup: {
                 from: "users",
@@ -160,14 +166,13 @@ var getApprovedRefundList = async (req, res) => {
         }
     ]).exec();
    // console.log("Approved refunds ", approvedRefunds);
-    
 
     if (approvedRefunds.length > 0) {
 
         let newRefund = approvedRefunds
         for (let index = 0; index < newRefund.length; index++) {
             let element = newRefund[index]
- //console.log("elemnt[" + index + "]" + element.cart_items.currency);
+ //console.log(element.cart_items.currency)
             if (element.cart_items.currency != 'CAD') {
                 let data = await Curvalue.find({ from: element.cart_items.currency, to: "CAD" }).exec();
 
