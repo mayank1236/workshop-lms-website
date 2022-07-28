@@ -12,7 +12,25 @@ var Curvalue = require("../../Models/currvalue");
 
 
 const viewAllServices = async (req, res) => {
-    return Service.find({ admin_approved: true })
+
+return Service.aggregate([
+    {
+        $match:{
+            admin_approved: true
+        }
+    },
+
+    {
+        $lookup: {
+          from: "shop_services",
+          localField: "_id",
+          foreignField: "category_id",
+          as: "sub_category"
+        }
+      }, 
+])
+
+   // return Service.find({ admin_approved: true })
         .then((docs) => {
             res.status(200).json({
                 status: true,
