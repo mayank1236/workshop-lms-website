@@ -111,6 +111,8 @@ router.put('/suggested-category/:id', ServiceController.approveSuggestedCategory
 router.get('/service-category/shop-services/:cat_id', ServiceController.shopServicePerCategory)// added by anirbank-93
 
 router.get('/service-order-history', OrderHistory.viewAll)   // added by anirbank-93
+router.get('/servicePerorder/:orderid', OrderHistory.viewDataPerorder)   // added by anirbank-93
+
 
 router.post('/service/subcategory',ServiceSubCategoryController.create)    // added by anirbank-93
 router.get('/service/subcategory', ServiceSubCategoryController.viewAll)   // added by anirbank-93
