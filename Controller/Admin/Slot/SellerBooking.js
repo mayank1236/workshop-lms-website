@@ -30,8 +30,8 @@ var newBookings = async (req, res) => {
       {
         $lookup: {
           from: "service_carts",
-          localField: "order_id",
-          foreignField: "order_id",
+          localField: "cart_id",
+          foreignField: "_id",
           as: "cart_data",
         },
       },
@@ -93,8 +93,8 @@ var viewAcceptedBookings = async (req, res) => {
       {
         $lookup: {
           from: "service_carts",
-          localField: "seller_id",
-          foreignField: "seller_id",
+          localField: "cart_id",
+          foreignField: "_id",
           as: "cart_data",
         },
       },
