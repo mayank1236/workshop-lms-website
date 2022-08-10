@@ -9,6 +9,7 @@ const sellerBookingSchema = new Schema({
     slot_id: mongoose.Schema.Types.ObjectId,
     shop_service_id: mongoose.Schema.Types.ObjectId,
     seller_id: mongoose.Schema.Types.ObjectId,
+    cart_id: mongoose.Schema.Types.ObjectId,
     order_id: Number,
     date_of_booking: Date,
         // default: moment.tz(new Date(), "Asia/Kolkata"),//Date.now()

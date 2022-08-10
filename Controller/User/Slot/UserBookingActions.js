@@ -522,14 +522,17 @@ var bookAppointment = async (req, res, next) => {
             cartData.image = docs.image;
           }
 
-          const SELLER_BOOKING = new SellerBookings(sellerBookingData);
+          
           const SERVICE_CART = new ServiceCart(cartData);
 
-          var saveInSellerBookings = await SELLER_BOOKING.save();
+          
 
           SERVICE_CART.save()
-            .then((data2) => {
-      
+            .then(async (data2) => {
+              
+              sellerBookingData.cart_id = mongoose.Types.ObjectId(data2._id)
+              const SELLER_BOOKING = new SellerBookings(sellerBookingData);
+              var saveInSellerBookings = await SELLER_BOOKING.save();
 
               res.status(200).json({
                 status: true,
