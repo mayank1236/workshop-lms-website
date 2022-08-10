@@ -42,6 +42,9 @@ const sellerBookingSchema = new Schema({
         type: String,
         default: ""
     },
+    order_id:{
+        type:Number
+    },
     paid: {
         type: Boolean,
         default: false
