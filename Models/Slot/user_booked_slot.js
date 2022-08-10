@@ -51,6 +51,9 @@ const userBookedSlot = new Schema({
         type: Boolean,
         default: false
     },
+    order_id:{
+        type:Number
+    },
     paid: {
         type: Boolean,
         default: false
