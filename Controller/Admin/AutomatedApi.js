@@ -2,6 +2,7 @@ const SERVICE_SALE_EARNINGS = require('../../Models/earnings/service_sale_earnin
 const SERVICE_CART = require('../../Models/service_cart');
 const SERVICE_REFUND = require('../../Models/service_refund');
 const mongoose=require('mongoose');
+var Curvalue = require("../../Models/currvalue");
 
 var payForServOrNot = async (req, res) => {
     return SERVICE_SALE_EARNINGS.updateMany(
@@ -50,18 +51,56 @@ var payForService = async (req, res) => {
 
 var viewPayService=async (req,res)=>{
 
-   let profile=await SERVICE_SALE_EARNINGS.find({
-    claim_status: true,
-    seller_apply: true    
-}).exec()
-   if(profile!=null && profile!=''){
-    res.status(200).json({
-        status:true,
-        message:"Data successfully get",
-        data:profile
-    })
+let profile=await SERVICE_SALE_EARNINGS.aggregate([
+    {
+        $match: {
+            claim_status: true,
+            seller_apply: true
+        }
+    },
+    {
+        $lookup:{
+            from:"users",
+            localField:"seller_id",
+            foreignField: "_id",
+            as:"seller_data"
+        }
+    },
+    {
+        $project:{
+            __v:0
+        }
+    }
+]).exec()
 
-   }
+
+if (profile.length > 0) {
+    let newdata=profile;
+        
+        for (let index = 0; index < newdata.length; index++) {
+          var element = newdata[index];
+    //console.log(element.seller_data[index].currency)
+          if (element.seller_data[index].currency !=''&& typeof element.seller_data[index].currency!="undefined" && element.seller_data[index].currency!= "CAD") {
+
+
+  
+  
+            let datass =await Curvalue.find({ from:element.seller_data[index].currency, to:"CAD"  }).exec()
+  
+            console.log(datass);
+  
+            let resuss = element.seller_commission * datass[0].value
+  
+            newdata[index].seller_commission = resuss
+          }
+        }
+     res.status(200).json({
+        status: true,
+        message: "Data successfully get.",
+        data: newdata
+    });
+
+}
    else{
     res.status(400).json({
         status:false,
