@@ -22,7 +22,7 @@ const viewUserList = async (req, res) => {
 
                     { $group: {
                         _id: "$user_id",
-                        'total_amount': { $sum:"$price" }
+                        'total_amount': { $sum:"$price_cad" }
                      }}
                 ],      
 
@@ -56,7 +56,7 @@ const viewUserList = async (req, res) => {
 
                     { $group: {
                         _id: "$user_id",
-                        'refunded_amount': { $sum:"$price" }
+                        'refunded_amount': { $sum:"$price_cad" }
                      }}
                 ],      
 
