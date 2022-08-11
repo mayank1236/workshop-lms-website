@@ -35,15 +35,18 @@ var newBookings = async (req, res) => {
           as: "cart_data",
         },
       },
-      // {
-      //   $unwind: {
-      //     path: "$cart_data",
-      //     preserveNullAndEmptyArrays: true,
-      //   },
-      // },
+      {
+        $lookup: {
+          from: "checkouts",
+          localField: "order_id",
+          foreignField: "order_id",
+          as: "order_data",
+        },
+      },
+
       {
         $sort:{
-          date_of_booking:-1
+          "order_data.booking_date":-1
         }
       },
       {
@@ -103,15 +106,18 @@ var viewAcceptedBookings = async (req, res) => {
           as: "cart_data",
         },
       },
-      // {
-      //   $unwind: {
-      //     path: "$cart_data",
-      //     preserveNullAndEmptyArrays: true,
-      //   },
-      // },
+      {
+        $lookup: {
+          from: "checkouts",
+          localField: "order_id",
+          foreignField: "order_id",
+          as: "order_data",
+        },
+      },
+
       {
         $sort:{
-          date_of_booking:-1
+          "order_data.booking_date":-1
         }
       },
       {
@@ -172,9 +178,18 @@ var viewRejectedBookings = async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: "checkouts",
+          localField: "order_id",
+          foreignField: "order_id",
+          as: "order_data",
+        },
+      },
+
+      {
         $sort:{
-        date_of_booking:-1
-       }
+          "order_data.booking_date":-1
+        }
       },
       {
         $project: {
