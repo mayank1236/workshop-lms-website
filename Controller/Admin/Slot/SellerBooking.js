@@ -148,7 +148,7 @@ var viewRejectedBookings = async (req, res) => {
     .aggregate([
       {
         $match: {
-          seller_id: mongoose.Types.ObjectId(req.params.seller_id),
+          //seller_id: mongoose.Types.ObjectId(req.params.seller_id),
           new_booking: false,
           booking_accept: false,
         },
