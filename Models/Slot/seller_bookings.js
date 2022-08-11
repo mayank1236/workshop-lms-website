@@ -53,7 +53,7 @@ const sellerBookingSchema = new Schema({
     status: {
         type: Boolean,
         default: true
-    }
+    },
 });
 
 module.exports = mongoose.model("seller_bookings", sellerBookingSchema)
