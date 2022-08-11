@@ -122,7 +122,7 @@ router.delete('/service/subcategory/:id', ServiceSubCategoryController.Delete)//
 // ----------------->Slot management section start
 router.get('/seller-service/new-bookings', SellerBookingController.newBookings);
 router.get('/seller-service/accepted-bookings', SellerBookingController.viewAcceptedBookings);
-router.get('/seller-service/rejected-bookings/:seller_id', SellerBookingController.viewRejectedBookings);
+router.get('/seller-service/rejected-bookings', SellerBookingController.viewRejectedBookings);
 // router.get('/booking-and-user-stat', SellerBookingController.serviceBookingStat);
 // ------------------>Slot management section end
 
