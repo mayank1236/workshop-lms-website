@@ -42,6 +42,11 @@ var newBookings = async (req, res) => {
       //   },
       // },
       {
+        $sort:{
+          date_of_booking:-1
+        }
+      },
+      {
         $project: {
           __v: 0,
         },
@@ -105,6 +110,11 @@ var viewAcceptedBookings = async (req, res) => {
       //   },
       // },
       {
+        $sort:{
+          date_of_booking:-1
+        }
+      },
+      {
         $project: {
           __v: 0,
         },
@@ -156,16 +166,15 @@ var viewRejectedBookings = async (req, res) => {
       {
         $lookup: {
           from: "service_carts",
-          localField: "seller_id",
-          foreignField: "seller_id",
+          localField: "cart_id",
+          foreignField: "_id",
           as: "cart_data",
         },
       },
       {
-        $unwind: {
-          path: "$cart_data",
-          preserveNullAndEmptyArrays: true,
-        },
+        $sort:{
+        date_of_booking:-1
+       }
       },
       {
         $project: {
