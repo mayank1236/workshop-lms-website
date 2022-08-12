@@ -74,6 +74,9 @@ const SERVICE_CART_SCHEMA = new Schema({
         default:false
 
     },
+    rejected_by:{
+        type:String
+    },
    
     
     date_of_booking: Date

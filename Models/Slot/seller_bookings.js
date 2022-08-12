@@ -54,6 +54,9 @@ const sellerBookingSchema = new Schema({
         type: Boolean,
         default: true
     },
+    rejected_by:{
+        type:String
+    }
 });
 
 module.exports = mongoose.model("seller_bookings", sellerBookingSchema)

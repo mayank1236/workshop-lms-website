@@ -10,6 +10,7 @@ var shopServices = require('../../Models/shop_service');
 var Upload = require('../../service/upload'); 
 var ServiceCart = require('../../Models/service_cart');
 var ServiceRefund = require('../../Models/service_refund');
+var sellerBookings = require('../../Models/Slot/seller_bookings');
 // var ServiceSaleEarning = require('../../Models/earnings/service_sale_earnings');
 
 var viewAll = async (req, res) => {
@@ -138,11 +139,25 @@ var cancelOrder = async (req, res) => {
   return ServiceCart.findOneAndUpdate(
 
     { _id: mongoose.Types.ObjectId(req.params.id) },
-    { $set: { order_status: 'cancelled' } },
+    { $set: { order_status: 'cancelled' ,
+  rejected_by:"buyer"} },
     { new: true },
     (err, data) => {
       console.log(data);
       if (!err) {
+
+        var sellerbookingdata = sellerBookings.findOneAndUpdate(
+          {
+              cart_id:data._id,
+             
+          },
+          { $set: {
+            new_booking: false,
+                booking_accept: false,
+                rejected_by:"buyer"
+            } } ,
+          { returnNewDocument: true }
+      ).exec();
         res.status(200).json({
           status: true,
           message: "Order cancelled successfully.",
