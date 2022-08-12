@@ -398,7 +398,8 @@ var rejectNewBooking = async (req, res) => {
         {
             $set: {
                 new_booking: false,
-                booking_accept: false
+                booking_accept: false,
+                rejected_by:"seller"
             }
         },
         {
@@ -477,11 +478,26 @@ var viewRejectedBookings = async (req, res) => {
         [
             {
                 $match: {
-                    seller_id: mongoose.Types.ObjectId(req.params.seller_id),
-                    new_booking: false,
-                    booking_accept: false
-                }
-            },
+                  $and: [
+                    {
+                      $or: [
+                        { rejected_by:"seller"},
+                        {rejected_by:"buyer"}
+                      ]
+                    },
+                    {   new_booking: false,
+                        booking_accept: false }
+                  ]
+                },
+              },
+            
+            // {
+            //     $match:{
+            //         seller_id: mongoose.Types.ObjectId(req.params.seller_id),
+            //         new_booking: false,
+            //         booking_accept: false
+            //     }
+            // },
             {
                 $lookup: {
                     from: "users",

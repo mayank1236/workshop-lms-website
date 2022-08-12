@@ -144,7 +144,8 @@ var Search = async (req, res) => {
   // )
   return shopService.aggregate(
     [
-      {
+
+    {
         $match: {
           $expr: {
             $text: req.body.categoryname,
@@ -204,7 +205,7 @@ var allSearch = async (req, res) => {
           {
             $or: [
               { name: { $regex: ".*" + req.body.searchname + ".*", $options: "i" } },
-              { cat_name: { $regex: ".*" + req.body.searchname + ".*", $options: "i" } }
+              { category_name: { $regex: ".*" + req.body.searchname + ".*", $options: "i" } }
             ]
           },
           { status: true }
