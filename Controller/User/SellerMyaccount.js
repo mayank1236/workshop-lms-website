@@ -215,7 +215,7 @@ var wallet = async (req, res) => {
     // console.log(totalRefundsData)
       var refundedAmount = 0;
     
-      if (totalRefundsData == null) {
+      if (totalRefundsData.length==0) {
         refundedAmount =0;
       } else {
        var amount = totalRefundsData.refund_amount;
