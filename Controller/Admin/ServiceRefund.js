@@ -111,6 +111,7 @@ var approveRefund = async (req, res) => {
 };
 
 var getApprovedRefundList = async (req, res) => {
+<<<<<<< HEAD
   var approvedRefunds = await SERVICE_REFUND.aggregate([
     {
       $match: {
@@ -180,6 +181,98 @@ var getApprovedRefundList = async (req, res) => {
         let result = element.refund_amount * data[0].value;
         newRefund[index].refund_amount = result.toFixed(2);
       }
+=======
+    var approvedRefunds = await SERVICE_REFUND.aggregate([
+        {
+            $match: {
+                request_status: "approved"
+            }
+        },
+        {
+            $lookup: {
+                from: "service_carts",
+                localField: "order_id",
+                foreignField: "order_id",
+                as: "cart_items"
+            }
+        },
+
+        {     // {
+            //       $unwind: {
+            //         path: "$cart_items",
+            //         preserveNullAndEmptyArrays: true
+            //       }
+            //     },
+            $lookup: {
+                from: "shop_services",
+                localField: "serv_id",
+                foreignField: "_id",
+                as: "service_data"
+            }
+        },
+        // {
+        //     $unwind: {
+        //       path: "$service_data",
+        //       preserveNullAndEmptyArrays: true
+        //     }
+        //   },
+        {
+            $lookup: {
+                from: "users",
+                localField: "seller_id",
+                foreignField: "_id",
+                as: "seller_details"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "user_details"
+            }
+        }
+    ]).exec();
+  // console.log("Approved refunds ", approvedRefunds);
+
+    if (approvedRefunds.length > 0) {
+
+        let newRefund = approvedRefunds
+    
+        for (let index = 0; index < newRefund.length; index++) {
+            var element = newRefund[index]
+
+            for(let j=0;j<element.cart_items.length;j++){
+                if (element.cart_items[j].currency != 'CAD') {
+                    let data = await Curvalue.find({ from: element.cart_items[j].currency, to: "CAD" }).exec();
+    
+    console.log(element.refund_amount)
+                    let result = element.refund_amount * data[0].value
+
+                    console.log("result"+result)    
+                    console.log("result1"+ result.toFixed(2))                      
+                newRefund[index].refund_amount = result.toFixed(2)
+    
+
+            }         
+
+            }
+
+        }
+        return res.status(200).json({
+            status: true,
+            message: "Data successfully get.",
+            data: newRefund
+        });
+
+    }
+    else {
+        return res.status(200).json({
+            status: true,
+            message: "No approved request.",
+            data: []
+        });
+>>>>>>> 10712afcd24c65027b9199b1da5dbf5011b0dda5
     }
     return res.status(200).json({
       status: true,
