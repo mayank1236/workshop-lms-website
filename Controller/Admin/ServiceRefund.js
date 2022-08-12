@@ -165,22 +165,28 @@ var getApprovedRefundList = async (req, res) => {
             }
         }
     ]).exec();
-   console.log("Approved refunds ", approvedRefunds);
+  // console.log("Approved refunds ", approvedRefunds);
 
     if (approvedRefunds.length > 0) {
 
         let newRefund = approvedRefunds
+    
         for (let index = 0; index < newRefund.length; index++) {
-            let element = newRefund[index]
- console.log(element.cart_items[index].currency)
+            var element = newRefund[index]
 
-            if (element.cart_items[index].currency != 'CAD') {
-                let data = await Curvalue.find({ from: element.cart_items[index].currency, to: "CAD" }).exec();
+            for(let j=0;j<element.cart_items.length;j++){
+                if (element.cart_items[j].currency != 'CAD') {
+                    let data = await Curvalue.find({ from: element.cart_items[j].currency, to: "CAD" }).exec();
+    
+    console.log(element.refund_amount)
+                    let result = element.refund_amount * data[0].value
 
+                    console.log("result"+result)    
+                    console.log("result1"+ result.toFixed(2))                      
+                newRefund[index].refund_amount = result.toFixed(2)
+    
 
-                let result = element.refund_amount * data[0].value
-            newRefund[index].refund_amount = result.toFixed(2)
-
+            }         
 
             }
 
