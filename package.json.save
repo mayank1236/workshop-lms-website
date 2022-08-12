@@ -1,0 +1,37 @@
+_{
+  "name": "astrophy",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.945.0",
+    "axios": "^0.27.2",
+    "convert-csv-to-array": "^1.0.3",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "csv-writer": "^1.6.0",
+    "debug": "^2.6.9",
+    "dotenv": "^10.0.0",
+    "express": "~4.16.1",
+    "fs": "0.0.1-security",
+    "http-errors": "~1.6.3",
+    "jade": "^0.31.2",
+    "json2csv": "^5.0.6",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
+    "mongodb": "^4.0.1",
+    "mongoose": "^5.13.3",
+    "mongoose-aggregate-paginate-v2": "^1.0.6",
+    "morgan": "~1.9.1",
+    "multer": "^1.4.2",
+    "node-cron": "^3.0.1",
+    "node-input-validator": "^4.4.1",
+    "nodemon": "^2.0.12",
+    "password-hash": "^1.2.2",
+    "path": "^0.12.7",
+    "uuid": "^8.3.2"
+  }
+}
