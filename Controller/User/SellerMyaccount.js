@@ -170,7 +170,7 @@ var wallet = async (req, res) => {
         seller_apply: false,
         paystatus: false
     }).exec()
-    console.log("Pending settlement data ", pendingSettlementData);
+   // console.log("Pending settlement data ", pendingSettlementData);
 
     var pendingSettlement = 0
 
@@ -202,20 +202,28 @@ var wallet = async (req, res) => {
         claimableEarning = 0
     }
     /**--------------------------------refund amount------------------------------------------*/
-    let totalRefundsData = await Service_refund.findOne({
-        seller_id: mongoose.Types.ObjectId(id),
-      }).exec();
-    
-      let refundedAmount = 0;
+    let totalRefundsData = await Service_refund.aggregate([
+
+        {
+            $match:{
+                seller_id: mongoose.Types.ObjectId(id),
+                admin_status:"refund_initiated"
+            }
+        }
+
+    ]).exec();
+    // console.log(totalRefundsData)
+      var refundedAmount = 0;
     
       if (totalRefundsData == null) {
-        refundedAmount = 0;
+        refundedAmount =0;
       } else {
        var amount = totalRefundsData.refund_amount;
-
+       console.log(req.body.currency)
         if(req.body.currency!="CAD"){
 
             let convert=await Curvalue.find({from:"CAD",to:req.body.currency}).exec()
+            console.log(convert)
             let val=amount*convert[0].value
             
             refundedAmount=val.toFixed(2);
