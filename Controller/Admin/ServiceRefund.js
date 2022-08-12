@@ -128,13 +128,13 @@ var getApprovedRefundList = async (req, res) => {
                 as: "cart_items"
             }
         },
-        // {
-        //       $unwind: {
-        //         path: "$cart_items",
-        //         preserveNullAndEmptyArrays: true
-        //       }
-        //     },
-        {
+
+        {     // {
+            //       $unwind: {
+            //         path: "$cart_items",
+            //         preserveNullAndEmptyArrays: true
+            //       }
+            //     },
             $lookup: {
                 from: "shop_services",
                 localField: "serv_id",
@@ -165,16 +165,17 @@ var getApprovedRefundList = async (req, res) => {
             }
         }
     ]).exec();
-   // console.log("Approved refunds ", approvedRefunds);
+   console.log("Approved refunds ", approvedRefunds);
 
     if (approvedRefunds.length > 0) {
 
         let newRefund = approvedRefunds
         for (let index = 0; index < newRefund.length; index++) {
             let element = newRefund[index]
- //console.log(element.cart_items.currency)
-            if (element.cart_items.currency != 'CAD') {
-                let data = await Curvalue.find({ from: element.cart_items.currency, to: "CAD" }).exec();
+ console.log(element.cart_items[index].currency)
+
+            if (element.cart_items[index].currency != 'CAD') {
+                let data = await Curvalue.find({ from: element.cart_items[index].currency, to: "CAD" }).exec();
 
 
                 let result = element.refund_amount * data[0].value
