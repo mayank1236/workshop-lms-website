@@ -249,8 +249,8 @@ var getApprovedRefundList = async (req, res) => {
     console.log(element.refund_amount)
                     let result = element.refund_amount * data[0].value
 
-                    console.log("result"+result)    
-                    console.log("result1"+ result.toFixed(2))                      
+                   // console.log("result"+result)    
+                    //console.log("result1"+ result.toFixed(2))                      
                 newRefund[index].refund_amount = result.toFixed(2)
     
 
