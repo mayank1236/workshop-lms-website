@@ -9,8 +9,8 @@ var getAllRefundRequests = async (req, res) => {
     let requests = await SERVICE_REFUND.aggregate([
         {
             $match: {
-                 request_status: "new"
-              
+                request_status: "new"
+
             }
         },
         {
@@ -18,13 +18,13 @@ var getAllRefundRequests = async (req, res) => {
                 from: "service_carts",
                 localField: "order_id",
                 foreignField: "order_id",
-                pipeline:[
+                pipeline: [
                     {
                         $match: {
-                            refund_claim:true 
-                          
+                            refund_claim: true
+
                         }
-                    }, 
+                    },
                 ],
                 as: "cart_items"
             }
@@ -123,18 +123,18 @@ var getApprovedRefundList = async (req, res) => {
         {
             $lookup: {
                 from: "service_carts",
-                localField: "order_id",
-                foreignField: "order_id",
+                localField: "cart_id",
+                foreignField: "_id",
                 as: "cart_items"
             }
         },
-
-        {     // {
-            //       $unwind: {
-            //         path: "$cart_items",
-            //         preserveNullAndEmptyArrays: true
-            //       }
-            //     },
+        {
+            $unwind: 
+            {
+                path: "$cart_items"
+            }
+        },
+        {    
             $lookup: {
                 from: "shop_services",
                 localField: "serv_id",
@@ -142,12 +142,6 @@ var getApprovedRefundList = async (req, res) => {
                 as: "service_data"
             }
         },
-        // {
-        //     $unwind: {
-        //       path: "$service_data",
-        //       preserveNullAndEmptyArrays: true
-        //     }
-        //   },
         {
             $lookup: {
                 from: "users",
@@ -165,30 +159,30 @@ var getApprovedRefundList = async (req, res) => {
             }
         }
     ]).exec();
-  // console.log("Approved refunds ", approvedRefunds);
+    // console.log("Approved refunds ", approvedRefunds);
 
     if (approvedRefunds.length > 0) {
 
         let newRefund = approvedRefunds
-    
+
         for (let index = 0; index < newRefund.length; index++) {
             var element = newRefund[index]
 
-            for(let j=0;j<element.cart_items.length;j++){
-                if (element.cart_items[j].currency != 'CAD') {
-                    let data = await Curvalue.find({ from: element.cart_items[j].currency, to: "CAD" }).exec();
-    
-    console.log(element.refund_amount)
+            // for (let j = 0; j < element.cart_items.length; j++) {
+                if (element.cart_items.currency != 'CAD') {
+                    let data = await Curvalue.find({ from: element.cart_items.currency, to: "CAD" }).exec();
+
+                    console.log(element.refund_amount)
                     let result = element.refund_amount * data[0].value
 
-                   // console.log("result"+result)    
+                    // console.log("result"+result)    
                     //console.log("result1"+ result.toFixed(2))                      
-                newRefund[index].refund_amount = result.toFixed(2)
-    
+                    newRefund[index].refund_amount = result.toFixed(2)
 
-            }         
 
-            }
+                }
+
+            // }
 
         }
         return res.status(200).json({
