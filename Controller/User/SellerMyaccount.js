@@ -215,30 +215,37 @@ var wallet = async (req, res) => {
     // console.log(totalRefundsData)
       var refundedAmount = 0;
     
-      if (totalRefundsData.length==0) {
-        refundedAmount =0;
+      if (totalRefundsData.length > 0) {
+
+        for(let i=0;i<totalRefundsData.length;i++){
+
+            var amount = totalRefundsData[i].refund_amount;
+             console.log(amount)
+              if(req.body.currency!="CAD"){
+      
+                  let convert=await Curvalue.find({from:"CAD",to:req.body.currency}).exec()
+                 // console.log(convert)
+                  let val=amount*convert[0].value
+                  
+                  refundedAmount=val.toFixed(2);
+                   
+                 
+      
+              }
+              else{
+      
+                
+                  refundedAmount=amount;
+                 
+      
+      
+              }
+
+        }
+
+        
       } else {
-       var amount = totalRefundsData.refund_amount;
-       console.log(req.body.currency)
-        if(req.body.currency!="CAD"){
-
-            let convert=await Curvalue.find({from:"CAD",to:req.body.currency}).exec()
-            console.log(convert)
-            let val=amount*convert[0].value
-            
-            refundedAmount=val.toFixed(2);
-             
-           
-
-        }
-        else{
-
-          
-            refundedAmount=amount;
-           
-
-
-        }
+        refundedAmount =0;
         
       }
 
