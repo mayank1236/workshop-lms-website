@@ -108,6 +108,7 @@ router.get('/user/cms/testimonials', CmsController.viewAllTestimonials);
 router.get('/user/cms/testimonials/:id', CmsController.viewTestimonialById);
 
 router.get('/user/shop/shopservice-details/:id', ShopServiceController.viewShopServiceDetails); // added by anirbank-93
+router.get('/user/shop/shopservice-details-new/:id', ShopServiceController.viewShopServiceDet);
 
 router.get('/user/bannercontent', BlogComments.viewAllBAnner);
 router.get('/user/bannerAbout', BlogComments.viewAllaboutBAnner);

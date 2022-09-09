@@ -20,7 +20,7 @@ var checkAvailability = async (req, res) => {
   console.log("User bookings", USER_BOOKINGS);
 
   var day_slot_total_time = [];
-      USER_BOOKINGS.forEach((element) => {
+  USER_BOOKINGS.forEach((element) => {
     day_slot_total_time.push(element.duration);
   });
   //console.log("Duration array", day_slot_total_time)
@@ -282,8 +282,7 @@ var viewSlotsAllDay = async (req, res) => {
       if (booking_infolength == 0) {
         event.push({ title: "", date: days, color: "#378006" });
       }
-      else if(booking_infolength < slotlength)
-      {
+      else if (booking_infolength < slotlength) {
         event.push({ title: "", date: days, color: "#378006" });
       }
       else {
@@ -293,9 +292,9 @@ var viewSlotsAllDay = async (req, res) => {
 
   }
   return res.json({
-    status:true,
-    data:event,
-    error :null
+    status: true,
+    data: event,
+    error: null
 
   })
 };
@@ -316,7 +315,7 @@ var bookAppointment = async (req, res, next) => {
   //     date_of_booking: new Date(req.body.date_of_booking)
   // }).exec()
 
-  var inCart = await ServiceCart.findOne ({
+  var inCart = await ServiceCart.findOne({
     slot_id: mongoose.Types.ObjectId(req.body.slot_id),
     date_of_booking: req.body.date_of_booking,
     status: false,
@@ -344,219 +343,214 @@ var bookAppointment = async (req, res, next) => {
         data: service_cart,
       });
     }
- // Otherwise let them.
+    // Otherwise let them.
     else {
-    const V = new Validator(req.body, {
-      date_of_booking: "required",
-      day_name_of_booking: "required",
-      from: "required",
-      to: "required",
-      duration: "required",
-    });
-    let matched = V.check().then((val) => val);
+      const V = new Validator(req.body, {
+        date_of_booking: "required",
+        day_name_of_booking: "required",
+        from: "required",
+        to: "required",
+        duration: "required",
+      });
+      let matched = V.check().then((val) => val);
 
-    if (!matched) {
-      res.status(400).json({ status: false, error: V.errors });
-    }
+      if (!matched) {
+        res.status(400).json({ status: false, error: V.errors });
+      }
 
-    function getTimeAsNumberOfMinutes(time)
-    {
+      function getTimeAsNumberOfMinutes(time) {
         var timeParts = time.split(":");
-    
+
         var timeInMinutes = (timeParts[0] * 60) + timeParts[1];
-    
+
         return timeInMinutes;
-    }
+      }
 
-    var convertedStartTime = moment(req.body.from, 'hh:mm A').format('HH:mm')
-   // console.log(convertedStartTime);
-
-
-    var convertedEndTime = moment(req.body.to, 'hh:mm A').format('HH:mm')
-   //  console.log(convertedEndTime);
-
-    var slotBookTime = await UserBookedSlot.find({
-      date_of_booking: req.body.date_of_booking,
-    }).exec();
-   // console.log(slotBookTime);
-
-    var checkslot=false;
-    for (let i = 0; i < slotBookTime.length; i++) {
-
-      var slotStartTime = moment(slotBookTime[i].from, 'hh:mm A').format('HH:mm')
-      //console.log(slotStartTime);
+      var convertedStartTime = moment(req.body.from, 'hh:mm A').format('HH:mm')
+      // console.log(convertedStartTime);
 
 
-      var slotEndTime = moment(slotBookTime[i].to, 'hh:mm A').format('HH:mm')
-     // console.log(slotEndTime);
-      // console.log("completed" + i);
-      
-      if (
-        (getTimeAsNumberOfMinutes(slotStartTime) <
-          getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(convertedStartTime) <
-          getTimeAsNumberOfMinutes(slotEndTime))
-        ||
-        (getTimeAsNumberOfMinutes(slotStartTime) <
-          getTimeAsNumberOfMinutes(convertedEndTime) && getTimeAsNumberOfMinutes(convertedEndTime) <
-          getTimeAsNumberOfMinutes(slotEndTime)) || 
-          ( getTimeAsNumberOfMinutes(slotStartTime) ==
+      var convertedEndTime = moment(req.body.to, 'hh:mm A').format('HH:mm')
+      //  console.log(convertedEndTime);
+
+      var slotBookTime = await UserBookedSlot.find({
+        date_of_booking: req.body.date_of_booking,
+      }).exec();
+      // console.log(slotBookTime);
+
+      var checkslot = false;
+      for (let i = 0; i < slotBookTime.length; i++) {
+
+        var slotStartTime = moment(slotBookTime[i].from, 'hh:mm A').format('HH:mm')
+        //console.log(slotStartTime);
+
+
+        var slotEndTime = moment(slotBookTime[i].to, 'hh:mm A').format('HH:mm')
+        // console.log(slotEndTime);
+        // console.log("completed" + i);
+
+        if (
+          (getTimeAsNumberOfMinutes(slotStartTime) <
+            getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(convertedStartTime) <
+            getTimeAsNumberOfMinutes(slotEndTime))
+          ||
+          (getTimeAsNumberOfMinutes(slotStartTime) <
+            getTimeAsNumberOfMinutes(convertedEndTime) && getTimeAsNumberOfMinutes(convertedEndTime) <
+            getTimeAsNumberOfMinutes(slotEndTime)) ||
+          (getTimeAsNumberOfMinutes(slotStartTime) ==
             getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(slotEndTime) ==
             getTimeAsNumberOfMinutes(convertedEndTime))
-         
-          )
-          
-          {
-            checkslot=true;
-            console.log("completed");
-           break;
-     
+
+        ) {
+          checkslot = true;
+          console.log("completed");
+          break;
+
+        }
+
+
+
       }
-   
 
-
-    }
-
-    if (checkslot) {
+      if (checkslot) {
         return res.status(500).json({
           status: false,
           error: "Slot time has already been booked.",
           data: slotBookTime,
         });
-    }
-    // else{
-    //   console.log("available");
-    // }
-    else {
-      let saveData1 = {
-        _id: mongoose.Types.ObjectId(),
-        user_id: mongoose.Types.ObjectId(req.body.user_id),
-        slot_id: mongoose.Types.ObjectId(req.body.slot_id),
-        shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
-        seller_id: mongoose.Types.ObjectId(req.body.seller_id),
-        date_of_booking: req.body.date_of_booking,
-        day_name_of_booking: req.body.day_name_of_booking,
-        from: req.body.from,
-        to: req.body.to,
-        duration: req.body.duration,
-      };
-      if (
-        req.body.shop_service_name != "" &&
-        req.body.shop_service_name != null &&
-        typeof req.body.shop_service_name != "undefined"
-      ) {
-        saveData1.shop_service_name = req.body.shop_service_name;
-      }   
-      if (
-        req.body.price != "" &&
-        req.body.price != null &&
-        typeof req.body.price != "undefined"
-      ) {
-        saveData1.price = req.body.price
       }
-        if(req.user.currency!="CAD")
-        {
-          let conVert = await Curvalue.find({from:req.user.currency,to:"CAD"}).exec()
+      // else{
+      //   console.log("available");
+      // }
+      else {
+        let saveData1 = {
+          _id: mongoose.Types.ObjectId(),
+          user_id: mongoose.Types.ObjectId(req.body.user_id),
+          slot_id: mongoose.Types.ObjectId(req.body.slot_id),
+          shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
+          seller_id: mongoose.Types.ObjectId(req.body.seller_id),
+          date_of_booking: req.body.date_of_booking,
+          day_name_of_booking: req.body.day_name_of_booking,
+          from: req.body.from,
+          to: req.body.to,
+          duration: req.body.duration,
+        };
+        if (
+          req.body.shop_service_name != "" &&
+          req.body.shop_service_name != null &&
+          typeof req.body.shop_service_name != "undefined"
+        ) {
+          saveData1.shop_service_name = req.body.shop_service_name;
+        }
+        if (
+          req.body.price != "" &&
+          req.body.price != null &&
+          typeof req.body.price != "undefined"
+        ) {
+          saveData1.price = req.body.price
+        }
+        if (req.user.currency != "CAD") {
+          let conVert = await Curvalue.find({ from: req.user.currency, to: "CAD" }).exec()
 
-          console.log("conVert"+req.body.price+ conVert[0].value);
+          console.log("conVert" + req.body.price + conVert[0].value);
           let cal = req.body.price * conVert[0].value
           saveData1.price_cad = cal.toFixed(2)
         }
-        else
-        {
+        else {
           saveData1.price_cad = req.body.price
         }
         // saveData1.price = req.body.price;
-      // return false;
-      if (
-        req.body.image == "" ||
-        req.body.image == null ||
-        typeof req.body.image == "undefined"
-      ) {
-        saveData1.image = null;
-      } else {
-        saveData1.image = req.body.image;
-      }
-
-      const USER_BOOKED_SLOT = new UserBookedSlot(saveData1);
-
-      USER_BOOKED_SLOT.save(async (err, docs) => {
-        if (!err) {
-          console.log("User booking info: ", docs);
-
-          let sellerBookingData = {
-            _id: mongoose.Types.ObjectId(),
-            user_booking_id: docs._id,
-            user_id: docs.user_id,
-            slot_id: docs.slot_id,
-            shop_service_id: docs.shop_service_id,
-            seller_id: docs.seller_id,
-            date_of_booking: docs.date_of_booking,
-            day_name_of_booking: docs.day_name_of_booking,
-            from: docs.from,
-            to: docs.to,
-            duration: docs.duration,
-          };
-
-          let cartData = {
-            _id: mongoose.Types.ObjectId(),
-            user_id: docs.user_id,
-            user_booking_id: docs._id,
-            seller_id: docs.seller_id,
-            service_id: docs.shop_service_id,
-            slot_id: docs.slot_id,
-            service_name: docs.shop_service_name,
-            price: docs.price,
-            date_of_booking: docs.date_of_booking,
-            // currency:req.body.currency
-            currency: req.body.currency,
-            price_cad:docs.price_cad
-          };
-        
-          if (
-            docs.image == "" ||
-            docs.image == null ||
-            typeof docs.image == "undefined"
-          ) {
-            cartData.image = null;
-          } else {
-            cartData.image = docs.image;
-          }
-
-          
-          const SERVICE_CART = new ServiceCart(cartData);
-
-          
-
-          SERVICE_CART.save()
-            .then(async (data2) => {
-              
-              sellerBookingData.cart_id = mongoose.Types.ObjectId(data2._id)
-              const SELLER_BOOKING = new SellerBookings(sellerBookingData);
-              var saveInSellerBookings = await SELLER_BOOKING.save();
-
-              res.status(200).json({
-                status: true,
-                message:
-                  "Slot booking successfull. Awaiting seller confirmation.",
-                data: docs,
-              });
-            })
-            .catch((fault) => {
-              res.status(500).json({
-                status: false,
-                message: "Couldn't book slot. Server error",
-                error: fault.message,
-              });
-            });
+        // return false;
+        if (
+          req.body.image == "" ||
+          req.body.image == null ||
+          typeof req.body.image == "undefined"
+        ) {
+          saveData1.image = null;
         } else {
-          res.send({
-            status: false,
-            msg: "Server error. Please try again",
-            error: err.message,
-          });
+          saveData1.image = req.body.image;
         }
-      });
-    }
+
+        const USER_BOOKED_SLOT = new UserBookedSlot(saveData1);
+
+        USER_BOOKED_SLOT.save(async (err, docs) => {
+          if (!err) {
+            console.log("User booking info: ", docs);
+
+            let sellerBookingData = {
+              _id: mongoose.Types.ObjectId(),
+              user_booking_id: docs._id,
+              user_id: docs.user_id,
+              slot_id: docs.slot_id,
+              shop_service_id: docs.shop_service_id,
+              seller_id: docs.seller_id,
+              date_of_booking: docs.date_of_booking,
+              day_name_of_booking: docs.day_name_of_booking,
+              from: docs.from,
+              to: docs.to,
+              duration: docs.duration,
+            };
+
+            let cartData = {
+              _id: mongoose.Types.ObjectId(),
+              user_id: docs.user_id,
+              user_booking_id: docs._id,
+              seller_id: docs.seller_id,
+              service_id: docs.shop_service_id,
+              slot_id: docs.slot_id,
+              service_name: docs.shop_service_name,
+              price: docs.price,
+              date_of_booking: docs.date_of_booking,
+              // currency:req.body.currency
+              currency: req.body.currency,
+              price_cad: docs.price_cad
+            };
+
+            if (
+              docs.image == "" ||
+              docs.image == null ||
+              typeof docs.image == "undefined"
+            ) {
+              cartData.image = null;
+            } else {
+              cartData.image = docs.image;
+            }
+
+
+            const SERVICE_CART = new ServiceCart(cartData);
+
+
+
+            SERVICE_CART.save()
+              .then(async (data2) => {
+
+                sellerBookingData.cart_id = mongoose.Types.ObjectId(data2._id)
+                const SELLER_BOOKING = new SellerBookings(sellerBookingData);
+                var saveInSellerBookings = await SELLER_BOOKING.save();
+
+                res.status(200).json({
+                  status: true,
+                  message:
+                    "Slot booking successfull. Awaiting seller confirmation.",
+                  data: docs,
+                });
+              })
+              .catch((fault) => {
+                res.status(500).json({
+                  status: false,
+                  message: "Couldn't book slot. Server error",
+                  error: fault.message,
+                });
+              });
+          } else {
+            res.send({
+              status: false,
+              msg: "Server error. Please try again",
+              error: err.message,
+            });
+          }
+        });
+      }
     }
   }
 }

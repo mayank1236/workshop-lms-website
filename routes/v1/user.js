@@ -151,6 +151,8 @@ router.post('/shop-service/book-slot', UserBookingActions.bookAppointment); // a
 /**====================Service cart api's======================== */
 router.get('/get-service-cart/:user_id', ServiceCart.getServiceCart);
 router.delete('/delete-cart/:id', ServiceCart.DeleteCart);
+router.delete('/delete-cart-new/:id', ServiceCart.DeleteCartNew); // addes by deep
+
 /**================Service cart api's end======================== */
 
 router.post('/apply-coupon', CouponController.applyCoupon);

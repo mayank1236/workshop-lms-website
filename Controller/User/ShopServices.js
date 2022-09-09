@@ -18,7 +18,7 @@ const create = async (req, res) => {
         name: "required",
         price: "required",
         details: "required",
-        currency:"required"
+        currency: "required"
     })
     let matched = v.check().then((val) => val)
     if (!matched) {
@@ -35,7 +35,7 @@ const create = async (req, res) => {
         category_id: mongoose.Types.ObjectId(req.body.category_id),
         category_name: req.body.category_name,
         user_id: mongoose.Types.ObjectId(req.body.user_id),
-        currency:req.body.currency
+        currency: req.body.currency
     }
     if (
         typeof (req.body.personalization) != 'undefined' ||
@@ -393,14 +393,82 @@ const viewOneService = async (req, res) => {
         })
 }
 
+const viewShopServiceDet = async (req, res) => {
+    ShopService.aggregate(
+        [
+            {
+                $match: {
+                    _id: { $in: [mongoose.Types.ObjectId(req.params.id)] }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "seller_details"
+                }
+            },
+
+            {
+                $lookup: {
+                    from: "service_reviews",
+                    localField: "_id",
+                    foreignField: "service_id",
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "user_id",
+                                foreignField: "_id",
+                                as: "user_data"
+                            }
+                        },
+                    ],
+
+                    as: "review_data"
+                }
+            },
+            {
+                $addFields: {
+                    avgRating: {
+                        $avg: {
+                            $map: {
+                                input: "$review_data",
+                                in: "$$this.rating"
+                            }
+                        }
+                    }
+                }
+            },
+
+
+            { $project: { _v: 0 } }
+        ]
+    ).then((result) => {
+        res.status(200).json({
+            status: true,
+            message: "Shop service details successfully get.",
+            data: result
+        })
+    })
+        .catch(fault => {
+            res.status(500).json({
+                status: false,
+                message: "Server error. Please try again.",
+                error: fault
+            })
+        })
+}
+
 const viewShopServiceDetails = async (req, res) => {
 
-   // console.log(req);
+    // console.log(req);
     let id = req.params.id
     ShopService.findOne({ _id: { $in: [mongoose.Types.ObjectId(id)] } })
         .then(data => {
-           // console.log(data);
-         
+            // console.log(data);
+
             ShopService.aggregate(
                 [
                     {
@@ -416,7 +484,7 @@ const viewShopServiceDetails = async (req, res) => {
                             as: "seller_details"
                         }
                     },
-                   
+
                     {
                         $lookup: {
                             from: "service_reviews",
@@ -424,18 +492,18 @@ const viewShopServiceDetails = async (req, res) => {
                             foreignField: "service_id",
                             pipeline: [
                                 {
-                                    $lookup:{
-                                        from:"users",
-                                        localField:"user_id",
-                                        foreignField:"_id",                                        
-                                        as:"user_data"
+                                    $lookup: {
+                                        from: "users",
+                                        localField: "user_id",
+                                        foreignField: "_id",
+                                        as: "user_data"
                                     }
                                 },
-                              ],                 
-                          
+                            ],
+
                             as: "review_data"
                         }
-                    },                
+                    },
                     {
                         $addFields: {
                             avgRating: {
@@ -448,41 +516,41 @@ const viewShopServiceDetails = async (req, res) => {
                             }
                         }
                     },
-                  
-                 
+
+
                     { $project: { _v: 0 } }
                 ]
             )
                 .then(async result => {
-                    console.log("result"+result);
+                    console.log("result", result);
                     let newRes = result;
 
-                        for (let index = 0; index < newRes.length; index++) {
+                    for (let index = 0; index < newRes.length; index++) {
                         var element = newRes[index];
 
-                        console.log("element"+element);
+                        console.log("element" + element);
 
                         if (req.query.currency != '' && typeof req.query.currency != 'undefined' && element.currency != req.query.currency) {
-                            
+
                             // let resus = await converter.convert(element.currency,req.query.currency,element.selling_price);
                             // console.log(resus)
                             //console.log(req.query.currency);
                             //console.log(element.currency);
-                           // let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
-                         let datass = await Curvalue.find({from:element.currency,to:req.query.currency}).exec();
-                        // console.log(datass);
+                            // let resuss = await currconvert.currencyConvTR(element.price,element.currency,req.query.currency)
+                            let datass = await Curvalue.find({ from: element.currency, to: req.query.currency }).exec();
+                            // console.log(datass);
 
-                         let resuss = element.price * datass[0].value
-                         console.log(element.price);
-                         console.log(resuss.toFixed(2));
+                            let resuss = element.price * datass[0].value
+                            console.log(element.price);
+                            console.log(resuss.toFixed(2));
                             newRes[index].price = resuss.toFixed(2)
-                            
+
                         }
-                        }
+                    }
                     res.status(200).json({
                         status: true,
                         message: "Shop service details successfully get.",
-                        data: newRes
+                        data: result
                     })
                 })
                 .catch(fault => {
@@ -608,39 +676,39 @@ const viewTopServiceProvider = async (req, res) => {
                 { $limit: 8 }
             ]
         )
-    .then(async data => {
-       // console.log(data)
+        .then(async data => {
+            // console.log(data)
 
-        let newRes = data;
+            let newRes = data;
 
-                        for (let index = 0; index < newRes.length; index++) {
-                        var element = newRes[index];
-                        
-                        console.log(req.query.currency);
-                        if (req.query.currency != '' && typeof req.query.currency != 'undefined' && typeof element.service_data.currency!=='undefined' && element.service_data.currency != req.query.currency) {
-                            
-                            console.log(element.service_data.price)
-                       
-                            let resuss = await currconvert.currencyConvTR(element.service_data.price,element.service_data.currency,req.query.currency)
-                            console.log(resuss)
-                            newRes[index].service_data.price = resuss
-                            
-                        }
-                        }
+            for (let index = 0; index < newRes.length; index++) {
+                var element = newRes[index];
 
-        res.status(200).json({
-            status: true,
-            message: "Popular services get successfully",
-            data: newRes
+                console.log(req.query.currency);
+                if (req.query.currency != '' && typeof req.query.currency != 'undefined' && typeof element.service_data.currency !== 'undefined' && element.service_data.currency != req.query.currency) {
+
+                    console.log(element.service_data.price)
+
+                    let resuss = await currconvert.currencyConvTR(element.service_data.price, element.service_data.currency, req.query.currency)
+                    console.log(resuss)
+                    newRes[index].service_data.price = resuss
+
+                }
+            }
+
+            res.status(200).json({
+                status: true,
+                message: "Popular services get successfully",
+                data: newRes
+            })
         })
-    })
-    .catch(err => {
-        res.status(500).json({
-            status: false,
-            message: "Failed to get popular shop service data. Server error.",
-            error: err
-        });
-    })
+        .catch(err => {
+            res.status(500).json({
+                status: false,
+                message: "Failed to get popular shop service data. Server error.",
+                error: err
+            });
+        })
     // .explain((err, data) => {
     //     if (!err) {
     //         res.status(200).json({
@@ -662,5 +730,6 @@ module.exports = {
     viewOneService,
     chatImageUrlApi,
     viewShopServiceDetails,
-    viewTopServiceProvider
+    viewTopServiceProvider,
+    viewShopServiceDet
 }
