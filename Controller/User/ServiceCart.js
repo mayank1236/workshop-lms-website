@@ -6,6 +6,7 @@ var sellerSlot = require('../../Models/Slot/seller_slots')
 var userBookedSlot = require('../../Models/Slot/user_booked_slot')
 
 var getServiceCart = async (req, res) => {
+
   return ServiceCart.aggregate([
     {
       $match: {
