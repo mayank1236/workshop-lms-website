@@ -121,12 +121,12 @@ var DeleteCartNew = async (req, res) => {
       console.log(data);
       sellerSlot.findOneAndDelete({ _id: { $in: [data.slot_id] } })
         .then((fault) => {
-          userBookedSlot.findByIdAndDelete(
+          userBookedSlot.findOneAndDelete(
             {
-              user_id: data.user_id,
-              slot_id: data.slot_id,
-              shop_service_id: data.service_id,
-              seller_id: data.seller_id,
+              user_id: mongoose.Types.ObjectId(data.user_id),
+              slot_id: mongoose.Types.ObjectId(data.slot_id),
+              shop_service_id: mongoose.Types.ObjectId(data.service_id),
+              seller_id: mongoose.Types.ObjectId(data.seller_id),
               is_booked: true
             }
           )
