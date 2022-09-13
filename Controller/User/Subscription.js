@@ -7,7 +7,7 @@ var User = require("../../Models/user");
 const Curvalue = require("../../Models/currvalue");
 
 const viewAllsubscription = async (req, res) => {
-  return  Subsciption.aggregate([
+  return Subsciption.aggregate([
     {
       $lookup: {
         from: "usersubscriptions",
@@ -42,41 +42,41 @@ const viewAllsubscription = async (req, res) => {
         _v: 0,
       },
     },
-  ]).then( async data => {
-      //console.log(data);
-     
-
-      // let newdata=data;
-     
-
-      // for (let index = 0; index < newdata.length; index++) {
-      //   var element = newdata[index];
-      //   //console.log("element:"+element);
-      //   if (req.body.currency != "CAD") {
+  ]).then(async data => {
+    //console.log(data);
 
 
-      //     let datass =await Curvalue.find({ from: "CAD", to: req.body.currency }).exec()
+    // let newdata=data;
 
-      //    // console.log(datass);
 
-      //     let resuss = element.price * datass[0].value
+    // for (let index = 0; index < newdata.length; index++) {
+    //   var element = newdata[index];
+    //   //console.log("element:"+element);
+    //   if (req.body.currency != "CAD") {
 
-      //     newdata[index].price = resuss
 
-      //   }
-      // }
-        res.status(200).json({
-          status: true,
-          message: "Subscription Data Get Successfully",
-          data: data,
-        });
-   
-      
-      
+    //     let datass =await Curvalue.find({ from: "CAD", to: req.body.currency }).exec()
+
+    //    // console.log(datass);
+
+    //     let resuss = element.price * datass[0].value
+
+    //     newdata[index].price = resuss
+
+    //   }
+    // }
+    res.status(200).json({
+      status: true,
+      message: "Subscription Data Get Successfully",
+      data: data,
+    });
 
 
 
-    })
+
+
+
+  })
     .catch((err) => {
       res.status(500).json({
         status: false,
@@ -100,6 +100,15 @@ var checkUserSubscription = async (req, res) => {
         from: "users",
         localField: "userid",
         foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              __v: 0,
+              password: 0,
+              token: 0
+            }
+          }
+        ],
         as: "user_data"
       }
     },
@@ -146,7 +155,7 @@ const newSubscription = async (req, res) => {
       subscr_id: mongoose.Types.ObjectId(req.body.subscr_id),
       seller_comission: req.body.seller_comission,
       price: req.body.price,
-      currency:req.body.currency,
+      currency: req.body.currency,
       subscribed_on: moment.tz(Date.now(), "Asia/Kolkata"),
       no_of_listing: req.body.no_of_listing
     }
@@ -155,7 +164,7 @@ const newSubscription = async (req, res) => {
     //   let conVert=await Curvalue.find({from:req.query.currency,to:"CAD"}).exec()
     //   let val=req.body.price*conVert[0].value
     //   userData.price=val.toFixed(2)
-      
+
     // }
     // else{
     //   userData.price=req.body.price
@@ -166,7 +175,7 @@ const newSubscription = async (req, res) => {
 
     return new_subscription
       .save()
-      .then((data) => {  
+      .then((data) => {
         res.status(200).json({
           status: true,
           success: true,

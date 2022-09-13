@@ -145,7 +145,7 @@ var Search = async (req, res) => {
   return shopService.aggregate(
     [
 
-    {
+      {
         $match: {
           $expr: {
             $text: req.body.categoryname,
@@ -158,6 +158,15 @@ var Search = async (req, res) => {
           from: "users",
           localField: "user_id",
           foreignField: "_id",
+          pipeline: [
+            {
+              $project: {
+                __v: 0,
+                password: 0,
+                token: 0
+              }
+            }
+          ],
           as: "seller_data"
         }
       },

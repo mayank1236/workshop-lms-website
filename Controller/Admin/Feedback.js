@@ -8,6 +8,15 @@ var viewAllFeedback = async (req, res) => {
                 from: "users",
                 localField: "user_id",
                 foreignField: "_id",
+                pipeline: [
+                    {
+                        $project: {
+                            __v: 0,
+                            password: 0,
+                            token: 0
+                        }
+                    }
+                ],
                 as: "user_data"
             }
         },
@@ -47,6 +56,15 @@ var viewFeedbackById = async (req, res) => {
                 from: "users",
                 localField: "user_id",
                 foreignField: "_id",
+                pipeline: [
+                    {
+                        $project: {
+                            __v: 0,
+                            password: 0,
+                            token: 0
+                        }
+                    }
+                ],
                 as: "user_data"
             }
         },

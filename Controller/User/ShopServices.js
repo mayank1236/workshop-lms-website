@@ -265,6 +265,15 @@ const viewShopServicesPerSeller = async (req, res) => {
                                 from: "users",
                                 localField: "user_id",
                                 foreignField: "_id",
+                                pipeline: [
+                                    {
+                                        $project: {
+                                            __v: 0,
+                                            password: 0,
+                                            token: 0
+                                        }
+                                    }
+                                ],
                                 as: "seller_details"
                             }
                         },
@@ -334,6 +343,15 @@ const viewOneService = async (req, res) => {
                                 from: "users",
                                 localField: "user_id",
                                 foreignField: "_id",
+                                pipeline: [
+                                    {
+                                        $project: {
+                                            __v: 0,
+                                            password: 0,
+                                            token: 0
+                                        }
+                                    }
+                                ],
                                 as: "seller_details"
                             }
                         },
@@ -406,6 +424,15 @@ const viewShopServiceDet = async (req, res) => {
                     from: "users",
                     localField: "user_id",
                     foreignField: "_id",
+                    pipeline: [
+                        {
+                            $project: {
+                                __v: 0,
+                                password: 0,
+                                token: 0
+                            }
+                        }
+                    ],
                     as: "seller_details"
                 }
             },
@@ -421,6 +448,15 @@ const viewShopServiceDet = async (req, res) => {
                                 from: "users",
                                 localField: "user_id",
                                 foreignField: "_id",
+                                pipeline: [
+                                    {
+                                        $project: {
+                                            __v: 0,
+                                            password: 0,
+                                            token: 0
+                                        }
+                                    }
+                                ],
                                 as: "user_data"
                             }
                         },
@@ -481,6 +517,15 @@ const viewShopServiceDetails = async (req, res) => {
                             from: "users",
                             localField: "user_id",
                             foreignField: "_id",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        __v: 0,
+                                        password: 0,
+                                        token: 0
+                                    }
+                                }
+                            ],
                             as: "seller_details"
                         }
                     },
@@ -496,6 +541,15 @@ const viewShopServiceDetails = async (req, res) => {
                                         from: "users",
                                         localField: "user_id",
                                         foreignField: "_id",
+                                        pipeline: [
+                                            {
+                                                $project: {
+                                                    __v: 0,
+                                                    password: 0,
+                                                    token: 0
+                                                }
+                                            }
+                                        ],
                                         as: "user_data"
                                     }
                                 },
@@ -640,6 +694,15 @@ const viewTopServiceProvider = async (req, res) => {
                         from: "users",
                         localField: "service_data.user_id",
                         foreignField: "_id",
+                        pipeline: [
+                            {
+                                $project: {
+                                    __v: 0,
+                                    password: 0,
+                                    token: 0
+                                }
+                            }
+                        ],
                         as: "provider_data"
                     }
                 },

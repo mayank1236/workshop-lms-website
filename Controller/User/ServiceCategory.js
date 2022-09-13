@@ -175,6 +175,15 @@ const viewShopServicesPerService = async (req, res) => {
                                 from: "users",
                                 localField: "user_id",
                                 foreignField: "_id",
+                                pipeline: [
+                                    {
+                                        $project: {
+                                            __v: 0,
+                                            password: 0,
+                                            token: 0
+                                        }
+                                    }
+                                ],
                                 as: "seller_details"
                             }
                         },

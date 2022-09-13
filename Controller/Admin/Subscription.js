@@ -168,6 +168,15 @@ const allSubscriptionHistory = async (req, res) => {
         from: "users",
         localField: "userid",
         foreignField: "_id",
+        pipeline: [
+          {
+              $project: {
+                  __v: 0,
+                  password: 0,
+                  token: 0
+              }
+          }
+      ],
         as: "user_data",
       },
     },
@@ -251,6 +260,15 @@ const oneSubscriptionHistory = async (req, res) => {
         from: "users",
         localField: "userid",
         foreignField: "_id",
+        pipeline: [
+          {
+              $project: {
+                  __v: 0,
+                  password: 0,
+                  token: 0
+              }
+          }
+      ],
         as: "user_data",
       },
     },
