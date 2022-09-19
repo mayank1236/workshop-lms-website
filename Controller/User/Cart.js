@@ -129,7 +129,45 @@ const getCartNew = async (req, res) => {
       $match: {
         user_id: mongoose.Types.ObjectId(req.user._id)
       }
-    }
+    },
+    {
+      $lookup: {
+        from: "shop_services",
+        localField: "prod_id",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              __v: 0,
+              password: 0,
+              token: 0
+            }
+          }
+        ],
+        as: "shop_service"
+      }
+    },
+    { $unwind: "$shop_service" },
+    {
+      $lookup: {
+        from: "users",
+        localField: "shop_service.user_id",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              __v: 0,
+              password: 0,
+              token: 0
+            }
+          }
+        ],
+        as: "seller_data"
+      }
+    },
+    { $unwind: "$seller_data" },
+
+
   ]).then((subData) => {
     if (subData == null || subData == "") {
       res.status(500).json({
