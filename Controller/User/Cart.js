@@ -27,13 +27,15 @@ const addToCart = async (req, res) => {
 
   let subData = await Cart.findOne({
     user_id: mongoose.Types.ObjectId(req.body.user_id),
-    prod_id: mongoose.Types.ObjectId(req.body.prod_id)
+    prod_id: mongoose.Types.ObjectId(req.body.prod_id),
+    slot: mongoose.Types.ObjectId(req.body.slot)
   }).exec();
   if (subData == null || subData == "") {
     let dataSubmit = {
       _id: mongoose.Types.ObjectId(),
       user_id: mongoose.Types.ObjectId(req.body.user_id),
       prod_id: mongoose.Types.ObjectId(req.body.prod_id),
+      slot: mongoose.Types.ObjectId(req.body.slot),
       productname: req.body.productname,
       qty: req.body.qty,
       price: req.body.price,
