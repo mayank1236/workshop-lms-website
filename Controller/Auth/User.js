@@ -13,8 +13,9 @@ function createToken(data) {
 }
 
 const getTokenData = async (token) => {
+    // console.log('token', token);
     let userData = await User.findOne({ token: token }).exec();
-    // console.log('adminData', adminData);
+    // console.log('adminData', userData);
     return userData;
 }
 

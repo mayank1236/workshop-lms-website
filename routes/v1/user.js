@@ -101,6 +101,7 @@ router.get('/list-of-sellers', UserSellerController.viewSellerList);// added by 
 router.post('/add-to-cart', CartController.addToCart);
 router.put('/updateCart/:user_id/:prod_id', CartController.updateCart);
 router.get('/get-cart/:user_id', CartController.getCart);
+router.get('/get-cart-new', CartController.getCartNew);
 router.delete('/cartDelete/:id', CartController.Delete);
 /**=================Product cart api's end======================= */
 

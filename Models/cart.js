@@ -16,6 +16,10 @@ const CartSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    slot: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false
+    },
     image: Array
 })
 
