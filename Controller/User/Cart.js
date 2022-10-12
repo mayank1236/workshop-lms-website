@@ -15,6 +15,7 @@ const addToCart = async (req, res) => {
     price: "required",
     image: "required",
     slot: "required",
+    booked_slotdate: "required",
   });
 
   let matched = await v.check().then((val) => val);
@@ -42,7 +43,7 @@ const addToCart = async (req, res) => {
       price: req.body.price,
       image: req.body.image,
       booked_on: moment.tz(Date.now(), "Asia/Kolkata"),
-      booked_slotdate: moment.tz(Date.now(), "Asia/Kolkata"),
+      booked_slotdate: req.body.slotdate,
     };
 
     const saveData = new Cart(dataSubmit);

@@ -22,7 +22,10 @@ const CartSchema = new mongoose.Schema({
   },
   image: Array,
   booked_on: Date,
-  booked_slotdate: Date,
+  booked_slotdate: {
+    type: Date,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Cart", CartSchema);
