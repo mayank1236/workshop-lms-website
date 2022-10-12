@@ -9,7 +9,6 @@ var ServiceSlots = require("../../../Models/Slot/seller_slots");
 var ServiceCart = require("../../../Models/service_cart");
 const Curvalue = require("../../../Models/currvalue");
 
-
 var checkAvailability = async (req, res) => {
   const USER_BOOKINGS = await UserBookedSlot.find({
     seller_service_id: req.body.seller_service_id,
@@ -266,14 +265,14 @@ var viewSlotsAllDay = async (req, res) => {
       },
       { $sort: { "timing.from": 1 } },
     ]).exec();
-    // console.log(days+' '+slots.length);
+    console.log(slots);
     if (slots.length == 0) {
       // console.log("1")
-      event.push({ "title": "", "date": days, "color": "#FF0000" });
+      event.push({ title: "", date: days, color: "#FF0000" });
       //   console.log(event)
     } else {
       let booking_infolength = 0;
-      let slotlength = slots.length
+      let slotlength = slots.length;
       slots.forEach((element) => {
         if (element.booking_info.length > 0) {
           booking_infolength = parseInt(booking_infolength) + parseInt(1);
@@ -281,22 +280,18 @@ var viewSlotsAllDay = async (req, res) => {
       });
       if (booking_infolength == 0) {
         event.push({ title: "", date: days, color: "#378006" });
-      }
-      else if (booking_infolength < slotlength) {
+      } else if (booking_infolength < slotlength) {
         event.push({ title: "", date: days, color: "#378006" });
-      }
-      else {
+      } else {
         event.push({ title: "", date: days, color: "#FF0000" });
       }
     }
-
   }
   return res.json({
     status: true,
     data: event,
-    error: null
-
-  })
+    error: null,
+  });
 };
 
 /** Api for both slot booking and add to cart */
@@ -322,7 +317,6 @@ var bookAppointment = async (req, res, next) => {
   }).exec();
 
   if (inCart != null) {
-
     return res.status(500).json({
       status: false,
       error: "Slot has already been booked.",
@@ -361,16 +355,15 @@ var bookAppointment = async (req, res, next) => {
       function getTimeAsNumberOfMinutes(time) {
         var timeParts = time.split(":");
 
-        var timeInMinutes = (timeParts[0] * 60) + timeParts[1];
+        var timeInMinutes = timeParts[0] * 60 + timeParts[1];
 
         return timeInMinutes;
       }
 
-      var convertedStartTime = moment(req.body.from, 'hh:mm A').format('HH:mm')
+      var convertedStartTime = moment(req.body.from, "hh:mm A").format("HH:mm");
       // console.log(convertedStartTime);
 
-
-      var convertedEndTime = moment(req.body.to, 'hh:mm A').format('HH:mm')
+      var convertedEndTime = moment(req.body.to, "hh:mm A").format("HH:mm");
       //  console.log(convertedEndTime);
 
       var slotBookTime = await UserBookedSlot.find({
@@ -380,36 +373,33 @@ var bookAppointment = async (req, res, next) => {
 
       var checkslot = false;
       for (let i = 0; i < slotBookTime.length; i++) {
-
-        var slotStartTime = moment(slotBookTime[i].from, 'hh:mm A').format('HH:mm')
+        var slotStartTime = moment(slotBookTime[i].from, "hh:mm A").format(
+          "HH:mm"
+        );
         //console.log(slotStartTime);
 
-
-        var slotEndTime = moment(slotBookTime[i].to, 'hh:mm A').format('HH:mm')
+        var slotEndTime = moment(slotBookTime[i].to, "hh:mm A").format("HH:mm");
         // console.log(slotEndTime);
         // console.log("completed" + i);
 
         if (
           (getTimeAsNumberOfMinutes(slotStartTime) <
-            getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(convertedStartTime) <
-            getTimeAsNumberOfMinutes(slotEndTime))
-          ||
+            getTimeAsNumberOfMinutes(convertedStartTime) &&
+            getTimeAsNumberOfMinutes(convertedStartTime) <
+              getTimeAsNumberOfMinutes(slotEndTime)) ||
           (getTimeAsNumberOfMinutes(slotStartTime) <
-            getTimeAsNumberOfMinutes(convertedEndTime) && getTimeAsNumberOfMinutes(convertedEndTime) <
-            getTimeAsNumberOfMinutes(slotEndTime)) ||
+            getTimeAsNumberOfMinutes(convertedEndTime) &&
+            getTimeAsNumberOfMinutes(convertedEndTime) <
+              getTimeAsNumberOfMinutes(slotEndTime)) ||
           (getTimeAsNumberOfMinutes(slotStartTime) ==
-            getTimeAsNumberOfMinutes(convertedStartTime) && getTimeAsNumberOfMinutes(slotEndTime) ==
-            getTimeAsNumberOfMinutes(convertedEndTime))
-
+            getTimeAsNumberOfMinutes(convertedStartTime) &&
+            getTimeAsNumberOfMinutes(slotEndTime) ==
+              getTimeAsNumberOfMinutes(convertedEndTime))
         ) {
           checkslot = true;
           console.log("completed");
           break;
-
         }
-
-
-
       }
 
       if (checkslot) {
@@ -447,17 +437,19 @@ var bookAppointment = async (req, res, next) => {
           req.body.price != null &&
           typeof req.body.price != "undefined"
         ) {
-          saveData1.price = req.body.price
+          saveData1.price = req.body.price;
         }
         if (req.user.currency != "CAD") {
-          let conVert = await Curvalue.find({ from: req.user.currency, to: "CAD" }).exec()
+          let conVert = await Curvalue.find({
+            from: req.user.currency,
+            to: "CAD",
+          }).exec();
 
           console.log("conVert" + req.body.price + conVert[0].value);
-          let cal = req.body.price * conVert[0].value
-          saveData1.price_cad = cal.toFixed(2)
-        }
-        else {
-          saveData1.price_cad = req.body.price
+          let cal = req.body.price * conVert[0].value;
+          saveData1.price_cad = cal.toFixed(2);
+        } else {
+          saveData1.price_cad = req.body.price;
         }
         // saveData1.price = req.body.price;
         // return false;
@@ -503,7 +495,7 @@ var bookAppointment = async (req, res, next) => {
               date_of_booking: docs.date_of_booking,
               // currency:req.body.currency
               currency: req.body.currency,
-              price_cad: docs.price_cad
+              price_cad: docs.price_cad,
             };
 
             if (
@@ -516,15 +508,11 @@ var bookAppointment = async (req, res, next) => {
               cartData.image = docs.image;
             }
 
-
             const SERVICE_CART = new ServiceCart(cartData);
-
-
 
             SERVICE_CART.save()
               .then(async (data2) => {
-
-                sellerBookingData.cart_id = mongoose.Types.ObjectId(data2._id)
+                sellerBookingData.cart_id = mongoose.Types.ObjectId(data2._id);
                 const SELLER_BOOKING = new SellerBookings(sellerBookingData);
                 var saveInSellerBookings = await SELLER_BOOKING.save();
 
@@ -553,7 +541,7 @@ var bookAppointment = async (req, res, next) => {
       }
     }
   }
-}
+};
 
 module.exports = {
   checkAvailability,
