@@ -43,7 +43,7 @@ const addToCart = async (req, res) => {
       price: req.body.price,
       image: req.body.image,
       booked_on: moment.tz(Date.now(), "Asia/Kolkata"),
-      booked_slotdate: req.body.slotdate,
+      booked_slotdate: req.body.booked_slotdate,
     };
 
     const saveData = new Cart(dataSubmit);
