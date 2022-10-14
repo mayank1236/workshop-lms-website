@@ -60,4 +60,4 @@ const sellerBookingSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("", sellerBookingSchema);
+module.exports = mongoose.model("seller_bookings", sellerBookingSchema);

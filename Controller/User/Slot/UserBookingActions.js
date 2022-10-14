@@ -484,6 +484,8 @@ var bookAppointment = async (req, res, next) => {
               duration: docs.duration,
             };
 
+            console.log("sellerBooking", sellerBookingData);
+
             let cartData = {
               _id: mongoose.Types.ObjectId(),
               user_id: docs.user_id,
