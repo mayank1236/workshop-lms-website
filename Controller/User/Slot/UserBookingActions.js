@@ -326,6 +326,7 @@ var bookAppointment = async (req, res, next) => {
     var service_cart = await ServiceCart.find({
       user_id: mongoose.Types.ObjectId(req.body.user_id),
       service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
+      slot_id: mongoose.Types.ObjectId(req.body.slot_id),
       status: true,
     }).exec();
     //  console.log("User's service cart: ", service_cart);

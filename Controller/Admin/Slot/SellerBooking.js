@@ -21,9 +21,9 @@ var newBookings = async (req, res) => {
               $project: {
                 __v: 0,
                 password: 0,
-                token: 0
-              }
-            }
+                token: 0,
+              },
+            },
           ],
           as: "user_data",
         },
@@ -55,8 +55,8 @@ var newBookings = async (req, res) => {
 
       {
         $sort: {
-          "order_data.booking_date": -1
-        }
+          "order_data.booking_date": -1,
+        },
       },
       {
         $project: {
@@ -100,9 +100,9 @@ var viewAcceptedBookings = async (req, res) => {
               $project: {
                 __v: 0,
                 password: 0,
-                token: 0
-              }
-            }
+                token: 0,
+              },
+            },
           ],
           as: "user_data",
         },
@@ -135,8 +135,8 @@ var viewAcceptedBookings = async (req, res) => {
 
       {
         $sort: {
-          "order_data.booking_date": -1
-        }
+          "order_data.booking_date": -1,
+        },
       },
       {
         $project: {
@@ -181,9 +181,9 @@ var viewRejectedBookings = async (req, res) => {
               $project: {
                 __v: 0,
                 password: 0,
-                token: 0
-              }
-            }
+                token: 0,
+              },
+            },
           ],
           as: "user_data",
         },
@@ -215,8 +215,8 @@ var viewRejectedBookings = async (req, res) => {
 
       {
         $sort: {
-          "order_data.booking_date": -1
-        }
+          "order_data.booking_date": -1,
+        },
       },
       {
         $project: {
