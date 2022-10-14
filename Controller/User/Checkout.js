@@ -237,7 +237,7 @@ var create = async (req, res) => {
             user_id: data.user_id,
             paid: false,
           },
-          { $set: { paid: true, order_id: data.order_id } },
+          { $set: { paid: true, order_id: data.order_id, is_booked: false } },
           (fault, result) => {
             if (fault) {
               console.log(fault.message);
