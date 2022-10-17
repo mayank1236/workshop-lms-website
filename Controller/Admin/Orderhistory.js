@@ -65,8 +65,6 @@ var viewAll = async (req, res) => {
       },
     },
 
-    { $project: { _id: 0 } },
-
     { $sort: { booking_date: -1 } },
   ])
     .then(async (data) => {
@@ -74,16 +72,20 @@ var viewAll = async (req, res) => {
 
       for (let index = 0; index < data.length; index++) {
         var element = data[index];
-        for (let idx = 0; idx < element.cart_data.length; idx++) {
-          var element2 = element.cart_data[idx];
-          if (element2.currency != "CAD") {
-            let datass = await Curvalue.find({
-              from: element2.currency,
-              to: "CAD",
-            }).exec();
-            let resuss = element.order_subtotal * datass[0].value;
-            data[index].order_subtotal = resuss;
-          }
+
+        if (element.cart_data[0].currency != "CAD") {
+          // console.log(element.cart_data[0].currency);
+
+          let datass = await Curvalue.find({
+            from: element.cart_data[0].currency,
+            to: "CAD",
+          }).exec();
+
+          // console.log(datass);
+
+          let resuss = element.order_subtotal * datass[0].value;
+
+          data[index].order_subtotal = resuss;
         }
       }
 

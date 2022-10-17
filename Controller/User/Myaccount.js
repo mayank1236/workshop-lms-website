@@ -1,233 +1,234 @@
-var mongoose = require('mongoose');
-var passwordHash = require('password-hash');
-const { Validator } = require('node-input-validator');
+var mongoose = require("mongoose");
+var passwordHash = require("password-hash");
+const { Validator } = require("node-input-validator");
 
-var Checkout = require('../../Models/checkout');
-var User = require('../../Models/user');
-var userBookedSlot = require('../../Models/Slot/user_booked_slot');
-var sellerSlots = require('../../Models/Slot/seller_slots');
-var shopServices = require('../../Models/shop_service');
-var Upload = require('../../service/upload'); 
-var ServiceCart = require('../../Models/service_cart');
-var ServiceRefund = require('../../Models/service_refund');
-var sellerBookings = require('../../Models/Slot/seller_bookings');
+var Checkout = require("../../Models/checkout");
+var User = require("../../Models/user");
+var userBookedSlot = require("../../Models/Slot/user_booked_slot");
+var sellerSlots = require("../../Models/Slot/seller_slots");
+var shopServices = require("../../Models/shop_service");
+var Upload = require("../../service/upload");
+var ServiceCart = require("../../Models/service_cart");
+var ServiceRefund = require("../../Models/service_refund");
+var sellerBookings = require("../../Models/Slot/seller_bookings");
 // var ServiceSaleEarning = require('../../Models/earnings/service_sale_earnings');
 
 var viewAll = async (req, res) => {
-  return Checkout.aggregate(
-    [
-      {
-        $match: {
-          user_id: mongoose.Types.ObjectId(req.params.user_id),
-        }
+  return Checkout.aggregate([
+    {
+      $match: {
+        user_id: mongoose.Types.ObjectId(req.params.user_id),
       },
-      {
-        $lookup: {
-          from: "users",
-          localField: "user_id",
-          foreignField: "_id",
-          pipeline: [
-            {
-                $project: {
-                    __v: 0,
-                    password: 0,
-                    token: 0
-                }
-            }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user_id",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              __v: 0,
+              password: 0,
+              token: 0,
+            },
+          },
         ],
-          as: "user_data"
-        }
+        as: "user_data",
       },
-      {
-        $unwind: {
-          path: "$user_data",
-          preserveNullAndEmptyArrays: true
-        }
+    },
+    {
+      $unwind: {
+        path: "$user_data",
+        preserveNullAndEmptyArrays: true,
       },
-      {
-        $lookup: {
-          from: "service_carts",//
-          localField: "order_id",//
-          foreignField: "order_id",
-          as: "cart_data"//
-        }
+    },
+    {
+      $lookup: {
+        from: "service_carts", //
+        localField: "order_id", //
+        foreignField: "order_id",
+        as: "cart_data", //
       },
-      {
-        $unwind: {
-          path: "$cart_data",
-          preserveNullAndEmptyArrays: true
-        }
+    },
+    {
+      $unwind: {
+        path: "$cart_data",
+        preserveNullAndEmptyArrays: true,
       },
-      {
-        $lookup: {
-          from: "user_booked_slots",
-          let: { user_booking_id: "$cart_data.user_booking_id" },
-          pipeline: [{ $match: { $expr: { $and: [{ $eq: ["$_id", "$$user_booking_id"] }] } } }],
-          as: "cart_data.slot_data"
-        }
+    },
+    {
+      $lookup: {
+        from: "user_booked_slots",
+        let: { user_booking_id: "$cart_data.user_booking_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $and: [{ $eq: ["$_id", "$$user_booking_id"] }] },
+            },
+          },
+        ],
+        as: "cart_data.slot_data",
       },
-      {
-        $unwind: {
-          path: "$cart_data.slot_data",
-          preserveNullAndEmptyArrays: true
-        }
+    },
+    {
+      $unwind: {
+        path: "$cart_data.slot_data",
+        preserveNullAndEmptyArrays: true,
       },
-      // {
-      //   $lookup: {
-      //     from: "users",
-      //     let: {seller_id: "$cart_data.seller_id"},
-      //     pipeline: [{$match: {$expr: {$and: [{$eq: ["$_id", "$$seller_id"]}]}}}],
-      //     as: "cart_data.seller_data"
-      //   }
-      // },
-      // {
-      //   $unwind: {
-      //     path: "$cart_data.seller_data",
-      //     preserveNullAndEmptyArrays: true
-      //   }
-      // },
-      // {
-      //   $lookup: {
-      //     from: "shop_services",
-      //     let: {service_id: "$cart_data.service_id"},
-      //     pipeline: [{$match: {$expr: {$and: [{$eq: ["$_id", "$$service_id"]}]}}}],
-      //     as: "cart_data.seller_data.service_data"
-      //   }
-      // },
-      // {
-      //   $lookup: {
-      //     from: "service_refunds",
-      //     localField: "order_id",
-      //     foreignField: "order_id",
-      //     as: "service_refund"
-      //   }
-      // },
-      // {
-      //   $unwind: {
-      //     path: "$service_refund",
-      //     preserveNullAndEmptyArrays: true
-      //   }
-      // },
-    
-      {
-        $group: {
-          _id: "$order_id",
-          order_subtotal: { $sum: "$cart_data.price" },
-          discount: { $sum: "$cart_data.discount_percent" },
-          user_data: { $push: "$user_data" },
-          cart_data: { $push: "$cart_data" }
-        }
+    },
+    // {
+    //   $lookup: {
+    //     from: "users",
+    //     let: {seller_id: "$cart_data.seller_id"},
+    //     pipeline: [{$match: {$expr: {$and: [{$eq: ["$_id", "$$seller_id"]}]}}}],
+    //     as: "cart_data.seller_data"
+    //   }
+    // },
+    // {
+    //   $unwind: {
+    //     path: "$cart_data.seller_data",
+    //     preserveNullAndEmptyArrays: true
+    //   }
+    // },
+    // {
+    //   $lookup: {
+    //     from: "shop_services",
+    //     let: {service_id: "$cart_data.service_id"},
+    //     pipeline: [{$match: {$expr: {$and: [{$eq: ["$_id", "$$service_id"]}]}}}],
+    //     as: "cart_data.seller_data.service_data"
+    //   }
+    // },
+    // {
+    //   $lookup: {
+    //     from: "service_refunds",
+    //     localField: "order_id",
+    //     foreignField: "order_id",
+    //     as: "service_refund"
+    //   }
+    // },
+    // {
+    //   $unwind: {
+    //     path: "$service_refund",
+    //     preserveNullAndEmptyArrays: true
+    //   }
+    // },
+
+    {
+      $group: {
+        _id: "$order_id",
+        order_subtotal: { $sum: "$cart_data.price" },
+        discount: { $sum: "$cart_data.discount_percent" },
+        user_data: { $push: "$user_data" },
+        cart_data: { $push: "$cart_data" },
       },
-    
-      {
-        $project: {
-         _v:0
-        }
+    },
+
+    {
+      $project: {
+        _v: 0,
       },
-      { $sort: { "cart_data.booking_date": -1 } }
-      //{ $sort: { _id: -1 } }
-    ]
-  )
+    },
+    { $sort: { booking_date: -1 } },
+    //{ $sort: { _id: -1 } }
+  ])
     .then((docs) => {
       res.status(200).json({
         status: true,
         message: "Order History get successfully",
-        data: docs
-      })
+        data: docs,
+      });
     })
     .catch((err) => {
       res.status(500).json({
         status: false,
         message: "Server error. Please try again.",
-        error: err
-      })
-    })
-}
+        error: err,
+      });
+    });
+};
 
 var cancelOrder = async (req, res) => {
   return ServiceCart.findOneAndUpdate(
-
     { _id: mongoose.Types.ObjectId(req.params.id) },
-    { $set: { order_status: 'cancelled' ,
-  rejected_by:"buyer"} },
+    { $set: { order_status: "cancelled", rejected_by: "buyer" } },
     { new: true },
     (err, data) => {
       console.log(data);
       if (!err) {
-
-        var sellerbookingdata = sellerBookings.findOneAndUpdate(
-          {
-              cart_id:data._id,
-             
-          },
-          { $set: {
-            new_booking: false,
+        var sellerbookingdata = sellerBookings
+          .findOneAndUpdate(
+            {
+              cart_id: data._id,
+            },
+            {
+              $set: {
+                new_booking: false,
                 booking_accept: false,
-                rejected_by:"buyer"
-            } } ,
-          { returnNewDocument: true }
-      ).exec();
+                rejected_by: "buyer",
+              },
+            },
+            { returnNewDocument: true }
+          )
+          .exec();
         res.status(200).json({
           status: true,
           message: "Order cancelled successfully.",
-          data: data
-        })
-      }
-      else {
-
+          data: data,
+        });
+      } else {
         res.status(400).json({
           status: true,
           message: "Failed to cancel order. Server error.",
-          data: err
-        })
+          data: err,
+        });
       }
     }
-  )
-
-
-
-}
+  );
+};
 
 var cancelBooking = async (req, res) => {
   return Checkout.findOneAndUpdate(
     { _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } },
-    { $set: { status: 'cancel' } },
+    { $set: { status: "cancel" } },
     { returnNewDocument: true },
     (err, docs) => {
       if (!err) {
-        userBookedSlot.findOne({ _id: { $in: docs.user_booking_id } })
-          .then(data => {
+        userBookedSlot
+          .findOne({ _id: { $in: docs.user_booking_id } })
+          .then((data) => {
             console.log("User booking data", data);
-            var sellerSlotData = sellerSlots.findOneAndUpdate(
-              { _id: { $in: data.slot_id } },
-              { $set: { booking_status: false } },
-              { returnNewDocument: true }
-            ).exec();
+            var sellerSlotData = sellerSlots
+              .findOneAndUpdate(
+                { _id: { $in: data.slot_id } },
+                { $set: { booking_status: false } },
+                { returnNewDocument: true }
+              )
+              .exec();
 
             res.status(200).json({
               status: true,
               message: "Booking cancelled. Amount will be refunded.",
-              data: docs
-            })
+              data: docs,
+            });
           })
-          .catch(fault => {
+          .catch((fault) => {
             res.status(500).json({
               status: false,
               message: "Failed to free the seller slot. Slot still booked.",
-              error: fault
-            })
-          })
-      }
-      else {
+              error: fault,
+            });
+          });
+      } else {
         res.status(500).json({
           status: false,
           message: "Failed to cancel booking. Server error.",
-          error: err
-        })
+          error: err,
+        });
       }
     }
-  )
-}
+  );
+};
 
 var updateProfile = async (req, res) => {
   const V = new Validator(req.body, {
@@ -236,9 +237,9 @@ var updateProfile = async (req, res) => {
     lastName: "required",
     email: "required|email",
     password: "required",
-    mobile_code: "required"
+    mobile_code: "required",
   });
-  let matched = V.check().then(val => val);
+  let matched = V.check().then((val) => val);
   if (!matched) {
     return res.status(400).json({ status: false, error: V.errors });
   }
@@ -259,7 +260,6 @@ var updateProfile = async (req, res) => {
   //     editData.include = JSON.parse(req.body.include)
   // }
 
-
   // console.log(req.file);
   // if (req.file != null &&
   //     req.file != "" &&
@@ -268,9 +268,9 @@ var updateProfile = async (req, res) => {
   //     editData.image = image_url;
   // }
 
-  var profile = await User.findOne(
-    { _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } }
-  ).exec();
+  var profile = await User.findOne({
+    _id: { $in: [mongoose.Types.ObjectId(req.params.id)] },
+  }).exec();
 
   if (profile != null || profile != "") {
     User.findOneAndUpdate(
@@ -282,40 +282,38 @@ var updateProfile = async (req, res) => {
           res.status(200).json({
             status: true,
             message: "Profile successfully updated.",
-            data: docs
+            data: docs,
           });
-        }
-        else {
+        } else {
           res.status(500).json({
             status: false,
             message: "Failed to update profile. Server error.",
-            error: err
+            error: err,
           });
         }
       }
-    )
-  }
-  else {
+    );
+  } else {
     return res.status(500).json({
       status: false,
       message: "Profile details not found. Server error.",
-      data: profile
+      data: profile,
     });
   }
-}
+};
 
 var updatePassword = async (req, res) => {
   const V = new Validator(req.body, {
-    old_password: 'required',
-    new_password: 'required',// |minLength:8
-    cnf_password: 'required' // |minLength:8
+    old_password: "required",
+    new_password: "required", // |minLength:8
+    cnf_password: "required", // |minLength:8
   });
-  let matched = V.check().then(val => val);
+  let matched = V.check().then((val) => val);
 
   if (!matched) {
     return res.status(400).json({
       status: false,
-      errors: V.errors
+      errors: V.errors,
     });
   }
   // if new password and confirm password is same
@@ -325,13 +323,13 @@ var updatePassword = async (req, res) => {
       return res.status(500).json({
         status: false,
         message: "New and old password is same",
-        data: null
+        data: null,
       });
     }
     // if new and old password is not same, then update
     else {
       User.findOne({ _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } })
-        .then(user => {
+        .then((user) => {
           // if old password value matched & return true from database
           if (user.comparePassword(req.body.old_password) === true) {
             User.findOneAndUpdate(
@@ -343,35 +341,34 @@ var updatePassword = async (req, res) => {
                   res.status(200).json({
                     status: true,
                     message: "Password updated successfully",
-                    data: docs
+                    data: docs,
                   });
-                }
-                else {
+                } else {
                   res.status(500).json({
                     status: false,
                     message: "Failed to update password.Server error.",
-                    error: fault
+                    error: fault,
                   });
                 }
               }
-            )
+            );
           }
           // if old password value is incorrectly provided
           else {
             res.status(500).json({
               status: false,
               message: "Old password is incorrect.",
-              data: null
+              data: null,
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           res.status(500).json({
             status: false,
             message: "No profile details found. Server error.",
-            error: err
+            error: err,
           });
-        })
+        });
     }
   }
   // if new and confirm pw does not match
@@ -379,10 +376,10 @@ var updatePassword = async (req, res) => {
     return res.status(400).json({
       status: false,
       message: "Confirmed password doesn't match with new password",
-      data: null
+      data: null,
     });
   }
-}
+};
 
 var deleteProfile = async (req, res) => {
   var id = req.params.id;
@@ -397,22 +394,20 @@ var deleteProfile = async (req, res) => {
           res.status(200).json({
             status: true,
             message: "Profile deleted successfully.",
-            data: docs
+            data: docs,
           });
-        }
-        else {
+        } else {
           res.status(500).json({
             status: false,
             message: "Invalid id1.",
-            error: err
+            error: err,
           });
         }
       }
     );
-  }
-  else {
+  } else {
     return User.findOneAndDelete({ _id: mongoose.Types.ObjectId(id) })
-      .then(data => {
+      .then((data) => {
         shopServices.updateMany(
           { user_id: mongoose.Types.ObjectId(data._id) },
           { $set: { status: false } },
@@ -424,66 +419,71 @@ var deleteProfile = async (req, res) => {
 
         res.status(200).json({
           status: true,
-          message: "Profile deleted successfully. Related shop services deactivated.",
-          data: docs
+          message:
+            "Profile deleted successfully. Related shop services deactivated.",
+          data: docs,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(500).json({
           status: false,
           message: "Invalid id2.",
-          error: err
+          error: err,
         });
-      })
+      });
   }
-}
+};
 
 // Api to return the destination of image uploaded
 var imageurlApi = async (req, res) => {
-  let imagUrl = '';
-  let image_url = await Upload.uploadFile(req, "profile_images")
-  if (typeof (req.file) != 'undefined' || req.file != '' || req.file != null) {
-    imagUrl = image_url
+  let imagUrl = "";
+  let image_url = await Upload.uploadFile(req, "profile_images");
+  if (typeof req.file != "undefined" || req.file != "" || req.file != null) {
+    imagUrl = image_url;
   }
 
   return User.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(req.params.id) },
-    { profile: imagUrl },    // 'profile' is attribute name for profile image in collection
+    { profile: imagUrl }, // 'profile' is attribute name for profile image in collection
     { new: true },
     (err, docs) => {
       if (!err) {
         res.status(200).json({
           status: true,
           data: imagUrl,
-          error: null
+          error: null,
         });
-      }
-      else {
+      } else {
         res.status(500).json({
           status: false,
           message: "Invalid id. Couldn't upload file.",
-          error: err
+          error: err,
         });
       }
     }
   );
-}
+};
 
 var serviceRefund = async (req, res) => {
-  var id = req.params.id;  // cart _id
+  var id = req.params.id; // cart _id
 
-  let cartData = await ServiceCart.findOne({ _id: mongoose.Types.ObjectId(id) }).exec();
+  let cartData = await ServiceCart.findOne({
+    _id: mongoose.Types.ObjectId(id),
+  }).exec();
 
   console.log("Order id ", cartData.order_id);
 
-  if (cartData.order_id == null || cartData.order_id == "" || typeof cartData.order_id == "undefined") {
+  if (
+    cartData.order_id == null ||
+    cartData.order_id == "" ||
+    typeof cartData.order_id == "undefined"
+  ) {
     return res.status(500).json({
       status: false,
       error: "Invalid id. Payment not made for this order.",
-      data: null
+      data: null,
     });
-  }
-  else {
+  } else {
     return ServiceCart.findOneAndUpdate(
       { _id: mongoose.Types.ObjectId(id) },
       { $set: { refund_request: "Yes" } },
@@ -491,15 +491,22 @@ var serviceRefund = async (req, res) => {
     )
       .then(async (docs) => {
         console.log("Cart ", docs);
-        var refAmt = 0;   // this will go to 'refund_amount'
-        if (docs.discount_percent == null || docs.discount_percent == "" || typeof docs.discount_percent == "undefined") {
+        var refAmt = 0; // this will go to 'refund_amount'
+        if (
+          docs.discount_percent == null ||
+          docs.discount_percent == "" ||
+          typeof docs.discount_percent == "undefined"
+        ) {
           refAmt = parseInt(docs.price);
-        }
-        else {
-          refAmt = parseInt(docs.price) - ((parseInt(docs.price) * parseInt(docs.discount_percent)) / 100);
+        } else {
+          refAmt =
+            parseInt(docs.price) -
+            (parseInt(docs.price) * parseInt(docs.discount_percent)) / 100;
         }
 
-        let checkoutData = await Checkout.findOne({ order_id: docs.order_id }).exec();
+        let checkoutData = await Checkout.findOne({
+          order_id: docs.order_id,
+        }).exec();
         console.log("Checkout ", checkoutData);
 
         let refundSaveData = {
@@ -515,24 +522,43 @@ var serviceRefund = async (req, res) => {
           country: checkoutData.country,
           state: checkoutData.state,
           zip: checkoutData.zip,
-          paymenttype: checkoutData.payment_type
-        }
-        if (checkoutData.address2 != "" || checkoutData.address2 != null || typeof checkoutData.address2 != "undefined") {
+          paymenttype: checkoutData.payment_type,
+        };
+        if (
+          checkoutData.address2 != "" ||
+          checkoutData.address2 != null ||
+          typeof checkoutData.address2 != "undefined"
+        ) {
           refundSaveData.address2 = checkoutData.address2;
         }
-        if (checkoutData.card_name != "" || checkoutData.card_name != null || typeof checkoutData.card_name != "undefined") {
+        if (
+          checkoutData.card_name != "" ||
+          checkoutData.card_name != null ||
+          typeof checkoutData.card_name != "undefined"
+        ) {
           refundSaveData.cardname = checkoutData.card_name;
         }
-        if (checkoutData.card_no != "" || checkoutData.card_no != null || typeof checkoutData.card_no != "undefined") {
+        if (
+          checkoutData.card_no != "" ||
+          checkoutData.card_no != null ||
+          typeof checkoutData.card_no != "undefined"
+        ) {
           refundSaveData.cardno = checkoutData.card_no;
         }
-        if (checkoutData.exp_date != "" || checkoutData.exp_date != null || typeof checkoutData.exp_date != "undefined") {
+        if (
+          checkoutData.exp_date != "" ||
+          checkoutData.exp_date != null ||
+          typeof checkoutData.exp_date != "undefined"
+        ) {
           refundSaveData.expdate = checkoutData.exp_date;
         }
-        if (checkoutData.cvv != "" || checkoutData.cvv != null || typeof checkoutData.cvv != "undefined") {
+        if (
+          checkoutData.cvv != "" ||
+          checkoutData.cvv != null ||
+          typeof checkoutData.cvv != "undefined"
+        ) {
           refundSaveData.cvv = checkoutData.cvv;
         }
-      
 
         const NEW_REFUND = new ServiceRefund(refundSaveData);
         let saveRefund = await NEW_REFUND.save();
@@ -541,18 +567,18 @@ var serviceRefund = async (req, res) => {
         res.status(200).json({
           status: true,
           message: "Refund request successful.",
-          data: docs
+          data: docs,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(500).json({
           status: false,
           message: "Invalid id. Server error.",
-          error: err.message
+          error: err.message,
         });
       });
   }
-}
+};
 
 module.exports = {
   viewAll,
@@ -562,5 +588,5 @@ module.exports = {
   deleteProfile,
   imageurlApi,
   serviceRefund,
-  cancelOrder
-}
+  cancelOrder,
+};
