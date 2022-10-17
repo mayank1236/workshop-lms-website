@@ -29,6 +29,29 @@ var viewAll = async (req, res) => {
         preserveNullAndEmptyArrays: true,
       },
     },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user_id",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              __v: 0,
+              password: 0,
+              token: 0,
+            },
+          },
+        ],
+        as: "user_data",
+      },
+    },
+    {
+      $unwind: {
+        path: "$user_data",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
 
     {
       $lookup: {
@@ -42,6 +65,14 @@ var viewAll = async (req, res) => {
               localField: "user_booking_id",
               foreignField: "_id",
               as: "booked_slot_data",
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "seller_id",
+              foreignField: "_id",
+              as: "seller_data",
             },
           },
           {
