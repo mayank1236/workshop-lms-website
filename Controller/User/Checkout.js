@@ -7,6 +7,7 @@ var ServiceCart = require("../../Models/service_cart");
 var Coupon = require("../../Models/coupon");
 var SellerBookings = require("../../Models/Slot/seller_bookings");
 var Curvalue = require("../../Models/currvalue");
+var moment = require("moment-timezone");
 
 var create = async (req, res) => {
   var alreadyBooked = [];
@@ -72,6 +73,7 @@ var create = async (req, res) => {
       country: req.body.country,
       state: req.body.state,
       zip: req.body.zip,
+      booking_date: moment.tz(Date.now(), "Asia/Kolkata"),
       // payment_type: req.body.payment_type,
     };
 
