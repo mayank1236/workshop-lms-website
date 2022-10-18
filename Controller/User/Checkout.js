@@ -126,7 +126,7 @@ var create = async (req, res) => {
       }
       saveData.discount_percent = 0;
       saveData.discount_type = null;
-      saveData.discountAmt = 0;
+      saveData.discount_amount = 0;
     }
     if (
       req.body.coupon_id != "" &&
