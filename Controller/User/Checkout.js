@@ -36,7 +36,7 @@ var create = async (req, res) => {
     }
     console.log("Booked services are ", bookedServices);
 
-    return res.status(500).json({
+    return res.status(400).json({
       status: false,
       error: `Selected slots for ${bookedServices} has already been booked. Please remove them.`,
       data: null,
