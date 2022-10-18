@@ -119,7 +119,7 @@ var viewAll = async (req, res) => {
         _id: "$order_id",
         // order_subtotal: { $sum: "$cart_data.price" },
         order_subtotal: "$total",
-        discount: { $sum: "$cart_data.discount_percent" },
+        discount: { $sum: "$cart_data.discountAmt" },
         user_data: { $push: "$user_data" },
         cart_data: { $push: "$cart_data" },
       },
