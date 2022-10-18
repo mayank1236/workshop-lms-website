@@ -425,6 +425,7 @@ var bookAppointment = async (req, res, next) => {
           from: req.body.from,
           to: req.body.to,
           duration: req.body.duration,
+          booking_date: moment.tz(Date.now(), "Asia/Kolkata"),
         };
         if (
           req.body.shop_service_name != "" &&
