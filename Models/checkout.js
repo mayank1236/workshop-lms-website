@@ -26,6 +26,9 @@ const CHECKOUT_SCHEMA = new Schema({
     type: Number,
   },
   discount_percent: Number,
+  discount_type: String,
+  discount_amount: Number,
+
   total: Number, // subtotal - discount amount
   coupon_id: {
     type: mongoose.Schema.Types.ObjectId,

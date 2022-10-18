@@ -95,10 +95,12 @@ var create = async (req, res) => {
       typeof req.body.discount_percent != undefined
     ) {
       saveData.discount_percent = req.body.discount_percent;
+      saveData.discount_type = req.body.discount_type;
 
       var payableAmt = req.body.total;
-      // req.body.subtotal -
-      // (req.body.subtotal * req.body.discount_percent) / 100;
+      var discountAmt =
+        req.body.subtotal -
+        (req.body.subtotal * req.body.discount_percent) / 100;
       // saveData.total = payableAmt;
       if (req.user.currency != "CAD") {
         let conVert = await Curvalue.find({
@@ -110,6 +112,7 @@ var create = async (req, res) => {
       } else {
         saveData.price_cad = payableAmt;
       }
+      saveData.discountAmt = discountAmt;
     } else {
       if (req.user.currency != "CAD") {
         let conVert = await Curvalue.find({
@@ -121,6 +124,9 @@ var create = async (req, res) => {
       } else {
         saveData.price_cad = req.body.subtotal;
       }
+      saveData.discount_percent = 0;
+      saveData.discount_type = null;
+      saveData.discountAmt = 0;
     }
     if (
       req.body.coupon_id != "" &&
