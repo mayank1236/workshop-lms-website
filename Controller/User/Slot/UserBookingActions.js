@@ -369,9 +369,10 @@ var bookAppointment = async (req, res, next) => {
 
       var slotBookTime = await UserBookedSlot.find({
         date_of_booking: req.body.date_of_booking,
+        shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
         is_booked: false,
       }).exec();
-      // console.log(slotBookTime);
+      console.log(slotBookTime);
 
       var checkslot = false;
       for (let i = 0; i < slotBookTime.length; i++) {
