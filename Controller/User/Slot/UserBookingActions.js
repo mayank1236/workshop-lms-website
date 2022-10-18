@@ -369,6 +369,7 @@ var bookAppointment = async (req, res, next) => {
 
       var slotBookTime = await UserBookedSlot.find({
         date_of_booking: req.body.date_of_booking,
+        is_booked: false,
       }).exec();
       // console.log(slotBookTime);
 
