@@ -112,7 +112,7 @@ var create = async (req, res) => {
       } else {
         saveData.price_cad = payableAmt;
       }
-      saveData.discountAmt = discountAmt;
+      saveData.discount_amount = discountAmt;
     } else {
       if (req.user.currency != "CAD") {
         let conVert = await Curvalue.find({
