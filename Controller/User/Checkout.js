@@ -95,9 +95,9 @@ var create = async (req, res) => {
     ) {
       saveData.discount_percent = req.body.discount_percent;
 
-      var payableAmt =
-        req.body.subtotal -
-        (req.body.subtotal * req.body.discount_percent) / 100;
+      var payableAmt = req.body.total;
+      // req.body.subtotal -
+      // (req.body.subtotal * req.body.discount_percent) / 100;
       saveData.total = payableAmt;
       if (req.user.currency != "CAD") {
         let conVert = await Curvalue.find({

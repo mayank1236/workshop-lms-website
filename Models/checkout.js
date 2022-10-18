@@ -22,11 +22,6 @@ const CHECKOUT_SCHEMA = new Schema({
   subtotal_cad: {
     type: Number,
   },
-
-  total: {
-    type: Number,
-  },
-
   price_cad: {
     type: Number,
   },
