@@ -75,6 +75,7 @@ var create = async (req, res) => {
       zip: req.body.zip,
       booking_date: moment.tz(Date.now(), "Asia/Kolkata"),
       // payment_type: req.body.payment_type,
+      total: req.body.total,
     };
 
     if (req.user.currency != "CAD") {
@@ -98,7 +99,7 @@ var create = async (req, res) => {
       var payableAmt = req.body.total;
       // req.body.subtotal -
       // (req.body.subtotal * req.body.discount_percent) / 100;
-      saveData.total = payableAmt;
+      // saveData.total = payableAmt;
       if (req.user.currency != "CAD") {
         let conVert = await Curvalue.find({
           from: req.user.currency,
