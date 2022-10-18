@@ -112,7 +112,10 @@ var create = async (req, res) => {
       } else {
         saveData.price_cad = payableAmt;
       }
-      saveData.discount_amount = discountAmt;
+      saveData.discount_amount = (
+        (req.body.subtotal * req.body.discount_percent) /
+        100
+      ).toFixed(2);
     } else {
       if (req.user.currency != "CAD") {
         let conVert = await Curvalue.find({
