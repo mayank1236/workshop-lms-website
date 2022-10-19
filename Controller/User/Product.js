@@ -125,32 +125,31 @@ const rates = async () => {
         // console.log(datass)
 
         let data = {
-          //   _id: mongoose.Types.ObjectId(),
+          //  _id:mongoose.Types.ObjectId(),
           from: element,
           to: element2,
           value: resuss,
         };
-        console.log("here", data);
+
         Curvalue.findOneAndUpdate(
           { _id: { $in: [mongoose.Types.ObjectId(datass[0]._id)] } },
           data,
           async (err, data) => {}
         );
 
-        // let currVal = new Curvalue(data);
-        // currVal.save();
+        //  let currVal = new Curvalue(data)
+        //  currVal.save()
       }
-      //   else {
-      //     let data = {
-      //       _id: mongoose.Types.ObjectId(),
-      //       from: element,
-      //       to: element2,
-      //       value: 1,
-      //     };
-      //     console.log("there", data);
-      //     let currVal = new Curvalue(data);
-      //     currVal.save();
-      //   }
+      // else {
+      //   let data = {
+      //     _id: mongoose.Types.ObjectId(),
+      //     from: element,
+      //     to: element2,
+      //     value: 1,
+      //   };
+      //   let currVal = new Curvalue(data);
+      //   currVal.save();
+      // }
     }
     i++;
   }
