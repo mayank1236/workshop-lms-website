@@ -41,6 +41,33 @@ var newBookings = async (req, res) => {
           from: "service_carts",
           localField: "cart_id",
           foreignField: "_id",
+          pipeline: [
+            {
+              $lookup: {
+                from: "currencyvalues",
+                localField: "currency",
+                foreignField: "from",
+                pipeline: [
+                  {
+                    $match: {
+                      to: "CAD",
+                    },
+                  },
+                ],
+                as: "currencyvalue",
+              },
+            },
+            {
+              $unwind: "$currencyvalue",
+            },
+            {
+              $addFields: {
+                discount_cad: {
+                  $multiply: ["$discount_amount", "$currencyvalue.value"],
+                },
+              },
+            },
+          ],
           as: "cart_data",
         },
       },
