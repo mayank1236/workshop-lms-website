@@ -216,6 +216,62 @@ var create = async (req, res) => {
       .save()
       .then(async (data) => {
         // Update the cart items with order_id
+        if (data.discount_percent != 0) {
+          let findService = await ServiceCart.find({
+            user_id: mongoose.Types.ObjectId(req.body.user_id),
+            status: true,
+          }).exec();
+          console.log("service..", findService);
+          console.log("obj..", {
+            order_id: data.order_id,
+          });
+
+          for (let index = 0; index < findService.length; index++) {
+            const element = findService[index];
+
+            var calDis = (element.price * data.discount_percent) / 100;
+            var priceDis = (element.price - calDis).toFixed(2);
+
+            var calDiscad = (element.price_cad * data.discount_percent) / 100;
+            var priceDiscad = (element.price_cad - calDiscad).toFixed(2);
+
+            ServiceCart.findOneAndUpdate(
+              { _id: { $in: [mongoose.Types.ObjectId(element._id)] } },
+              {
+                price: priceDis,
+                price_cad: priceDiscad,
+                discount_amount: calDis,
+              },
+              (err, docs) => {
+                console.log(docs);
+              }
+            );
+          }
+
+          let findUserbooked = await UserBookedSlot.find({
+            user_id: data.user_id,
+            paid: false,
+          }).exec();
+          for (let indexx = 0; indexx < findUserbooked.length; indexx++) {
+            const elementt = findUserbooked[indexx];
+
+            var calDisu = (elementt.price * data.discount_percent) / 100;
+            var priceDisu = (elementt.price - calDisu).toFixed(2);
+
+            var calDiscadu = (elementt.price_cad * data.discount_percent) / 100;
+            var priceDiscadu = (elementt.price_cad - calDiscadu).toFixed(2);
+
+            UserBookedSlot.findOneAndUpdate(
+              { _id: { $in: [mongoose.Types.ObjectId(elementt._id)] } },
+              {
+                price: priceDisu,
+                price_cad: priceDiscadu,
+                discount_amount: calDis,
+              },
+              (err, docs) => {}
+            );
+          }
+        }
 
         ServiceCart.updateMany(
           { user_id: mongoose.Types.ObjectId(req.body.user_id), status: true },
@@ -229,36 +285,12 @@ var create = async (req, res) => {
           (err, writeResult) => {
             if (err) {
               console.log(err.message);
+            } else {
             }
           }
         );
 
-        if (data.discount_percent != 0) {
-          let findService = await ServiceCart.find({
-            order_id: data.order_id,
-          }).exec();
-          for (let index = 0; index < findService.length; index++) {
-            const element = findService[index];
-
-            var calDis = (element.price * element.discount_percent) / 100;
-            var priceDis = (element.price - calDis).toFixed(2);
-
-            var calDiscad =
-              (element.price_cad * element.discount_percent) / 100;
-            var priceDiscad = (element.price_cad - calDiscad).toFixed(2);
-
-            ServiceCart.findOneAndUpdate(
-              { _id: { $in: [mongoose.Types.ObjectId(element.id)] } },
-              {
-                price: priceDis,
-                price_cad: priceDiscad,
-                discount_amount: calDis,
-              },
-              (err, docs) => {}
-            );
-          }
-        }
-
+        // return false;
         // Decrease the number of the coupon applied on checkout
         if (data.coupon != null) {
           let coupData = await Coupon.findOne({
@@ -291,32 +323,6 @@ var create = async (req, res) => {
           }
         ).exec();
 
-        if (data.discount_percent != 0) {
-          let findUserbooked = await UserBookedSlot.find({
-            order_id: data.order_id,
-          }).exec();
-          for (let index = 0; index < findUserbooked.length; index++) {
-            const element = findUserbooked[index];
-
-            var calDis = (element.price * element.discount_percent) / 100;
-            var priceDis = (element.price - calDis).toFixed(2);
-
-            var calDiscad =
-              (element.price_cad * element.discount_percent) / 100;
-            var priceDiscad = (element.price_cad - calDiscad).toFixed(2);
-
-            UserBookedSlot.findOneAndUpdate(
-              { _id: { $in: [mongoose.Types.ObjectId(element.id)] } },
-              {
-                price: priceDis,
-                price_cad: priceDiscad,
-                discount_amount: calDis,
-              },
-              (err, docs) => {}
-            );
-          }
-        }
-
         // Update the seller bookings with payment status
         SellerBookings.updateMany(
           { user_id: data.user_id, new_booking: true, paid: false },
@@ -333,32 +339,6 @@ var create = async (req, res) => {
             }
           }
         ).exec();
-
-        if (data.discount_percent != 0) {
-          let findsellerbooked = await SellerBookings.find({
-            order_id: data.order_id,
-          }).exec();
-          for (let index = 0; index < findsellerbooked.length; index++) {
-            const element = findsellerbooked[index];
-
-            var calDis = (element.price * element.discount_percent) / 100;
-            var priceDis = (element.price - calDis).toFixed(2);
-
-            var calDiscad =
-              (element.price_cad * element.discount_percent) / 100;
-            var priceDiscad = (element.price_cad - calDiscad).toFixed(2);
-
-            SellerBookings.findOneAndUpdate(
-              { _id: { $in: [mongoose.Types.ObjectId(element.id)] } },
-              {
-                price: priceDis,
-                price_cad: priceDiscad,
-                discount_amount: calDis,
-              },
-              (err, docs) => {}
-            );
-          }
-        }
 
         res.status(200).json({
           status: true,
