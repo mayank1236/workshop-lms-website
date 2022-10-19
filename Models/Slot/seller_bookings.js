@@ -44,6 +44,14 @@ const sellerBookingSchema = new Schema({
     type: String,
     default: "",
   },
+  discount_percent: {
+    type: Number,
+    default: 0,
+  },
+  discount_amount: {
+    type: Number,
+    default: 0,
+  },
   order_id: {
     type: Number,
   },

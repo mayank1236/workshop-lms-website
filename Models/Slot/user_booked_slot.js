@@ -50,6 +50,14 @@ const userBookedSlot = new Schema({
     type: Boolean,
     default: false,
   },
+  discount_percent: {
+    type: Number,
+    default: 0,
+  },
+  discount_amount: {
+    type: Number,
+    default: 0,
+  },
   order_id: {
     type: Number,
   },

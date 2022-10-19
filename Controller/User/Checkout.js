@@ -249,7 +249,11 @@ var create = async (req, res) => {
 
             ServiceCart.findOneAndUpdate(
               { _id: { $in: [mongoose.Types.ObjectId(element.id)] } },
-              { price: priceDis, price_cad: priceDiscad },
+              {
+                price: priceDis,
+                price_cad: priceDiscad,
+                discount_amount: calDis,
+              },
               (err, docs) => {}
             );
           }
@@ -272,7 +276,14 @@ var create = async (req, res) => {
             user_id: data.user_id,
             paid: false,
           },
-          { $set: { paid: true, order_id: data.order_id, is_booked: false } },
+          {
+            $set: {
+              paid: true,
+              order_id: data.order_id,
+              is_booked: false,
+              discount_percent: data.discount_percent,
+            },
+          },
           (fault, result) => {
             if (fault) {
               console.log(fault.message);
@@ -296,7 +307,11 @@ var create = async (req, res) => {
 
             UserBookedSlot.findOneAndUpdate(
               { _id: { $in: [mongoose.Types.ObjectId(element.id)] } },
-              { price: priceDis, price_cad: priceDiscad },
+              {
+                price: priceDis,
+                price_cad: priceDiscad,
+                discount_amount: calDis,
+              },
               (err, docs) => {}
             );
           }
@@ -305,7 +320,13 @@ var create = async (req, res) => {
         // Update the seller bookings with payment status
         SellerBookings.updateMany(
           { user_id: data.user_id, new_booking: true, paid: false },
-          { $set: { paid: true, order_id: data.order_id } },
+          {
+            $set: {
+              paid: true,
+              order_id: data.order_id,
+              discount_percent: data.discount_percent,
+            },
+          },
           (fault, result) => {
             if (fault) {
               console.log(fault.message);
@@ -329,7 +350,11 @@ var create = async (req, res) => {
 
             SellerBookings.findOneAndUpdate(
               { _id: { $in: [mongoose.Types.ObjectId(element.id)] } },
-              { price: priceDis, price_cad: priceDiscad },
+              {
+                price: priceDis,
+                price_cad: priceDiscad,
+                discount_amount: calDis,
+              },
               (err, docs) => {}
             );
           }

@@ -36,6 +36,10 @@ const SERVICE_CART_SCHEMA = new Schema({
     type: Number,
     default: 0,
   },
+  discount_amount: {
+    type: Number,
+    default: 0,
+  },
   image: Array,
   seller_confirmed: {
     type: Boolean,
