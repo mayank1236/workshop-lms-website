@@ -91,6 +91,31 @@ var viewAll = async (req, res) => {
               as: "category_data",
             },
           },
+          {
+            $lookup: {
+              from: "currencyvalues",
+              localField: "currency",
+              foreignField: "from",
+              pipeline: [
+                {
+                  $match: {
+                    to: "CAD",
+                  },
+                },
+              ],
+              as: "currencyvalue",
+            },
+          },
+          {
+            $unwind: "$currencyvalue",
+          },
+          {
+            $addFields: {
+              discount_cad: {
+                $multiply: ["$discount_amount", "$currencyvalue.value"],
+              },
+            },
+          },
         ],
         as: "cart_data",
       },
