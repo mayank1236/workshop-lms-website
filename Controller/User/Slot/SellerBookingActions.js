@@ -57,6 +57,14 @@ var newBookings = async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: "checkouts",
+          localField: "order_id",
+          foreignField: "order_id",
+          as: "checkout_data",
+        },
+      },
+      {
         $project: {
           __v: 0,
         },
@@ -362,6 +370,14 @@ var viewAcceptedBookings = async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: "checkouts",
+          localField: "order_id",
+          foreignField: "order_id",
+          as: "checkout_data",
+        },
+      },
+      {
         $project: {
           __v: 0,
         },
@@ -530,6 +546,14 @@ var viewRejectedBookings = async (req, res) => {
           localField: "user_booking_id",
           foreignField: "user_booking_id",
           as: "cart_data",
+        },
+      },
+      {
+        $lookup: {
+          from: "checkouts",
+          localField: "order_id",
+          foreignField: "order_id",
+          as: "checkout_data",
         },
       },
       {
