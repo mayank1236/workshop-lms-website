@@ -116,7 +116,7 @@ var viewAll = async (req, res) => {
               },
             },
           },
-        ],a
+        ],
         as: "cart_dat",
       },
     },
