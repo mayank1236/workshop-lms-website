@@ -69,6 +69,7 @@ var newBookings = async (req, res) => {
           __v: 0,
         },
       },
+      { $sort: { "checkout_data.booking_date": -1 } },
     ])
     .exec();
 
