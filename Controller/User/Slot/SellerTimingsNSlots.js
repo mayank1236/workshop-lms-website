@@ -384,31 +384,46 @@ var createOffDays = async (req, res, next) => {
       data: null,
     });
   } else {
-    let saveData1 = {
-      _id: mongoose.Types.ObjectId(),
-      offDate: req.body.offDate,
-      shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
-      category_id: mongoose.Types.ObjectId(req.body.category_id),
-      seller_id: mongoose.Types.ObjectId(req.body.seller_id),
-    };
-
-    const SELLER_TIMINGS = new sellerOff(saveData1);
-
-    SELLER_TIMINGS.save()
-      .then((data) => {
-        return res.status(200).json({
-          status: true,
-          error: null,
-          data: data,
-        });
+    let slotData = await sellerTimings
+      .find({
+        shop_service_id: {
+          $in: [mongoose.Types.ObjectId(req.body.shop_service_id)],
+        },
       })
-      .catch((err) => {
-        return res.status(500).json({
-          status: false,
-          error: err,
-          data: null,
+      .exec();
+    if (slotData.length > 0) {
+      let saveData1 = {
+        _id: mongoose.Types.ObjectId(),
+        offDate: req.body.offDate,
+        shop_service_id: mongoose.Types.ObjectId(req.body.shop_service_id),
+        category_id: mongoose.Types.ObjectId(req.body.category_id),
+        seller_id: mongoose.Types.ObjectId(req.body.seller_id),
+      };
+
+      const SELLER_TIMINGS = new sellerOff(saveData1);
+
+      SELLER_TIMINGS.save()
+        .then((data) => {
+          return res.status(200).json({
+            status: true,
+            error: null,
+            data: data,
+          });
+        })
+        .catch((err) => {
+          return res.status(500).json({
+            status: false,
+            error: err,
+            data: null,
+          });
         });
+    } else {
+      return res.status(500).json({
+        status: false,
+        error: "Please Add Slot First",
+        data: null,
       });
+    }
   }
 };
 
