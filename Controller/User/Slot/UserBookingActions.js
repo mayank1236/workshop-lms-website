@@ -299,7 +299,7 @@ var viewSlotsAllDay = async (req, res) => {
       });
       if (OffDays.length > 0) {
         event.push({
-          title: "Seller Is Not Available",
+          title: "Seller N/A",
           date: days,
           color: "#FF0000",
         });
