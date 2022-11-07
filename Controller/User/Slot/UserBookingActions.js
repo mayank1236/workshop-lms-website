@@ -199,10 +199,10 @@ var viewSlotsForADay = async (req, res) => {
     },
   ]).exec();
   if (OffDays.length > 0) {
-    return res.status(200).json({
-      status: true,
+    return res.status(500).json({
+      status: false,
       message: "Seller is not available on this day.",
-      data: slots,
+      data: null,
     });
   } else {
     if (slots.length < 0) {
