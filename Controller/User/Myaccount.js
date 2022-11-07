@@ -117,6 +117,7 @@ var viewAll = async (req, res) => {
     {
       $group: {
         _id: "$order_id",
+        booking_date: { $max: "$booking_date" },
         order_subtotal: { $sum: "$total" },
         // order_subtotal: "$total",
         discount: { $sum: "$cart_data.discount_percent" },
@@ -131,7 +132,7 @@ var viewAll = async (req, res) => {
       },
     },
     // { $sort: { "cart_data[0].booking_date": -1 } },
-    { $sort: { _id: -1 } },
+    { $sort: { booking_date: -1 } },
   ])
     .then((docs) => {
       res.status(200).json({
