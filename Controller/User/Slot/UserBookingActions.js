@@ -175,16 +175,47 @@ var viewSlotsForADay = async (req, res) => {
     { $sort: { "timing.from": 1 } },
   ]).exec();
 
-  if (slots.length < 0) {
-    return res.status(200).json({
-      status: true,
-      message: "Seller doesn't provide service on this day.",
-      data: slots,
-    });
+  let OffDays = await SellerOffBookings.aggregate([
+    {
+      $match: {
+        $expr: {
+          $and: [
+            { $eq: [shop_service_id, shop_service_id] },
+            {
+              $gte: [
+                "$offDate",
+                moment.utc(req.body.date).startOf("day").toDate(),
+              ],
+            },
+            {
+              $lte: [
+                "$offDate",
+                moment.utc(req.body.date).endOf("day").toDate(),
+              ],
+            },
+          ],
+        },
+      },
+    },
+  ]).exec();
+  if (OffDays.length > 0) {
+    if (slots.length < 0) {
+      return res.status(200).json({
+        status: true,
+        message: "Seller doesn't provide service on this day.",
+        data: slots,
+      });
+    } else {
+      return res.status(200).json({
+        status: true,
+        message: "Service times for the day successfully get.",
+        data: slots,
+      });
+    }
   } else {
     return res.status(200).json({
       status: true,
-      message: "Service times for the day successfully get.",
+      message: "Seller is not available on this day.",
       data: slots,
     });
   }
