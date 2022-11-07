@@ -266,13 +266,13 @@ var viewSlotsAllDay = async (req, res) => {
         },
       },
     ]).exec();
-    console.log(slots);
+    // console.log(slots);
     let OffDays = await SellerOffBookings.aggregate([
       {
         $match: {
           $expr: {
             $and: [
-              { $eq: ["$shop_service_id", shop_service_id] },
+              { $eq: [shop_service_id, shop_service_id] },
               {
                 $gte: ["$offDate", moment.utc(days).startOf("day").toDate()],
               },
@@ -284,6 +284,7 @@ var viewSlotsAllDay = async (req, res) => {
         },
       },
     ]).exec();
+    console.log("OffDays", OffDays);
     if (slots.length == 0) {
       // console.log("1")
       event.push({ title: "", date: days, color: "#FF0000" });
@@ -297,7 +298,11 @@ var viewSlotsAllDay = async (req, res) => {
         }
       });
       if (OffDays.length > 0) {
-        event.push({ title: "", date: days, color: "#FF0000" });
+        event.push({
+          title: "Seller Is Not Available",
+          date: days,
+          color: "#FF0000",
+        });
       } else if (booking_infolength == 0) {
         event.push({ title: "", date: days, color: "#378006" });
       } else if (booking_infolength < slotlength) {
