@@ -303,7 +303,12 @@ var viewSlotsAllDay = async (req, res) => {
         $match: {
           $expr: {
             $and: [
-              { $eq: [shop_service_id, shop_service_id] },
+              {
+                $eq: [
+                  "$shop_service_id",
+                  mongoose.Types.ObjectId(req.body.shop_service_id),
+                ],
+              },
               {
                 $gte: ["$offDate", moment.utc(days).startOf("day").toDate()],
               },
