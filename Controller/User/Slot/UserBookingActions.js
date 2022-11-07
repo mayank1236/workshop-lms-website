@@ -4,10 +4,12 @@ var moment = require("moment");
 
 var UserBookedSlot = require("../../../Models/Slot/user_booked_slot");
 var SellerBookings = require("../../../Models/Slot/seller_bookings");
+var SellerOffBookings = require("../../../Models/Slot/sellerOffTiming");
 var SellerTimings = require("../../../Models/Slot/seller_timing");
 var ServiceSlots = require("../../../Models/Slot/seller_slots");
 var ServiceCart = require("../../../Models/service_cart");
 const Curvalue = require("../../../Models/currvalue");
+const { ObjectId } = require("mongodb");
 
 var checkAvailability = async (req, res) => {
   const USER_BOOKINGS = await UserBookedSlot.find({
@@ -263,9 +265,25 @@ var viewSlotsAllDay = async (req, res) => {
           as: "booking_info",
         },
       },
-      { $sort: { "timing.from": 1 } },
     ]).exec();
     console.log(slots);
+    let OffDays = await SellerOffBookings.aggregate([
+      {
+        $match: {
+          $expr: {
+            $and: [
+              { $eq: ["$shop_service_id", shop_service_id] },
+              {
+                $gte: ["$offDate", moment.utc(days).startOf("day").toDate()],
+              },
+              {
+                $lte: ["$offDate", moment.utc(days).endOf("day").toDate()],
+              },
+            ],
+          },
+        },
+      },
+    ]).exec();
     if (slots.length == 0) {
       // console.log("1")
       event.push({ title: "", date: days, color: "#FF0000" });
@@ -278,7 +296,9 @@ var viewSlotsAllDay = async (req, res) => {
           booking_infolength = parseInt(booking_infolength) + parseInt(1);
         }
       });
-      if (booking_infolength == 0) {
+      if (OffDays.length > 0) {
+        event.push({ title: "", date: days, color: "#FF0000" });
+      } else if (booking_infolength == 0) {
         event.push({ title: "", date: days, color: "#378006" });
       } else if (booking_infolength < slotlength) {
         event.push({ title: "", date: days, color: "#378006" });
