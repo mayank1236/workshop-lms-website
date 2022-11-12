@@ -156,22 +156,22 @@ var acceptNewBooking = async (req, res) => {
           var seller_earning = 0;
           var admin_earning = 0;
 
-          if (
-            payment_status.discount_percent != "" ||
-            payment_status.discount_percent != null ||
-            typeof payment_status.discount_percent != "undefined"
-          ) {
-            var discountAmt =
-              (payment_status.price * payment_status.discount_percent) / 100;
+          // if (
+          //   payment_status.discount_percent != "" ||
+          //   payment_status.discount_percent != null ||
+          //   typeof payment_status.discount_percent != "undefined"
+          // ) {
+          // var discountAmt =
+          //   (payment_status.price * payment_status.discount_percent) / 100;
 
-            let sellPrice = payment_status.price - discountAmt;
-            seller_earning = (sellPrice * userSub[0].seller_comission) / 100;
-            admin_earning = sellPrice - seller_earning;
-          } else {
-            seller_earning =
-              (payment_status.price * userSub[0].seller_comission) / 100;
-            admin_earning = payment_status.price - seller_earning;
-          }
+          // let sellPrice = payment_status.price - discountAmt;
+          //   seller_earning = (payment_status.price * userSub[0].seller_comission) / 100;
+          //   admin_earning = payment_status.price - seller_earning;
+          // } else {
+          seller_earning =
+            (payment_status.price * userSub[0].seller_comission) / 100;
+          admin_earning = payment_status.price - seller_earning;
+          // }
           console.log("before convert", seller_earning, admin_earning);
 
           let new_seller_com = 0;
