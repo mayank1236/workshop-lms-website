@@ -168,7 +168,7 @@ const newSubscription = async (req, res) => {
       .then(async (data) => {
         var edituserType = await User.findOneAndUpdate(
           { _id: mongoose.Types.ObjectId(req.body.userid) },
-          { type: "User" }
+          { type: "Seller" }
         ).exec();
         res.status(200).json({
           status: true,
