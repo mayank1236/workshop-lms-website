@@ -209,13 +209,15 @@ const cancelSubscription = async (req, res) => {
     .then(async (data) => {
       var edituserType = await User.findOneAndUpdate(
         { _id: mongoose.Types.ObjectId(user_id) },
-        { type: "User" }
+        { type: "User" },
+        { new: true }
       ).exec();
 
       res.status(200).json({
         status: true,
         message: "Subscription cancelled successfully.",
         data: data,
+        userData: edituserType,
       });
     })
     .catch((err) => {
