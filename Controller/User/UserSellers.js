@@ -70,6 +70,7 @@ const sellerTokenCheck = async (req, res) => {
           status: false,
           message: "User not authorized as seller.",
           error: "User not authorized.",
+          data: data,
         });
       }
     })
@@ -197,13 +198,13 @@ var viewTopSellers = async (req, res) => {
       },
     },
     {
-        $lookup:{
-            from:"shop_services",
-            localField:"_id",
-            foreignField:"user_id",
-            as :"service_data"
-        }
-    }
+      $lookup: {
+        from: "shop_services",
+        localField: "_id",
+        foreignField: "user_id",
+        as: "service_data",
+      },
+    },
   ])
     .then((data) => {
       res.status(200).json({
