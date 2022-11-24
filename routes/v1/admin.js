@@ -193,6 +193,8 @@ router.post('/contact-us-info', ContactUsInfo.addNEdit);
 router.get('/contact-us-info', ContactUsInfo.viewAll);
 router.get('/contact-us-info/:id', ContactUsInfo.viewById);
 router.delete('/contact-us-info/:id', ContactUsInfo.deleteSegment);
+router.post('/address', ContactUsInfo.addaddress);
+router.get('/address', ContactUsInfo.getAddress);
 
 router.post('/safety-guide', SafetyGuide.addNEditSegment);
 router.get('/safety-guide', SafetyGuide.viewAllSegments);

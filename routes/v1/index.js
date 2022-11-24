@@ -28,6 +28,8 @@ const Associates = require("../../Controller/User/Website_info/Associates");
 const LegalNotice = require("../../Controller/User/Website_info/LegalNotice");
 const Careers = require("../../Controller/User/Website_info/Careers");
 const CmsController = require("../../Controller/User/Website_info/Cms");
+const AdminContactUsInfo = require('../../Controller/Admin/Website_info/ContactUsInfo');
+
 /**-----------------------Website info section end----------------------- */
 
 const middleware = require("../../service/middleware").middleware;
@@ -87,6 +89,8 @@ router.get("/user/social-media-info/:id", SocialMediaInfo.viewById);
 
 router.get("/user/contact-us-info", ContactUsInfo.viewAll);
 router.get("/user/contact-us-info/:id", ContactUsInfo.viewById);
+
+router.get("/user/address", AdminContactUsInfo.getAddress);
 
 router.get("/user/blog", BlogController.viewAllBlogs);
 router.get("/user/blog/:id", BlogController.viewBlogById);

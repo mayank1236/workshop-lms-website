@@ -1,6 +1,8 @@
+const { ConnectionClosedEvent } = require('mongodb');
 var mongoose = require('mongoose');
 
 var contactUsInfo = require('../../../Models/Website_info/contact_us');
+var Address = require('../../../Models/address');
 
 var addNEdit = async (req, res) => {
     let saveData = {
@@ -125,9 +127,80 @@ var deleteSegment = async (req, res) => {
     );
 }
 
+var addaddress = async (req, res) => {
+    let addressData = {
+        address: req.body.address
+    }
+    Address.aggregate([
+        {
+            $match: {
+                __v: 0
+            }
+        },
+    ])
+        .then((data) => {
+            if (data == "") {
+                const AddressDataAdd = new Address(addressData);
+                AddressDataAdd.save()
+            } else {
+                console.log("data", req.body);
+                Address.findOneAndUpdate(
+                    {
+                        ...req.body,
+                    },
+                )
+                    .then((data) => {
+                        return res.status(200).json({
+                            status: true,
+                            message: "Address added Successfully",
+                        });
+                    }).catch((error) => {
+                        return res.status(500).json({
+                            status: false,
+                            message: "Server error. Please try again.",
+                            error: error,
+                        });
+                    });
+            }
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                status: false,
+                message: "Server error. Please try again.",
+                error: error,
+            });
+        });
+}
+
+var getAddress = async (req, res) => {
+    Address.aggregate([
+        {
+            $project: {
+                address: 1,
+                _id: 0
+            }
+        },
+    ])
+        .then((data) => {
+            return res.status(200).json({
+                status: true,
+                message: "Data fetch Successfully",
+                data: data[0],
+            });
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                status: false,
+                message: "Server error. Please try again.",
+                error: error,
+            });
+        });
+}
 module.exports = {
     addNEdit,
     viewAll,
     viewById,
-    deleteSegment
+    deleteSegment,
+    addaddress,
+    getAddress
 }
