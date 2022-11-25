@@ -142,6 +142,7 @@ var Search = async (req, res) => {
   // shopService.find({ $text: { $search: req.body.categoryname }},
   //   { score: {$meta: "textScore"} }
   // )
+  // console.log(req.body)
   return shopService.aggregate(
     [
 
@@ -206,7 +207,7 @@ var Search = async (req, res) => {
 
 var allSearch = async (req, res) => {
   var servArr = [];
-
+  // console.log(req.body)
   let Service = await shopService.aggregate([
     {
       $match: {
@@ -217,16 +218,18 @@ var allSearch = async (req, res) => {
               { category_name: { $regex: ".*" + req.body.searchname + ".*", $options: "i" } }
             ]
           },
-          { status: true }
+          { status: true },
+          { isDeleted: false }
         ]
       },
     },
   ]).exec();
   Service.forEach(element => {
     servArr.push(element);
+    // console.log("Search", element);
   });
 
-  console.log("Search results", servArr);
+  // console.log("Search results", servArr);
 
   if (servArr.length > 0) {
     return res.status(200).json({

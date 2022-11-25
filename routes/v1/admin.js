@@ -99,6 +99,7 @@ router.get('/viewseller/:id', UserSellersController.viewSeller)  // added by ani
 router.put('/top-sellers/:id', UserSellersController.selectTopSeller);
 router.get('/booking-and-user-stat', UserSellersController.bookingNUserStat);
 router.delete('/userDelete/:id', UserSellersController.Delete);// added by anirbank-93
+// router.get('/uptdateMany/', UserSellersController.utdateMany);
 
 
 router.post('/service-category',upload.single("image"),ServiceController.create)// added by anirbank-93

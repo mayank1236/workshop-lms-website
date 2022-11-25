@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 var User = require("../../Models/user");
 var Seller = require("../../Models/seller");
 var sellerBookings = require("../../Models/Slot/seller_bookings");
+var ShopService = require("../../Models/shop_service");
 
 const viewUserList = async (req, res) => {
   return User.aggregate([
@@ -133,20 +134,65 @@ const viewUser = async (req, res) => {
 const Delete = async (req, res) => {
   return User.remove({ _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } })
     .then((data) => {
-      return res.status(200).json({
-        status: true,
-        message: "User delete successfully",
-        data: data,
-      });
+      // console.log("data.length", data)
+      if (data != "") {
+        // console.log("ooooooooo")
+        ShopService.updateMany(
+          {
+            user_id: { $in: [mongoose.Types.ObjectId(req.params.id)] }
+          },
+          {
+            isDeleted: true
+          },
+        ).then((data1) => {
+          return res.status(200).json({
+            status: true,
+            message: "User delete successfully",
+            data: data,
+          })
+        })
+        .catch((err1) => {
+          return res.status(500).json({
+            status: false,
+            message: "Server error. Please try again.",
+            error: err1,
+          });
+        })  
+      }
+      // return res.status(200).json({
+      //   status: true,
+      //   message: "User delete successfully",
+      //   data: data,
+      // });
     })
     .catch((err) => {
-      res.status(500).json({
+      return res.status(500).json({
         status: false,
         message: "Server error. Please try again.",
         error: error,
       });
     });
 };
+
+// const utdateMany = async (req, res) => {
+//   return ShopService.updateMany(
+//     { $set: { "isDeleted": false } }
+//   )
+//     .then((data) => {
+//     return res.status(200).json({
+//       status: true,
+//       message: "User updated successfully",
+//       data: data,
+//     });
+//   })
+//   .catch((err) => {
+//     res.status(500).json({
+//       status: false,
+//       message: "Server error. Please try again.",
+//       error: error,
+//     });
+//   });
+// };
 
 var getSellerRequest = async (req, res) => {
   let requests = await Seller.find({}).exec();
@@ -440,4 +486,5 @@ module.exports = {
   selectTopSeller,
   bookingNUserStat,
   Delete,
+  // utdateMany
 };

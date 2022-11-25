@@ -143,7 +143,7 @@ var addaddress = async (req, res) => {
                 const AddressDataAdd = new Address(addressData);
                 AddressDataAdd.save()
             } else {
-                console.log("data", req.body);
+                // console.log("data", req.body);
                 Address.findOneAndUpdate(
                     {
                         ...req.body,

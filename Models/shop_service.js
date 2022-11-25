@@ -49,6 +49,10 @@ const ShopServiceSchema = new Schema({
     created_on: {
         type: Date,
         default: dateKolkata
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 })
 
