@@ -156,7 +156,8 @@ const viewShopServicesPerService = async (req, res) => {
                         {
                             $match: {
                                 category_id: { $in: [mongoose.Types.ObjectId(id)] },
-                                status: true
+                                status: true,
+                                isDeleted: false
                             }
                         },
                         {
