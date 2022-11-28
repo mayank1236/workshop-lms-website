@@ -15,20 +15,16 @@ var getServiceCart = async (req, res) => {
     },
     {
       $lookup: {
-        from: "seller_timings",
+        from: "seller_slots",
         localField: "slot_id",
         foreignField: "_id",
         as: "SlotData",
-        pipeline: [
-          { $project: { __v: 0 } }
-        ]
       },
     },
     {
-      $unwind: {
-        path: "$SlotData", preserveNullAndEmptyArrays: true,
-      }
+      $unwind:"$SlotData"
     },
+    
     {
       $lookup: {
         from: "users",
