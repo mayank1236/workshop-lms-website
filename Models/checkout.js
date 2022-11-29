@@ -91,6 +91,9 @@ const CHECKOUT_SCHEMA = new Schema({
     type: Number,
     required: false,
   },
+  transaction: {
+    type: String,
+  },
   status: {
     type: String,
     default: true,

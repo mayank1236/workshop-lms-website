@@ -76,6 +76,7 @@ var create = async (req, res) => {
       booking_date: moment.tz(Date.now(), "Asia/Kolkata"),
       // payment_type: req.body.payment_type,
       total: req.body.total,
+      transaction:req.body.transaction
     };
 
     if (req.user.currency != "CAD") {
