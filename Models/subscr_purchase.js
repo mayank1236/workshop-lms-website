@@ -33,6 +33,9 @@ var userSubsriptionSchema = new mongoose.Schema({
     required: false,
     default: true,
   },
+  transaction: {
+    type:String,
+  },
   currency:{
     type:String,
     required:true

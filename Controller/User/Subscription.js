@@ -149,6 +149,7 @@ const newSubscription = async (req, res) => {
       currency: req.body.currency,
       subscribed_on: moment.tz(Date.now(), "Asia/Kolkata"),
       no_of_listing: req.body.no_of_listing,
+      transaction:req.body.transaction
     };
 
     // if(req.query.currency!="CAD"){
