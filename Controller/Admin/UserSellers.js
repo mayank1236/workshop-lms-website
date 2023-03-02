@@ -194,9 +194,11 @@ const Delete = async (req, res) => {
 //   });
 // };
 
-var getSellerRequest = async (req, res) => {
-  let requests = await Seller.find({}).exec();
 
+var getSellerRequest = async (req, res) => {
+ 
+  let requests = await Seller.find({}).sort({_id:-1}).exec();
+  
   if (requests.length > 0) {
     return res.status(200).json({
       status: true,
@@ -212,13 +214,16 @@ var getSellerRequest = async (req, res) => {
   }
 };
 
+
+
 var approveSellerRequest = async (req, res) => {
   var id = req.params.id;
 
   return Seller.findOneAndUpdate(
     { _id: mongoose.Types.ObjectId(id) },
     { $set: { seller_status: true } },
-    { new: true }
+    { new: true },
+    
   )
     .then((data) => {
       User.findOneAndUpdate(
@@ -228,7 +233,9 @@ var approveSellerRequest = async (req, res) => {
             type: "Seller",
             seller_approval: true,
           },
-        }
+        },
+        
+      
       )
         .then((docs) => {
           res.status(200).json({
@@ -330,7 +337,7 @@ const viewSellerList = async (req, res) => {
     {
       $unwind: "$seller_subscription.subcription_data",
     },
-
+    
     {
       $project: {
         __v: 0,
