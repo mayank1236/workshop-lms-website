@@ -233,10 +233,7 @@ router.put(
 
 router.post("/shop-service/availability", UserBookingActions.checkAvailability); // added by anirbank-93
 router.post("/shop-service/day-timing", UserBookingActions.viewSlotsForADay); // added by anirbank-
-router.post(
-  "/shop-service/viewSlotsAllDay",
-  UserBookingActions.viewSlotsAllDay
-); // added by anirbank-93
+router.post("/shop-service/viewSlotsAllDay",UserBookingActions.viewSlotsAllDay); // added by anirbank-93
 
 /** Below api for both book service slot and add to service cart */
 router.post("/shop-service/book-slot", UserBookingActions.bookAppointment); // added by anirbank-93

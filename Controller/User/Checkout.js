@@ -10,6 +10,7 @@ var Curvalue = require("../../Models/currvalue");
 var moment = require("moment-timezone");
 
 var create = async (req, res) => {
+  // console.log(req.body);
   var alreadyBooked = [];
 
   for (let i = 0; i < req.body.cart_items.length; i++) {
@@ -25,6 +26,7 @@ var create = async (req, res) => {
   console.log("Slots already booked ", alreadyBooked);
 
   if (alreadyBooked.length > 0) {
+    console.log("length is:",alreadyBooked.length);
     var bookedServices = "";
     for (let i = 0; i < alreadyBooked.length; i++) {
       if (i == 0) {
@@ -42,7 +44,9 @@ var create = async (req, res) => {
       data: null,
     });
   } else {
-    const V = new Validator(req.body, {
+    const V = new Validator(req.body,
+      console.log(req.body),
+       {
       user_id: "required",
       // subtotal: "required",
       total: "required",
@@ -54,8 +58,9 @@ var create = async (req, res) => {
       zip: "required",
       // payment_type: "required"
     });
-    let matched = V.check().then((val) => val);
-
+    let matched = V.check().then() 
+    // => data);
+    console.log(matched);
     if (!matched) {
       return res.status(400).json({ state: false, error: V.errors });
     }
