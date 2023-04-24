@@ -1,3 +1,44 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+$cta: #FF6575;
+$cta-secondary: #b4a7f5;
+$main-text: #002058;
+
+h1 {
+  font-weight: 700;
+  font-size: 48px;
+  margin-bottom: 40px;
+  line-height: 1.2;
+  max-width: 500px;
+  color: $main-text;
+}
+
+h2 {
+  font-size: 36px;
+  margin-bottom: 0;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  color: $main-text;
+}
+
+h5 {
+  color: $cta;
+  font-size: 18px;
+  font-weight: 700;
+  padding-bottom: 18px;
+  display: block;
+  letter-spacing: 0.9px;
+}
+
+button {
+  min-width: 120px;
+  padding: 10px 15px;
+  background: #F4F4F4;
+  border-radius: 50px;
+  text-align: center;
+  border: 3px solid #f4f4f4;
+  font-size: 15px;
+  min-height: 50px;
+}
