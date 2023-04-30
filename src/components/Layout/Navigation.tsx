@@ -14,7 +14,12 @@ const Navigation = (props: props) => {
     console.log(props);
     return (
         <header className={style.header}>
-            <Container>
+            <Container options={{
+                position: "fixed",
+                width: "100%",
+                background: "inherit",
+                boxShadow: "inherit"
+            }}>
                 <div className={style.logo}>
                     <Image
                         src={image}

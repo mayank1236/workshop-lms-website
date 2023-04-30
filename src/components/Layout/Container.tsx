@@ -1,13 +1,10 @@
 import React from 'react';
-import style from '@/styles/container.module.scss';
+import style from '@/styles/layout.module.scss';
+import { layoutProps } from '@/types/layoutTypes';
 
-type props = {
-    children: JSX.Element[];
-}
-
-const Container = (props: props) => {
+const Container = (props: layoutProps) => {
     return (
-        <div className={style.container}>{...props.children}</div>
+        <div style={props.options} className={style.container}>{props.children}</div>
     )
 }
 

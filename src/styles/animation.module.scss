@@ -1,0 +1,8 @@
+.onHoverMoveUp {
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.onHoverMoveUp:hover {
+    transform: translate(0, -10px);
+}

@@ -17,8 +17,8 @@ h1 {
 
 h2 {
   font-size: 36px;
-  margin-bottom: 0;
   font-weight: 700;
+  margin-bottom: 40px;
   letter-spacing: 0.9px;
   color: $main-text;
 }
@@ -30,6 +30,13 @@ h5 {
   padding-bottom: 18px;
   display: block;
   letter-spacing: 0.9px;
+}
+
+p {
+  color: #685f78;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 button {
