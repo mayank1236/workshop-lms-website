@@ -14,7 +14,8 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    gap: 10px;
+    gap: 40px;
+    position: relative;
 
     .imgWrapper {
         position: relative;
@@ -35,4 +36,17 @@
         width: 100%;
         max-width: 500px;
     }
+}
+
+.question {
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    width: calc(50% - 40px);
+    display: inline-block;
+    border: #cac8ce 1px solid;
+    cursor: pointer;
+    height: 40px;
+    overflow: hidden;
+    transition: height 0.3s ease-in-out;
 }

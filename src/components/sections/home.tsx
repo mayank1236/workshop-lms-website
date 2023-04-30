@@ -9,8 +9,8 @@ import ContentWrapper from '../Layout/ContentWrapper';
 import Star from '../resources/Star';
 import Background from '../resources/Background';
 import Icon from '../resources/Icon';
-
-import style from '@/styles/animation.module.scss';
+import Blob from '../Layout/Blob';
+import BlobRow from '../Layout/BlobRow';
 
 const Home = () => {
     const achievements = [
@@ -53,7 +53,7 @@ const Home = () => {
                     <ContentWrapper>
                         <h5>The Leader in Online Learning</h5>
                         <h1>Engaging & Accessible Online Courses For All</h1>
-                        <button type="button" className="mb-8">Register</button>
+                        <button type="button" style={{ marginBottom: "40px" }}>Register</button>
                         <h5>Trusted by over 15K Users <br />worldwide since 2022</h5>
                         <Row options={{ height: "50px" }}>
                             <ContentWrapper><h2>290+</h2></ContentWrapper>
@@ -78,51 +78,31 @@ const Home = () => {
                         />
                     </ImageWrapper>
                 </Row>
-                <Row
-                    options={{
-                        position: "absolute",
-                        left: "0px",
-                        top: "95%",
-                        height: "100px",
-                        padding: "0 40px",
-                        gap: "40px",
-                        alignItems: "center",
-                        maxWidth: "1240px",
-                        margin: "0 auto",
-                        right: "0"
-                    }}>
+                <BlobRow>
                     {
                         achievements.map(achieve => {
                             return (
-                                <div className={style.onHoverMoveUp}>
-                                    <ContentWrapper options={{
-                                        padding: "10px",
-                                        background: "white",
-                                        borderRadius: "15px",
-                                        border: "#cac8ce 1px solid",
-                                        height: "120px"
+                                <Blob key={achieve.name}>
+                                    <Row options={{
+                                        minHeight: "100%"
                                     }}>
-                                        <Row options={{
-                                            minHeight: "100%"
-                                        }}>
-                                            <ImageWrapper options={{ minHeight: "100%", borderRadius: "15px", background: `${achieve.bg}`, padding: "10px" }}>
-                                                <Icon icon={achieve.name} color={achieve.color} />
-                                            </ImageWrapper>
-                                            <ContentWrapper>
-                                                <h2 style={{ margin: 0 }}>
-                                                    {achieve.number}
-                                                </h2>
-                                                <p>
-                                                    {achieve.desc}
-                                                </p>
-                                            </ContentWrapper>
-                                        </Row>
-                                    </ContentWrapper>
-                                </div>
+                                        <ImageWrapper options={{ minHeight: "100%", borderRadius: "15px", background: `${achieve.bg}`, padding: "10px" }}>
+                                            <Icon icon={achieve.name} color={achieve.color} />
+                                        </ImageWrapper>
+                                        <ContentWrapper>
+                                            <h2 style={{ margin: 0 }}>
+                                                {achieve.number}
+                                            </h2>
+                                            <p>
+                                                {achieve.desc}
+                                            </p>
+                                        </ContentWrapper>
+                                    </Row>
+                                </Blob>
                             )
                         })
                     }
-                </Row>
+                </BlobRow>
             </Container>
             <Background />
         </Section>
