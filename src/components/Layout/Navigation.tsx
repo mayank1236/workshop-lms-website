@@ -18,7 +18,9 @@ const Navigation = (props: props) => {
                 position: "fixed",
                 width: "100%",
                 background: "inherit",
-                boxShadow: "inherit"
+                boxShadow: "inherit",
+                left: "0px",
+                right: "0px"
             }}>
                 <div className={style.logo}>
                     <Image
