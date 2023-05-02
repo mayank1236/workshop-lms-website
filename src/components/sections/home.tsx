@@ -12,6 +12,8 @@ import Icon from '../resources/Icon';
 import Blob from '../Layout/Blob';
 import BlobRow from '../Layout/BlobRow';
 
+import style from '@/styles/responsive.module.scss';
+
 const Home = () => {
     const achievements = [
         {
@@ -47,9 +49,9 @@ const Home = () => {
     return (
         <Section options={{
             zIndex: "2"
-        }}>
+        }} nameOfClass={style.home}>
             <Container>
-                <Row>
+                <Row nameOfClass={style.row}>
                     <ContentWrapper>
                         <h5>The Leader in Online Learning</h5>
                         <h1>Engaging & Accessible Online Courses For All</h1>

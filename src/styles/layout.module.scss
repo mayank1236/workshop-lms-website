@@ -3,11 +3,19 @@
     margin: 0 auto;
     padding: 0 40px;
     box-sizing: border-box;
+
+    @media screen and (max-width: 992px) {
+        padding: 0 20px;
+    }
 }
 
 .section {
     padding: 80px 0px;
     position: relative;
+
+    @media screen and (max-width: 992px) {
+        padding: 50px 0px;
+    }
 }
 
 .row {
@@ -16,6 +24,10 @@
     width: 100%;
     gap: 40px;
     position: relative;
+
+    @media screen and (max-width: 992px) {
+        gap: 20px;
+    }
 
     .imgWrapper {
         position: relative;

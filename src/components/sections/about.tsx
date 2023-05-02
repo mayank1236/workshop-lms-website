@@ -6,13 +6,15 @@ import ContentWrapper from '../Layout/ContentWrapper'
 import ImageWrapper from '../Layout/ImageWrapper'
 import Image from 'next/image'
 
+import style from '@/styles/responsive.module.scss';
+
 const About = () => {
     return (
         <Section options={{
             paddingTop: "130px"
-        }}>
+        }} nameOfClass={style.about}>
             <Container>
-                <Row>
+                <Row nameOfClass={style.row}>
                     <ContentWrapper>
                         <h5>About our company</h5>
                         <h2>Master the skills to drive your career</h2>

@@ -9,6 +9,8 @@ import Icon from '../resources/Icon'
 import ContentWrapper from '../Layout/ContentWrapper'
 import Form from '../user/Form'
 
+import style from "@/styles/responsive.module.scss";
+
 const Contact = () => {
     const contactInfo = [
         {
@@ -30,7 +32,7 @@ const Contact = () => {
     return (
         <Section>
             <Container>
-                <Row options={{ gap: "20px", marginBottom: "40px" }}>
+                <Row options={{ gap: "20px", marginBottom: "40px" }} nameOfClass={style.row}>
                     {
                         contactInfo.map(contact => {
 
@@ -39,7 +41,7 @@ const Contact = () => {
                                 alignItems: "center",
                                 padding: "24px",
                                 minWidth: "350px"
-                            }}>
+                            }} nameOfClass={style.item}>
                                 <ImageWrapper options={{ minHeight: "auto", height: "75px", width: "75px", borderRadius: "100%", background: "#fde1e0", padding: "20px", marginBottom: "20px" }}>
                                     <Icon
                                         icon={contact.icon}
@@ -54,7 +56,7 @@ const Contact = () => {
                         })
                     }
                 </Row>
-                <Row>
+                <Row nameOfClass={style.row}>
                     <ImageWrapper>
                         <Image
                             src="/contact.jpg"

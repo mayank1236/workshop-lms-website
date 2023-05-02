@@ -3,9 +3,9 @@ import React from 'react'
 import ContentWrapper from './ContentWrapper'
 import style from '@/styles/animation.module.scss';
 
-const Blob = ({ children, options }: layoutProps) => {
+const Blob = ({ children, options, nameOfClass }: layoutProps) => {
     return (
-        <div className={style.onHoverMoveUp}>
+        <div className={`${style.onHoverMoveUp}`}>
             <ContentWrapper options={{
                 padding: "10px",
                 background: "white",
@@ -13,7 +13,9 @@ const Blob = ({ children, options }: layoutProps) => {
                 border: "#cac8ce 1px solid",
                 height: "120px",
                 ...options
-            }}>
+            }}
+                nameOfClass={nameOfClass}
+            >
                 {children}
             </ContentWrapper>
         </div>

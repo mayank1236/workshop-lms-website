@@ -1,6 +1,7 @@
 import { layoutProps } from '@/types/layoutTypes'
 import React from 'react'
 import Row from './Row'
+import style from '@/styles/responsive.module.scss';
 
 const BlobRow = ({ children }: layoutProps) => {
     return (
@@ -17,6 +18,7 @@ const BlobRow = ({ children }: layoutProps) => {
                 margin: "0 auto",
                 right: "0"
             }}
+            nameOfClass={style.blob}
         >
             {children}
         </Row>

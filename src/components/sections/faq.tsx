@@ -4,6 +4,7 @@ import Container from '../Layout/Container'
 import Row from '../Layout/Row'
 
 import style from '@/styles/layout.module.scss';
+import res from '@/styles/responsive.module.scss';
 import Icon from '../resources/Icon';
 
 const Faq = () => {
@@ -37,10 +38,6 @@ const Faq = () => {
         return obj;
     });
 
-    // useEffect(() => {
-    //     console.log(state)
-    // }, [state])
-
     const toggle = (index: number) => {
         setState(s => {
             const newS = { ...s }
@@ -56,7 +53,7 @@ const Faq = () => {
         <Section options={{ background: "#FAFAFA" }}>
             <Container>
                 <h2>FAQS</h2>
-                <Row options={{ flexWrap: "wrap" }}>
+                <Row options={{ flexWrap: "wrap" }} nameOfClass={res.row}>
                     {faqs.map((faq, index) => {
                         return (<div key={faq.key} onClick={() => toggle(index)} className={`${style.question} question`}
                             style={{
