@@ -10,7 +10,6 @@ type props = {
 }
 
 const Navigation = (props: props) => {
-    const image = "https://dreamslms-wp.dreamguystech.com/wp-content/themes/dreamslms/assets/images/logo.svg";
     console.log(props);
     return (
         <header className={style.header}>
@@ -24,7 +23,7 @@ const Navigation = (props: props) => {
             }}>
                 <div className={style.logo}>
                     <Image
-                        src={image}
+                        src="/logo-text.png"
                         alt="lms-logo"
                         fill={true}
                         className={style.logoImg}
@@ -38,8 +37,8 @@ const Navigation = (props: props) => {
                     </ul>
                 </nav>
                 <div className={style.buttons}>
-                    <button type="button">Login</button>
-                    <button type="button">Register</button>
+                    <button type="button"><Link href="/login">Login</Link></button>
+                    <button type="button"><Link href="/register">Register</Link></button>
                 </div>
             </Container>
         </header>

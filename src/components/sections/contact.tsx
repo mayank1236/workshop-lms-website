@@ -7,7 +7,7 @@ import Blob from '../Layout/Blob'
 import Image from 'next/image'
 import Icon from '../resources/Icon'
 import ContentWrapper from '../Layout/ContentWrapper'
-import Form from '../user/Form'
+import Form from '../user/ContactForm'
 
 import style from "@/styles/responsive.module.scss";
 
@@ -34,7 +34,7 @@ const Contact = () => {
             <Container>
                 <Row options={{ gap: "20px", marginBottom: "40px" }} nameOfClass={style.row}>
                     {
-                        contactInfo.map(contact => {
+                        contactInfo.map((contact, index) => {
 
                             return (<Blob options={{
                                 height: "100%",
@@ -42,7 +42,17 @@ const Contact = () => {
                                 padding: "24px",
                                 minWidth: "350px"
                             }} nameOfClass={style.item}>
-                                <ImageWrapper options={{ minHeight: "auto", height: "75px", width: "75px", borderRadius: "100%", background: "#fde1e0", padding: "20px", marginBottom: "20px" }}>
+                                <ImageWrapper
+                                    options={{
+                                        minHeight: "auto",
+                                        height: "75px",
+                                        width: "75px",
+                                        borderRadius: "100%",
+                                        background: "#fde1e0",
+                                        padding: "20px",
+                                        marginBottom: "20px"
+                                    }}
+                                >
                                     <Icon
                                         icon={contact.icon}
                                         color="#ff6575"
@@ -50,7 +60,7 @@ const Contact = () => {
                                 </ImageWrapper>
                                 <h5>{contact.name}</h5>
                                 <div>
-                                    {contact.info.map(info => { return (<p>{info}</p>) })}
+                                    {contact.info.map(info => { return (<p key={index}>{info}</p>) })}
                                 </div>
                             </Blob>)
                         })
