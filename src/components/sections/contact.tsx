@@ -30,7 +30,7 @@ const Contact = () => {
         }
     ]
     return (
-        <Section>
+        <Section id="contact">
             <Container>
                 <Row options={{ gap: "20px", marginBottom: "40px" }} nameOfClass={style.row}>
                     {
@@ -76,7 +76,7 @@ const Contact = () => {
                     </ImageWrapper>
 
                     <ContentWrapper>
-                        <h2>Get In Touch</h2>
+                        <h2 style={{ textAlign: 'left' }}>Get In Touch</h2>
                         <p>Aliquam lorem ante, dapibus in, viverra quis</p>
                         <Form />
                     </ContentWrapper>

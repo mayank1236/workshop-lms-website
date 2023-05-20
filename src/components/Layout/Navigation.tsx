@@ -15,30 +15,36 @@ const Navigation = (props: props) => {
         <header className={style.header}>
             <Container options={{
                 position: "fixed",
-                width: "100%",
+                maxWidth: "100%",
                 background: "inherit",
                 boxShadow: "inherit",
                 left: "0px",
                 right: "0px"
             }}>
                 <div className={style.logo}>
-                    <Image
-                        src="/logo-text.png"
-                        alt="lms-logo"
-                        fill={true}
-                        className={style.logoImg}
-                    ></Image>
+                    <Link href="/">
+                        <Image
+                            src="/logo.png"
+                            alt="lms-logo"
+                            fill={true}
+                            className={style.logoImg}
+                        ></Image>
+                    </Link>
                 </div>
                 <nav className={style.nav}>
                     <ul>
-                        <li><Link href="/">Home</Link></li>
-                        <li><Link href="/about">About Us</Link></li>
-                        <li><Link href="/events">Events</Link></li>
+                        <li><Link href="#about" scroll={false}>About</Link></li>
+                        <li><Link href="#instructors" scroll={false}>Instructors</Link></li>
+                        <li><Link href="#schedule" scroll={false}>Schedule</Link></li>
+                        <li><Link href="#included" scroll={false}>What's Included</Link></li>
+                        <li><Link href="#partners" scroll={false}>Partners</Link></li>
+                        <li><Link href="#faq" scroll={false}>FAQ</Link></li>
+                        <li><Link href="#contact" scroll={false}>Contact</Link></li>
                     </ul>
                 </nav>
                 <div className={style.buttons}>
-                    <button type="button"><Link href="/login">Login</Link></button>
-                    <button type="button"><Link href="/register">Register</Link></button>
+                    <Link href="login"><button type="button">Login</button></Link>
+                    <Link href="/register"><button type="button">Register</button></Link>
                 </div>
             </Container>
         </header>

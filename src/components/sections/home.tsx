@@ -92,7 +92,7 @@ const Home = () => {
                                             <Icon icon={achieve.name} color={achieve.color} />
                                         </ImageWrapper>
                                         <ContentWrapper>
-                                            <h2 style={{ margin: 0 }}>
+                                            <h2 style={{ margin: 0, textAlign: 'left' }}>
                                                 {achieve.number}
                                             </h2>
                                             <p>
@@ -106,7 +106,7 @@ const Home = () => {
                     }
                 </BlobRow>
             </Container>
-            <Background />
+            {/* <Background /> */}
         </Section>
     )
 }

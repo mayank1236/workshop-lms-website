@@ -20,7 +20,7 @@ const Form = () => {
                     <input type="email" />
                 </label>
                 <label>
-                    Message
+                    How can we help you
                     <textarea rows={9}></textarea>
                 </label>
                 <button type="submit">

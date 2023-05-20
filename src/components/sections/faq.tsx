@@ -11,23 +11,53 @@ const Faq = () => {
     const faqs = [
         {
             key: '1',
-            question: 'Is there a 14-days trial',
-            answer: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages. The new common language will be more simple and regular than the existing European languages.'
+            question: 'What is the confluence about?',
+            answer: 'Mandala Confluence is a virtual event that brings together top Mandala artists and aspiring artists for professional development and networking opportunities.'
         },
         {
             key: '2',
-            question: 'Is there a 14-days trial',
-            answer: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages. The new common language will be more simple and regular than the existing European languages.'
+            question: 'When is the event taking place?',
+            answer: 'The event is scheduled from June 29th to July 2nd (Thursday to Sunday).'
         },
         {
             key: '3',
-            question: 'Is there a 14-days trial',
-            answer: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages. The new common language will be more simple and regular than the existing European languages.'
+            question: 'What is the format of the event?',
+            answer: 'The event will be held virtually via Zoom and Gather Town.'
         },
         {
             key: '4',
-            question: 'Is there a 14-days trial',
-            answer: 'Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages. The new common language will be more simple and regular than the existing European languages.'
+            question: 'How much does it cost to attend the event?',
+            answer: 'The original value of the event is INR 24999, but it is being offered at a discounted price of INR 6499.'
+        },
+        {
+            key: '5',
+            question: 'What are the offerings of the event?',
+            answer: 'The price includes access to 12 top instructors, professional development opportunities, a chance to connect with other aspiring artists, 6 months of access to recordings of LIVE events, giveaways and takeaways, an opportunity to present your work to top artists and get feedback, and discounts from stationery brands.'
+        },
+        {
+            key: '6',
+            question: 'How do I register for the event?',
+            answer: 'You can register for the event by filling out our Registration form or connecting at mail@anvita.art.'
+        },
+        {
+            key: '7',
+            question: 'Can I access the event recordings after the event is over?',
+            answer: 'Yes, participants will have 6 months of access to the recordings of LIVE events until December 31st.'
+        },
+        {
+            key: '8',
+            question: 'Is there a limit to the number of participants who can attend?',
+            answer: 'There is no mention of a participant limit.'
+        },
+        {
+            key: '9',
+            question: 'How long is each workshop session?',
+            answer: 'Each workshop is expected to be 60 minutes long followed by 30 minutes of Live Q&A.'
+        },
+        {
+            key: '10',
+            question: 'Can we purchase art supplies during the event?',
+            answer: 'Yes, there will be a LIVE stationery/art supplies fair where brands and artists can sell their products to participants, and discounts will be available.'
         }
     ];
     const [state, setState] = useState(() => {
@@ -42,7 +72,6 @@ const Faq = () => {
         setState(s => {
             const newS = { ...s }
             newS[index] = !newS[index];
-            console.log(newS)
             return newS;
         });
     }
@@ -50,23 +79,23 @@ const Faq = () => {
 
 
     return (
-        <Section options={{ background: "#FAFAFA" }}>
+        <Section options={{ background: "#FAFAFA" }} id="faq">
             <Container>
                 <h2>FAQS</h2>
                 <Row options={{ flexWrap: "wrap" }} nameOfClass={res.row}>
                     {faqs.map((faq, index) => {
                         return (<div key={faq.key} onClick={() => toggle(index)} className={`${style.question} question`}
                             style={{
-                                height: state[index] ? "300px" : "50px",
+                                height: state[index] ? "250px" : "50px",
                             }}
                         >
-                            <Row options={{ padding: '0 0 15px' }}>
-                                <h3 style={{ color: state[index] ? "#FF6575" : "#002058" }}>{faq.question}</h3>
+                            <Row options={{ padding: '0 0 15px', gap: "10px" }}>
+                                <h3 style={{ color: state[index] ? "#F15A29" : "#243D86" }}>{faq.question}</h3>
                                 <div style={{ position: "relative", width: "15px", height: "15px" }}>
-                                    <Icon icon={state[index] ? "minus" : "plus"} color={state[index] ? "#FF6575" : "#002058"} />
+                                    <Icon icon={state[index] ? "minus" : "plus"} color={state[index] ? "#F15A29" : "#243D86"} />
                                 </div>
                             </Row>
-                            <p>
+                            <p style={{ opacity: state[index] ? '1' : '0' }}>
                                 {faq.answer}
                             </p>
                         </div>)
