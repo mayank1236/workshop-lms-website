@@ -22,6 +22,7 @@ $height: 100px;
     }
 
     .nav {
+        min-width: 655px;
 
         ul {
             @extend .flex-row;

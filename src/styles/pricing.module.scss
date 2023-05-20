@@ -1,0 +1,107 @@
+.pricing {
+    display: flex;
+    justify-content: center;
+    gap: 0px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-10px);
+        cursor: pointer;
+    }
+
+    .price {
+        background: white;
+        border: 3px solid #F15A29;
+        border-radius: 15px;
+        position: relative;
+        overflow: hidden;
+        padding: 20px;
+        z-index: 1;
+
+        li {
+            list-style-type: disc;
+            max-width: calc(50% - 15px);
+            font-size: 16px;
+            font-weight: 500;
+            color: #685f78;
+        }
+
+        ul {
+            padding-left: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        h3,
+        p {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 30px;
+        }
+
+        p {
+            font-weight: 500;
+        }
+
+        .money {
+            max-width: 70%;
+            font-size: 22px;
+            color: black;
+            margin-bottom: 0;
+        }
+
+        .highlight {
+            color: #1C75BC;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .original {
+            text-decoration: line-through;
+        }
+
+        .moneyBg {
+            display: inline-block;
+            background: rgba(241, 91, 41, 0.071);
+            display: inline-block;
+            width: calc(100% + 40px);
+            left: -20px;
+            position: relative;
+            bottom: -20px;
+            padding: 20px;
+
+            p {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                text-align: center;
+            }
+
+            button {
+                font-weight: 600;
+                font-size: 20px;
+                padding: 15px;
+                width: 100%;
+                background: #F15A29;
+                border: 2px solid#F15A29;
+                transition: all 0.3s ease;
+            }
+
+            button:hover {
+                background-color: white;
+                color: #F15A29;
+            }
+        }
+
+        .priceBg {
+            width: 100%;
+            height: 100%;
+            background: rgba(241, 91, 41, 0.13);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+    }
+}
