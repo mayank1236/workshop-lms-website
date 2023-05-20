@@ -34,7 +34,7 @@ const Included = () => {
                             <li>Lastly, don't miss the LIVE stationery/art supplies fair where your favorite brands and artists will showcase and sell their products at a discounted price - it's a great opportunity to stock up on high-quality art supplies and tools.</li>
                         </ul>
                         <div className={pricing.moneyBg}>
-                            <p>At only <span className={pricing.highlight}>INR 6499</span> (original value~ <span className={pricing.original}>INR 24999</span>)</p>
+                            {/* <p>At only <span className={pricing.highlight}>INR 6499</span> (original value~ <span className={pricing.original}>INR 24999</span>)</p> */}
                             <button onClick={() => router.push('/register')} ref={btnRef}>Learn from the best in the industry and join the Mandala Confluence</button>
                         </div>
                         <div className={pricing.priceBg}></div>
