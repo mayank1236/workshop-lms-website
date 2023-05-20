@@ -1,0 +1,13 @@
+.partners {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+
+    >div {
+        // display: inline-block;
+        position: relative;
+        width: 25%;
+        height: 170px;
+    }
+}
