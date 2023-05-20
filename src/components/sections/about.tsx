@@ -68,9 +68,9 @@ const About = () => {
                 <Row nameOfClass={style.row}>
                     <ImageWrapper>
                         <Image
-                            src="/about.png"
+                            src="/anvita.jpeg"
                             fill={true}
-                            alt="girl holding a book while thinking"
+                            alt="Picture of Anvita, the organizer of Mandala Confluence"
                         />
                     </ImageWrapper>
                     <ContentWrapper>

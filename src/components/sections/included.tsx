@@ -4,9 +4,14 @@ import Section from '../Layout/Section'
 import Container from '../Layout/Container'
 
 import pricing from '@/styles/pricing.module.scss';
+import { useRouter } from 'next/router';
+
+
 
 const Included = () => {
     const btnRef = useRef<HTMLButtonElement>(null);
+    const router = useRouter();
+
     const handleClick = () => {
         btnRef.current?.click()
     }
@@ -30,7 +35,7 @@ const Included = () => {
                         </ul>
                         <div className={pricing.moneyBg}>
                             <p>At only <span className={pricing.highlight}>INR 6499</span> (original value~ <span className={pricing.original}>INR 24999</span>)</p>
-                            <button onClick={() => console.log('button clicked!')} ref={btnRef}>Learn from the best in the industry and join the Mandala Confluence</button>
+                            <button onClick={() => router.push('/register')} ref={btnRef}>Learn from the best in the industry and join the Mandala Confluence</button>
                         </div>
                         <div className={pricing.priceBg}></div>
                     </div>

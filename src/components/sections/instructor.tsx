@@ -123,7 +123,9 @@ const Instructor = () => {
                                     src={`/${i.url}`}
                                     style={{
                                         borderRadius: "100%",
-                                        margin: "0 auto 20px"
+                                        margin: "0 auto 20px",
+                                        width: "180px",
+                                        height: "180px"
                                     }}
                                     width={180}
                                     height={180}
