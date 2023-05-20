@@ -1,6 +1,6 @@
 import style from '@/styles/navigation.module.scss';
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Container from './Container';
@@ -10,6 +10,21 @@ type props = {
 }
 
 const Navigation = (props: props) => {
+    const toggleBtnRef = useRef<HTMLButtonElement>(null);
+
+    let toggle = false;
+
+    useEffect(() => {
+        const triggerToggle = (e: any) => {
+            toggle = !toggle;
+            toggle ? toggleBtnRef.current?.classList.add('nav-toggle--active') : toggleBtnRef.current?.classList.remove('nav-toggle--active');
+        };
+
+        toggleBtnRef.current?.addEventListener('click', triggerToggle)
+
+        return () => toggleBtnRef.current?.removeEventListener('click', triggerToggle);
+    }, [toggleBtnRef.current])
+
     console.log(props);
     return (
         <header className={style.header}>
@@ -46,6 +61,9 @@ const Navigation = (props: props) => {
                     <Link href="login"><button type="button">Login</button></Link>
                     <Link href="/register"><button type="button">Register</button></Link>
                 </div>
+                <button ref={toggleBtnRef} className="nav-toggle">
+                    <span className="nav-toggle__text">Toggle Menu</span>
+                </button>
             </Container>
         </header>
     )

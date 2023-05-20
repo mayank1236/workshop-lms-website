@@ -27,6 +27,10 @@ $height: 100px;
         ul {
             @extend .flex-row;
         }
+
+        @media screen and (max-width: 1240px) {
+            display: none;
+        }
     }
 
     .logo {
@@ -38,9 +42,18 @@ $height: 100px;
             height: 100%;
             object-fit: contain;
         }
+
+        @media screen and (max-width: 1240px) {
+            width: 40%;
+            left: -8%;
+        }
     }
 
     .buttons {
         @extend .flex-row;
+
+        @media screen and (max-width: 1240px) {
+            display: none;
+        }
     }
 }
