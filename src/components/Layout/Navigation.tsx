@@ -1,31 +1,42 @@
 import style from '@/styles/navigation.module.scss';
 
-import React, { useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Container from './Container';
+import useWindowSize from '@/hooks/useWindowSize';
 
 type props = {
     isLoggedIn: boolean
 }
 
 const Navigation = (props: props) => {
-    const toggleBtnRef = useRef<HTMLButtonElement>(null);
+    const [toggle, setToggle] = useState(false);
+    const { width } = useWindowSize();
 
-    let toggle = false;
+    const toggleNav = () => {
+        setToggle(!toggle);
+    }
 
-    useEffect(() => {
-        const triggerToggle = (e: any) => {
-            toggle = !toggle;
-            toggle ? toggleBtnRef.current?.classList.add('nav-toggle--active') : toggleBtnRef.current?.classList.remove('nav-toggle--active');
-        };
+    const navBar = (<>
+        <nav className={style.nav}>
+            <ul>
+                <li onClick={toggleNav}><Link href="#about" scroll={false}>About</Link></li>
+                <li onClick={toggleNav}><Link href="#instructors" scroll={false}>Instructors</Link></li>
+                <li onClick={toggleNav}><Link href="#schedule" scroll={false}>Schedule</Link></li>
+                <li onClick={toggleNav}><Link href="#included" scroll={false}>What's Included</Link></li>
+                <li onClick={toggleNav}><Link href="#partners" scroll={false}>Partners</Link></li>
+                <li onClick={toggleNav}><Link href="#faq" scroll={false}>FAQ</Link></li>
+                <li onClick={toggleNav}><Link href="#contact" scroll={false}>Contact</Link></li>
+            </ul>
+        </nav>
+        <div className={style.buttons}>
+            <Link onClick={toggleNav} href="login"><button type="button">Login</button></Link>
+            <Link onClick={toggleNav} href="/register"><button type="button">Register</button></Link>
+        </div>
+    </>);
 
-        toggleBtnRef.current?.addEventListener('click', triggerToggle)
-
-        return () => toggleBtnRef.current?.removeEventListener('click', triggerToggle);
-    }, [toggleBtnRef.current])
-
-    console.log(props);
+    // console.log(props);
     return (
         <header className={style.header}>
             <Container options={{
@@ -46,24 +57,20 @@ const Navigation = (props: props) => {
                         ></Image>
                     </Link>
                 </div>
-                <nav className={style.nav}>
-                    <ul>
-                        <li><Link href="#about" scroll={false}>About</Link></li>
-                        <li><Link href="#instructors" scroll={false}>Instructors</Link></li>
-                        <li><Link href="#schedule" scroll={false}>Schedule</Link></li>
-                        <li><Link href="#included" scroll={false}>What's Included</Link></li>
-                        <li><Link href="#partners" scroll={false}>Partners</Link></li>
-                        <li><Link href="#faq" scroll={false}>FAQ</Link></li>
-                        <li><Link href="#contact" scroll={false}>Contact</Link></li>
-                    </ul>
-                </nav>
-                <div className={style.buttons}>
-                    <Link href="login"><button type="button">Login</button></Link>
-                    <Link href="/register"><button type="button">Register</button></Link>
-                </div>
-                <button ref={toggleBtnRef} className="nav-toggle">
-                    <span className="nav-toggle__text">Toggle Menu</span>
-                </button>
+                {(width >= 1240) ?
+                    (<>
+                        {navBar}
+                    </>) :
+                    <div
+                        className={toggle ? style.mobileNav : style.hideNav}
+                    >
+                        {navBar}
+                    </div>}
+                {
+                    (width <= 1240) ? (<button onClick={toggleNav} className={`nav-toggle ${toggle ? 'nav-toggle--active' : ''}`}>
+                        <span className="nav-toggle__text">Toggle Menu</span>
+                    </button>) : (<></>)
+                }
             </Container>
         </header>
     )

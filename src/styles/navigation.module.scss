@@ -15,6 +15,7 @@ $height: 100px;
     transition-duration: 0.4s;
     position: relative;
     z-index: 10;
+    position: relative;
 
     div {
         height: $height;
@@ -27,10 +28,36 @@ $height: 100px;
         ul {
             @extend .flex-row;
         }
+    }
 
-        @media screen and (max-width: 1240px) {
-            display: none;
+    .hideNav,
+    .mobileNav {
+        position: absolute;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background: white;
+        width: 100vw;
+        top: 100px;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+
+        .nav ul {
+            flex-direction: column;
         }
+
+        .buttons {
+            flex-direction: column;
+        }
+    }
+
+    .mobileNav {
+        height: calc(100vh - 100px);
+    }
+
+    .hideNav {
+        height: 0px;
     }
 
     .logo {
@@ -45,15 +72,10 @@ $height: 100px;
 
         @media screen and (max-width: 1240px) {
             width: 40%;
-            left: -8%;
         }
     }
 
     .buttons {
         @extend .flex-row;
-
-        @media screen and (max-width: 1240px) {
-            display: none;
-        }
     }
 }
