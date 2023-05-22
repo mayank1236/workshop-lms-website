@@ -11,13 +11,13 @@ const Partners = () => {
                 <h2>Partners/Collaborators</h2>
                 <div className={style.partners}>
                     <div>
-                        <Image src="/brand/Art Lounge.png" fill={true} alt={'Art Lounge'} />
+                        <Image src="/brand/ArtLounge.png" fill={true} alt={'Art Lounge'} />
                     </div>
                     <div>
-                        <Image src="/brand/Ayush Paper.png" fill={true} alt={'Ayush Paper'} />
+                        <Image src="/brand/AyushPaper.png" fill={true} alt={'Ayush Paper'} />
                     </div>
                     <div>
-                        <Image src="/brand/Happy Dotting Company.jpg" fill={true} alt={'Happy Dotting Company'} />
+                        <Image src="/brand/HappyDottingCompany.jpg" fill={true} alt={'Happy Dotting Company'} />
                     </div>
                 </div>
             </Container>
