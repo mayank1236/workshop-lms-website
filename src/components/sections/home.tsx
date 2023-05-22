@@ -109,7 +109,7 @@ const Home = () => {
             </Container> */}
             {/* <Background /> */}
 
-            <Image src={'/Mandala Banner (Main ).jpg'} alt={'Mandala Banner'} fill={true} style={{ height: "100%", width: "100%", objectFit: "contain" }} />
+            <Image src={'/MandalaBanner(Main).jpg'} alt={'Mandala Banner'} fill={true} style={{ height: "100%", width: "100%", objectFit: "contain" }} />
         </Section>
     )
 }

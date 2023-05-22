@@ -23,11 +23,6 @@ const Contact = () => {
             name: 'Email Adress',
             info: ['Mail@anvita.art']
         },
-        // {
-        //     icon: 'address',
-        //     name: 'Address',
-        //     info: ['367 Hillcrest Lane, Irvine,', 'California, United States']
-        // }
     ]
     return (
         <Section id="contact">
