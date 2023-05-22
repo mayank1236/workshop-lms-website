@@ -59,7 +59,7 @@ const About = () => {
                     </ContentWrapper>
                     <ImageWrapper>
                         <Image
-                            src="/about.png"
+                            src="/Mandala01.png"
                             fill={true}
                             alt="girl holding a book while thinking"
                         />
