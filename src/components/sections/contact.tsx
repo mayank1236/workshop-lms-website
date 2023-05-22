@@ -16,23 +16,24 @@ const Contact = () => {
         {
             icon: 'phone',
             name: 'Phone',
-            info: ['(123) 456-7890']
+            info: ['']
         },
         {
             icon: 'email',
             name: 'Email Adress',
-            info: ['johnsmith@example.com']
+            info: ['Mail@anvita.art']
         },
-        {
-            icon: 'address',
-            name: 'Address',
-            info: ['367 Hillcrest Lane, Irvine,', 'California, United States']
-        }
+        // {
+        //     icon: 'address',
+        //     name: 'Address',
+        //     info: ['367 Hillcrest Lane, Irvine,', 'California, United States']
+        // }
     ]
     return (
         <Section id="contact">
             <Container>
-                <Row options={{ gap: "20px", marginBottom: "40px" }} nameOfClass={style.row}>
+                <h2>Get In Touch</h2>
+                <Row options={{ gap: "20px", marginBottom: "40px", justifyContent: "space-around" }} nameOfClass={style.row}>
                     {
                         contactInfo.map((contact, index) => {
 
@@ -40,7 +41,7 @@ const Contact = () => {
                                 height: "100%",
                                 alignItems: "center",
                                 padding: "24px",
-                                minWidth: "350px"
+                                minWidth: "350px",
                             }} nameOfClass={style.item}>
                                 <ImageWrapper
                                     options={{
@@ -76,8 +77,6 @@ const Contact = () => {
                     </ImageWrapper>
 
                     <ContentWrapper>
-                        <h2 style={{ textAlign: 'left' }}>Get In Touch</h2>
-                        <p>Aliquam lorem ante, dapibus in, viverra quis</p>
                         <Form />
                     </ContentWrapper>
                 </Row>

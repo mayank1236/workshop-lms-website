@@ -6,12 +6,12 @@ const Footer = () => {
     return (
         <footer className={style.footer}>
             <Container>
-                <div className={style.menu}>
+                {/* <div className={style.menu}>
                     Footer
                 </div>
                 <div className={style.copyright}>
                     © 2023
-                </div>
+                </div> */}
             </Container>
         </footer>
     )

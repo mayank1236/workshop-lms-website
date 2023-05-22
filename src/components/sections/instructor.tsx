@@ -6,10 +6,13 @@ import ContentWrapper from '../Layout/ContentWrapper'
 import Image from 'next/image'
 import ImageWrapper from '../Layout/ImageWrapper'
 import Icon from '../resources/Icon'
+import useWindowSize from '@/hooks/useWindowSize'
 
 // import style from "@/styles/instructor.module.scss";
 
 const Instructor = () => {
+    const { width } = useWindowSize();
+
     const iconSize = {
         width: "20px"
     }
@@ -99,7 +102,7 @@ const Instructor = () => {
                             <ContentWrapper
                                 options={{
                                     justifyContent: "start",
-                                    width: "calc(50% - 40px)",
+                                    width: width <= 768 ? "100%" : "calc(50% - 40px)",
                                     padding: "20px",
                                     borderRadius: "15px",
                                     background: "rgba(241, 91, 41, 0.13)"

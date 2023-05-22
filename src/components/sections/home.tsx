@@ -48,9 +48,10 @@ const Home = () => {
 
     return (
         <Section options={{
-            zIndex: "2"
+            zIndex: "2",
+            height: "310px"
         }} nameOfClass={style.home}>
-            <Container>
+            {/* <Container>
                 <Row nameOfClass={style.row}>
                     <ContentWrapper>
                         <h5>The Leader in Online Learning</h5>
@@ -105,8 +106,10 @@ const Home = () => {
                         })
                     }
                 </BlobRow>
-            </Container>
+            </Container> */}
             {/* <Background /> */}
+
+            <Image src={'/Mandala Banner (Main ).jpg'} alt={'Mandala Banner'} fill={true} style={{ height: "100%", width: "100%", objectFit: "contain" }} />
         </Section>
     )
 }
