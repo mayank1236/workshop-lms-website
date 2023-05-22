@@ -29,7 +29,7 @@ const About = () => {
                     </ContentWrapper>
                     <ImageWrapper>
                         <Image
-                            src="/about.png"
+                            src="/Mandala7.JPEG"
                             fill={true}
                             alt="girl holding a book while thinking"
                         />
@@ -38,7 +38,7 @@ const About = () => {
                 <Row options={rowStyle} nameOfClass={style.row}>
                     <ImageWrapper>
                         <Image
-                            src="/about.png"
+                            src="/Mandala8.JPEG"
                             fill={true}
                             alt="girl holding a book while thinking"
                         />
