@@ -13,7 +13,7 @@ const About = () => {
         paddingBottom: '50px'
     }
 
-    const center = {
+    const center: { [key: string]: string } = {
         textAlign: "center"
     }
 
