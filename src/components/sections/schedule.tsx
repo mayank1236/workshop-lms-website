@@ -19,33 +19,33 @@ const Schedule = () => {
         <Section id="schedule">
             <Container>
                 <h2>Schedule</h2>
-                <p>Join us for our upcoming Mandala Workshop from <span className="highlight">June 29th, 2023 to July 2nd, 2023</span>! For more information and registration, please contact us at <span className="highlight">mail@anvita.art</span>. Check out the schedule below <span className="highlight">(all times in IST)</span> to plan your availability and ensure you don't miss these exciting workshops and events we have in store for you.</p>
+                <p>Join us for the upcoming Mandala Confluence from <span className="highlight">June 29th, 2023 to July 2nd, 2023</span>(Thursday - Sunday)! Check out the schedule below to plan your availability and ensure that you don't miss these exciting workshops and events we have in store for you!</p>
                 <div style={table} className={schedule.table}>
                     <h5 style={heading}>Time</h5>
-                    <h5 style={heading}>June 29</h5>
-                    <h5 style={heading}>June 30</h5>
-                    <h5 style={heading}>July 1</h5>
-                    <h5 style={heading}>July 2</h5>
-                    <h5 style={heading}>5:00 - 6:30 pm</h5>
-                    <p>W1</p>
+                    <h5 style={heading}>Day 1 <br />(June 29) <br />Via Zoom</h5>
+                    <h5 style={heading}>Day 2 <br />(June 30) <br />Via Gather Town</h5>
+                    <h5 style={heading}>Day 3 <br />(July 1) <br />Via Zoom</h5>
+                    <h5 style={heading}>Day 4 <br />(July 2) <br />Via Zoom</h5>
+                    <h5 style={heading}>5:00 - 6:30pm IST<br /><br />7:30 - 9:00am EST</h5>
+                    <p>Opening Remarks</p>
                     <p>Creative Marketplace</p>
-                    <p>W5</p>
-                    <p>W9</p>
-                    <h5 style={heading}>6:30 - 8:00 pm</h5>
-                    <p>W2</p>
+                    <p>W4: Paridhi</p>
+                    <p>W8: Leepi</p>
+                    <h5 style={heading}>6:30 - 8:00pm IST<br /><br />9:00 - 10:30am EST</h5>
+                    <p>W1: Divdrisht</p>
                     <p>Member Showcase</p>
-                    <p>W6</p>
-                    <p>W10</p>
-                    <h5 style={heading}>8:15 - 9:45 pm</h5>
-                    <p>W3</p>
+                    <p>W5: Praful</p>
+                    <p>W9: Chetna</p>
+                    <h5 style={heading}>8:15 - 9:45pm IST<br /><br />10:45 - 12:15pm EST</h5>
+                    <p>W2: Nikhat</p>
                     <p>Speed Dating</p>
-                    <p>W7</p>
-                    <p>W11</p>
-                    <h5 style={heading}>9:45 - 11:15 pm</h5>
-                    <p>W4</p>
+                    <p>W6: Vinita</p>
+                    <p>W10: Saudamini</p>
+                    <h5 style={heading}>9:45 - 11:15pm IST<br /><br />12:15 - 1:45pm EST</h5>
+                    <p>W3: Fernanda</p>
                     <p>Member Showcase</p>
-                    <p>W8</p>
-                    <p>W12</p>
+                    <p>W7: Vaishnavi</p>
+                    <p>Closing Remarks</p>
                 </div>
             </Container>
         </Section>

@@ -71,6 +71,11 @@
             position: relative;
             bottom: -20px;
             padding: 20px;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
 
             p {
                 margin-bottom: 0;
@@ -82,7 +87,8 @@
                 font-weight: 600;
                 font-size: 20px;
                 padding: 15px;
-                width: 100%;
+                width: calc(50% - 20px);
+                min-width: 290px;
                 background: #F15A29;
                 border: 2px solid#F15A29;
                 transition: all 0.3s ease;

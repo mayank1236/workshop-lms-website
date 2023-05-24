@@ -1,11 +1,23 @@
 .table {
     border-radius: 15px;
-    overflow: hidden;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    padding: 0 15px;
 
     >* {
         border-bottom: 3px solid #1c74bc4e;
         padding-left: 15px;
         padding-top: 15px;
+        padding-right: 15px;
+
+    }
+
+    h5 {
+        min-width: 180px;
+    }
+
+    p {
+        min-width: 120px;
     }
 
     >p:hover {

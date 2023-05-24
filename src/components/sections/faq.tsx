@@ -11,44 +11,44 @@ const Faq = () => {
     const faqs = [
         {
             key: '1',
-            question: 'What is the confluence about?',
-            answer: 'Mandala Confluence is a virtual event that brings together top Mandala artists and aspiring artists for professional development and networking opportunities.'
+            question: 'What is the Mandala Confluence?',
+            answer: 'Mandala Confluence is a virtual event that brings together Mandala artists and aspiring artists for professional development and networking opportunities.'
         },
         {
             key: '2',
             question: 'When is the event taking place?',
-            answer: 'The event is scheduled from June 29th to July 2nd (Thursday to Sunday).'
+            answer: 'The event is scheduled from June 29th to July 2nd, 2023 (Thursday to Sunday). Check the Schedule to get more details'
         },
         {
             key: '3',
             question: 'What is the format of the event?',
             answer: 'The event will be held virtually via Zoom and Gather Town.'
         },
-        {
-            key: '4',
-            question: 'How much does it cost to attend the event?',
-            answer: 'The original value of the event is INR 24999, but it is being offered at a discounted price of INR 6499.'
-        },
-        {
-            key: '5',
-            question: 'What are the offerings of the event?',
-            answer: 'The price includes access to 12 top instructors, professional development opportunities, a chance to connect with other aspiring artists, 6 months of access to recordings of LIVE events, giveaways and takeaways, an opportunity to present your work to top artists and get feedback, and discounts from stationery brands.'
-        },
+        // {
+        //     key: '4',
+        //     question: 'How much does it cost to attend the event?',
+        //     answer: 'The original value of the event is INR 24999, but it is being offered at a discounted price of INR 6499.'
+        // },
+        // {
+        //     key: '5',
+        //     question: 'What are the offerings of the event?',
+        //     answer: 'The price includes access to 12 top instructors, professional development opportunities, a chance to connect with other aspiring artists, 6 months of access to recordings of LIVE events, giveaways and takeaways, an opportunity to present your work to top artists and get feedback, and discounts from stationery brands.'
+        // },
         {
             key: '6',
             question: 'How do I register for the event?',
-            answer: 'You can register for the event by filling out our Registration form or connecting at mail@anvita.art.'
+            answer: 'You will be able to register through the website starting May 27, 2023. Join the waitlist to get notified when the registration opens.'
         },
         {
             key: '7',
             question: 'Can I access the event recordings after the event is over?',
-            answer: 'Yes, participants will have 6 months of access to the recordings of LIVE events until December 31st.'
+            answer: 'Yes, participants will have 6 months of access to the recordings of workshops until December 31st, 2023.'
         },
-        {
-            key: '8',
-            question: 'Is there a limit to the number of participants who can attend?',
-            answer: 'There is no mention of a participant limit.'
-        },
+        // {
+        //     key: '8',
+        //     question: 'Is there a limit to the number of participants who can attend?',
+        //     answer: 'There is no mention of a participant limit.'
+        // },
         {
             key: '9',
             question: 'How long is each workshop session?',
@@ -57,7 +57,12 @@ const Faq = () => {
         {
             key: '10',
             question: 'Can we purchase art supplies during the event?',
-            answer: 'Yes, there will be a LIVE stationery/art supplies fair where brands and artists can sell their products to participants, and discounts will be available.'
+            answer: 'Yes, there will be a LIVE stationery/art supplies fair where brands and artists will be selling their products to participantsat exclusive discounted prices.'
+        },
+        {
+            key: '11',
+            question: 'I have a question that not answered here',
+            answer: 'Please email us at mail@anvita.art with any questions/queries'
         }
     ];
     const [state, setState] = useState(() => {
@@ -81,7 +86,7 @@ const Faq = () => {
     return (
         <Section options={{ background: "#FAFAFA" }} id="faq">
             <Container>
-                <h2>FAQS</h2>
+                <h2>FAQs</h2>
                 <Row options={{ flexWrap: "wrap" }} nameOfClass={res.row}>
                     {faqs.map((faq, index) => {
                         return (<div key={faq.key} onClick={() => toggle(index)} className={`${style.question} question`}

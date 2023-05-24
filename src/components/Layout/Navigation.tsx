@@ -25,14 +25,15 @@ const Navigation = (props: props) => {
                 <li onClick={toggleNav}><Link href="#instructors" scroll={false}>Instructors</Link></li>
                 <li onClick={toggleNav}><Link href="#schedule" scroll={false}>Schedule</Link></li>
                 <li onClick={toggleNav}><Link href="#included" scroll={false}>What's Included</Link></li>
-                <li onClick={toggleNav}><Link href="#partners" scroll={false}>Partners</Link></li>
-                <li onClick={toggleNav}><Link href="#faq" scroll={false}>FAQ</Link></li>
-                <li onClick={toggleNav}><Link href="#contact" scroll={false}>Contact</Link></li>
+                <li onClick={toggleNav}><Link href="#partners" scroll={false}>Collaborators</Link></li>
+                <li onClick={toggleNav}><Link href="#faq" scroll={false}>FAQs</Link></li>
+                <li onClick={toggleNav}><Link href="#contact" scroll={false}>Contact US</Link></li>
             </ul>
         </nav>
         <div className={style.buttons}>
-            <Link onClick={toggleNav} href="login"><button type="button">Login</button></Link>
-            <Link onClick={toggleNav} href="/register"><button type="button">Register</button></Link>
+            {/* <Link onClick={toggleNav} href="login"><button type="button">Login</button></Link>
+            <Link onClick={toggleNav} href="/register"><button type="button">Register</button></Link> */}
+            <Link onClick={toggleNav} href='https://art.us9.list-manage.com/subscribe?u=9d8dcd663984aed5841bb2b05&id=938d162999'><button type="button">Join the Waitlist</button></Link>
         </div>
     </>);
 

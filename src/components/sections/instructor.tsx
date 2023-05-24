@@ -94,7 +94,7 @@ const Instructor = () => {
         <Section id="instructors">
             <Container>
                 <h2>
-                    Instructors
+                    Meet Our Instructors
                 </h2>
                 <Row options={{ flexWrap: 'wrap' }}>
                     {instructors.map(i => {

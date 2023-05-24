@@ -8,7 +8,7 @@ const Partners = () => {
     return (
         <Section id="partners">
             <Container>
-                <h2>Partners/Collaborators</h2>
+                <h2>Collaborators</h2>
                 <div className={style.partners}>
                     <div>
                         <Image src="/brand/ArtLounge.png" fill={true} alt={'Art Lounge'} />
