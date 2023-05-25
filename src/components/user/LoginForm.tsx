@@ -23,7 +23,7 @@ const LoginForm = () => {
             >
                 <ContentWrapper options={{ alignItems: "center", height: "100vh", justifyContent: "center" }}>
                     <ImageWrapper>
-                        <Image src="/login.png" fill={true} alt="Login Page Illustration" />
+                        <Image src="/mandala/login.png" fill={true} alt="Login Page Illustration" />
                     </ImageWrapper>
                     <h2>Welcome to Dreams LMS</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
