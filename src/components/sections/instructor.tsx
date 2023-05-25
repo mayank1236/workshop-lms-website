@@ -22,7 +22,7 @@ const Instructor = () => {
             url: 'instructors/ChetnaSingla(@mandalasbychetna).jpg',
             name: 'Chetna Singla',
             handle: '@mandalasbychetna',
-            instagram: 'https://www.instagram.com/mandalasbychetna/',
+            instagram: 'https://www.instagram.com/mandalaconfluencesbychetna/',
             description: "Chetna is an artist based in Delhi, India with over 5 years of experience in the art world. She is passionate about teaching mandalas and doodles, and she creates captivating art content for platforms like Instagram, Pinterest, and occasionally YouTube. Known for her love of chai, sweets, and stylish accessories, Chetna can usually be found immersed in the creative process, organizing her space, enjoying the soulful tunes of Coke Studio, or capturing breathtaking pictures of the sky. In the upcoming Mandala Confluence, Chetna will be hosting an engaging workshop on doodling. Participants will discover the art of creating mesmerizing doodles using simple shapes, patterns, and vibrant colors. Whether you're a beginner seeking to explore your artistic side or a seasoned professional, Chetna's workshop promises an enjoyable experience filled with new insights and techniques. Make sure to join her session and unlock your creative potential."
         },
         {
@@ -50,14 +50,14 @@ const Instructor = () => {
             url: 'instructors/VaishnaviLuniya(@mandalabyvaishnavi).jpg',
             name: 'Vaishnavi Luniya',
             handle: '@mandalabyvaishnavi',
-            instagram: 'https://www.instagram.com/mandalabyvaishnavi',
+            instagram: 'https://www.instagram.com/mandalaconfluencebyvaishnavi',
             description: "Vaishnavi is an artist with a deep-rooted passion for creativity that has been a part of her life for as long as she can remember. Her love for drawing, painting, and crafting has always been present, but it wasn't until recently that she made the conscious decision to prioritize and embrace this artistic side of herself. During her formative years, Vaishnavi encountered discouragement from those around her who believed that pursuing a career in art wouldn't lead to financial stability. As a young teenager, she heeded their advice and ventured into the design industry, leaving her dreams of becoming an artist behind as a distant memory. However, a void began to grow within Vaishnavi, and she soon realized that art was missing from her life. In 2020, a sudden urge ignited within her, compelling her to unpack her old art supplies and reignite her creative journey. From that point forward, she never looked back. While Vaishnavi enjoys experimenting with various artistic mediums, her true expertise lies in the realm of mandala art. She finds immense joy in creating dot mandalas, exploring diverse color combinations and patterns that bring her compositions to life. For Vaishnavi, art is not just a form of expression but also a form of meditation, providing her with a sense of serenity and tranquility. Driven by her passion, Vaishnavi is dedicated to sharing her knowledge of art through art sessions and workshops. She understands the transformative power of art and aims to spread happiness and inspiration to others through her creative endeavors. Since sharing her artwork on Instagram, Vaishnavi has garnered appreciation from people who resonate with her unique artistic style. With a genuine desire to connect with others and promote the joy of art, she hopes to inspire others to find their own happiness and fulfillment through creative expression."
         },
         {
             url: 'instructors/DivdrishtSuri(@mandalas_by_divdrisht).jpeg',
             name: 'Divdrisht Suri',
             handle: '@mandalas_by_divdrisht',
-            instagram: 'https://www.instagram.com/mandalas_by_divdrisht',
+            instagram: 'https://www.instagram.com/mandalaconfluences_by_divdrisht',
             description: "Divdrisht is a Mandala and Mural artist from Calcutta. Over the past five years, she has conducted an impressive number of mandala workshops, surpassing 1200 sessions in 14 countries. Her remarkable achievements have been recognized and featured in renowned publications such as The Hindu, Telegraph, Indian Voices, The Mumbai Mirror, and five online journals. Notably, Divdrisht has made significant contributions as a member of the Mandala Art Team with Brustro Official India. Her passion for promoting art as a form of wellness and therapy has led her to organize workshops and create captivating mandala videos for esteemed brands including Google, Amazon, Byju's, Myntra, HSBC India, and several other prominent corporations."
         },
         {
@@ -109,7 +109,7 @@ const Instructor = () => {
                                 }}
                             >
                                 <Image
-                                    src={`/mandala/${i.url}`}
+                                    src={`/mandalaconfluence/${i.url}`}
                                     style={{
                                         borderRadius: "100%",
                                         margin: "0 auto 20px",

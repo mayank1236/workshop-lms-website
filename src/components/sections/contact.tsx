@@ -72,7 +72,7 @@ const Contact = () => {
                 <Row nameOfClass={style.row}>
                     <ImageWrapper>
                         <Image
-                            src="/mandala/contact.jpg"
+                            src="/mandalaconfluence/contact.jpg"
                             fill={true}
                             alt="crowd of people walking"
                         />

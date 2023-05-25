@@ -33,7 +33,7 @@ const About = () => {
                     </ContentWrapper>
                     <ImageWrapper>
                         <Image
-                            src="/mandala/Mandala7.JPEG"
+                            src="/mandalaconfluence/mandalaconfluence7.JPEG"
                             fill={true}
                             alt="girl holding a book while thinking"
                         />
@@ -42,7 +42,7 @@ const About = () => {
                 <Row options={rowStyle} nameOfClass={style.row}>
                     <ImageWrapper>
                         <Image
-                            src="/mandala/Mandala8.JPEG"
+                            src="/mandalaconfluence/mandalaconfluence8.JPEG"
                             fill={true}
                             alt="girl holding a book while thinking"
                         />
@@ -64,7 +64,7 @@ const About = () => {
                     </ContentWrapper>
                     <ImageWrapper>
                         <Image
-                            src="/mandala/Mandala01.png"
+                            src="/mandalaconfluence/mandalaconfluence01.png"
                             fill={true}
                             alt="girl holding a book while thinking"
                         />
@@ -73,7 +73,7 @@ const About = () => {
                 <Row nameOfClass={style.row}>
                     <ImageWrapper>
                         <Image
-                            src="/mandala/anvita.jpeg"
+                            src="/mandalaconfluence/anvita.jpeg"
                             fill={true}
                             alt="Picture of Anvita, the organizer of Mandala Confluence"
                         />

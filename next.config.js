@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  basePath: '/mandala'
+  basePath: '/mandalaconfluenceconfluence'
 }
 
 module.exports = nextConfig
