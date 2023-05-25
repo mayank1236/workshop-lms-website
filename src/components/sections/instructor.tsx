@@ -101,7 +101,7 @@ const Instructor = () => {
                         return (
                             <ContentWrapper
                                 options={{
-                                    justifyContent: "start",
+                                    justifyContent: "flex-start",
                                     width: width <= 768 ? "100%" : "calc(50% - 40px)",
                                     padding: "20px",
                                     borderRadius: "15px",
@@ -113,7 +113,8 @@ const Instructor = () => {
                                     style={{
                                         borderRadius: "100%",
                                         margin: "0 auto 20px",
-                                        objectFit: "cover"
+                                        objectFit: "cover",
+                                        transform: `rotate(${i.name == "Divdrisht Suri" ? "90deg" : "0deg"})`
                                     }}
                                     width={180}
                                     height={180}

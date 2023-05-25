@@ -27,7 +27,7 @@ const Navigation = (props: props) => {
                 <li onClick={toggleNav}><Link href="#included" scroll={false}>What's Included</Link></li>
                 <li onClick={toggleNav}><Link href="#partners" scroll={false}>Collaborators</Link></li>
                 <li onClick={toggleNav}><Link href="#faq" scroll={false}>FAQs</Link></li>
-                <li onClick={toggleNav}><Link href="#contact" scroll={false}>Contact US</Link></li>
+                <li onClick={toggleNav}><Link href="#contact" scroll={false}>Contact Us</Link></li>
             </ul>
         </nav>
         <div className={style.buttons}>

@@ -61,7 +61,7 @@ const Faq = () => {
         },
         {
             key: '11',
-            question: 'I have a question that not answered here',
+            question: 'I have a question that is not answered here',
             answer: 'Please email us at mail@anvita.art with any questions/queries'
         }
     ];
