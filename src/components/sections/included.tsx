@@ -34,7 +34,7 @@ const Included = () => {
                         </ul>
                         <div className={pricing.moneyBg}>
                             {/* <p>At only <span className={pricing.highlight}>INR 6499</span> (original value~ <span className={pricing.original}>INR 24999</span>)</p> */}
-                            <button onClick={() => downloadBrochure()}>Download Event Brochure</button>
+                            {/* <button onClick={() => downloadBrochure()}>Download Event Brochure</button> */}
                             <button onClick={() => router.push('https://art.us9.list-manage.com/subscribe?u=9d8dcd663984aed5841bb2b05&id=938d162999')}>Join the Waitlist</button>
                         </div>
                         <div className={pricing.priceBg}></div>
