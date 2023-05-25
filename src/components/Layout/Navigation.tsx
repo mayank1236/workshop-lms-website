@@ -1,4 +1,4 @@
-import style from '@/mandala/styles/navigation.module.scss';
+import style from '@/styles/navigation.module.scss';
 
 import React, { useState } from 'react'
 import Image from 'next/image'
