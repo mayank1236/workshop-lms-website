@@ -109,7 +109,7 @@ const Instructor = () => {
                                 }}
                             >
                                 <Image
-                                    src={`/${i.url}`}
+                                    src={`/mandala/${i.url}`}
                                     style={{
                                         borderRadius: "100%",
                                         margin: "0 auto 20px",

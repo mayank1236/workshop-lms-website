@@ -33,7 +33,7 @@ const LoginForm = () => {
                     <Row options={{ height: "50px" }}>
                         <div className={style.logo}>
                             <Image
-                                src="/logo.png"
+                                src="/mandala/logo.png"
                                 alt="lms-logo"
                                 fill={true}
                                 className={style.logoImg}
