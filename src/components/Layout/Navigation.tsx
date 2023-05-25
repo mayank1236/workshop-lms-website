@@ -56,7 +56,7 @@ const Navigation = (props: props) => {
                 <div className={style.logo}>
                     <Link href="/">
                         <Image
-                            src="/mandalaconfluenceconfluence/logo.png"
+                            src="/mandalaconfluencec/logo.png"
                             alt="lms-logo"
                             fill={true}
                             className={style.logoImg}
