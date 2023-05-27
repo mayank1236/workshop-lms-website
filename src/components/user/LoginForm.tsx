@@ -23,28 +23,23 @@ const LoginForm = () => {
             >
                 <ContentWrapper options={{ alignItems: "center", height: "100vh", justifyContent: "center" }}>
                     <ImageWrapper>
-                        <Image src="/mandalaconfluence/login.png" fill={true} alt="Login Page Illustration" />
+                        <Image
+                            src="/mandalaconfluence/logo.png"
+                            alt="lms-logo"
+                            fill={true}
+                        ></Image>
                     </ImageWrapper>
-                    <h2>Welcome to Dreams LMS</h2>
+                    <h2>Welcome to Mandala Confluence</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-                    <Background />
                 </ContentWrapper>
                 <ContentWrapper>
                     <Row options={{ height: "50px" }}>
-                        <div className={style.logo}>
-                            <Image
-                                src="/mandalaconfluence/logo.png"
-                                alt="lms-logo"
-                                fill={true}
-                                className={style.logoImg}
-                            ></Image>
-                        </div>
                         <Link href="/">Back To Home</Link>
                     </Row>
                     <div className={style.form} style={{ paddingRight: "0" }}>
                         <form>
                             <label>
-                                Username or Email Address
+                                Email
                                 <input type="text" />
                             </label>
                             <label>
