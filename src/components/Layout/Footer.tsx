@@ -12,18 +12,13 @@ const Footer = () => {
             <footer className={style.footer}>
                 <Container>
                     <Row>
-                        <div className={style.menu}>
-                            Footer
-                        </div>
-                        <div className={style.copyright}>
-                            © 2023
-                        </div>
-                        <div>Unit No. 510, <br />City Center, <br />Sector - 12, Dwarka, <br />New Delhi - 110075</div>
-                        <ContentWrapper>
+                        <div><h3>Contact Us</h3>Unit No. 510, <br />City Center, <br />Sector - 12, Dwarka, <br />New Delhi - 110075</div>
+                        <ContentWrapper options={{ justifyContent: "flex-end" }}>
                             <div><Link href="/privacy-policy">Privacy Policy</Link></div>
                             <div><Link href="/terms&conditions">Terms & Conditions</Link></div>
                             <div><Link href="/aboutus">About Us</Link></div>
                             <div><Link href="/contactus">Contact Us</Link></div>
+                            <div><Link href="/refund&returnpolicy">Refund & Return Policy</Link></div>
                         </ContentWrapper>
                     </Row>
                 </Container>

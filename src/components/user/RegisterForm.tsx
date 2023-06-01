@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Section from '../Layout/Section'
 import Container from '../Layout/Container'
 
@@ -6,15 +6,19 @@ import style from '@/styles/form.module.scss';
 import axios from 'axios';
 
 const RegisterForm = () => {
+    const [payment, setPaymentForm] = useState(null);
+
     const handlePayment = async () => {
-        const config = {
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-            }
-        }
-        const i = await axios.post('http://localhost:3001/register', {}, config)
-        console.log(i)
+        // const config = {
+        //     headers: {
+        //         "Access-Control-Allow-Origin": "*",
+        //         "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+        //     }
+        // }
+        // const i = await axios.post('http://localhost:3001/ccavRequestHandler', {}, config)
+        // // setPaymentForm(i)
+
+        console.log('this is still working?')
     }
 
     return (
@@ -22,7 +26,7 @@ const RegisterForm = () => {
             <Container>
                 <h2>Register Now</h2>
                 <div className={style.form} style={{ maxWidth: "500px", margin: "0 auto" }}>
-                    <form>
+                    <form method="POST" name="customerData" action="http://localhost:3001/ccavRequestHandler">
                         {/* <label>
                             Name
                             <input type="text" />
@@ -58,7 +62,7 @@ const RegisterForm = () => {
                         <label>
                             Make sure to check your inbox for a confirmation email with some pre-event tasks.
                         </label> */}
-                        <button style={{ width: "100%" }} type="button" onClick={handlePayment}>
+                        <button style={{ width: "100%" }} type="submit" onClick={handlePayment}>
                             Pay Now
                         </button>
                     </form>

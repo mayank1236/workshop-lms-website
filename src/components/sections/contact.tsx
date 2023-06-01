@@ -37,7 +37,7 @@ const Contact = () => {
         <Section id="contact">
             <Container>
                 <h2>Get In Touch</h2>
-                <Row options={{ gap: "20px", marginBottom: "40px", justifyContent: "space-around" }} nameOfClass={style.row}>
+                <Row options={{ gap: "20px", justifyContent: "space-around" }} nameOfClass={style.row}>
                     {contactInfo.map((contact, index) => {
 
                         return (<div style={{
