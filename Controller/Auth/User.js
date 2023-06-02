@@ -74,7 +74,7 @@ const register = async (req, res) => {
                     });
             }
             else {
-                res.status(400).json({
+                res.status(200).json({
                     status: false,
                     message: "Email is already registered.",
                     error: "Email exists."
