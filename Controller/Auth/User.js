@@ -2,9 +2,6 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var passwordHash = require('password-hash');
 var User = require('../../Models/user');
-var Product = require('../../Models/product');
-const BlogType=require('../../Models/blogType');
-// var Upload = require('../../service/upload');
 
 const { Validator } = require('node-input-validator');
 
@@ -22,10 +19,7 @@ const getTokenData = async (token) => {
 const register = async (req, res) => {
     const v = new Validator(req.body, {
         email: 'required|email',
-        password: 'required|minLength:8',
-        firstName: 'required',
-        lastName: 'required',
-        currency: 'required',
+        password: 'required'
 
     })
     let matched = await v.check().then((val) => val)
@@ -38,17 +32,27 @@ const register = async (req, res) => {
                 console.log("Data", data)
                 let userData = {
                     _id: mongoose.Types.ObjectId(),
-                    firstName: req.body.firstName,
-                    lastName: req.body.lastName,
+                    name: req.body.name,
                     email: req.body.email,
                     password: passwordHash.generate(req.body.password),
                     token: createToken(req.body),
-                    currency:req.body.currency
                 }
-                // if (typeof (req.body.phone) !='undefined')
-                // {
-                //     userData.phone = Number(req.body.phone)
-                // }
+                if (typeof (req.body.contact) !=='undefined' && req.body.contact!='')
+                {
+                    userData.contact = req.body.contact
+                }
+                if (typeof (req.body.address) !=='undefined' && req.body.address!='')
+                {
+                    userData.address = req.body.address
+                }
+                if (typeof (req.body.instagram) !=='undefined' && req.body.instagram!='')
+                {
+                    userData.instagram = req.body.instagram
+                }
+                if (typeof (req.body.website) !=='undefined' && req.body.website!='')
+                {
+                    userData.website = req.body.website
+                }
 
                 const all_users = new User(userData);
 
@@ -120,90 +124,11 @@ const login = async (req, res) => {
         })
 }
 
-const viewProductList = async (req, res) => {
-    return Product.aggregate(
-        [
-            {
-                $lookup: {
-                    from: "categories",
-                    localField: "catID",
-                    foreignField: "_id",
-                    as: "category_data"
-                }
-            },
-            {
-                $project: {
-                    _v: 0
-                }
-            }
-        ]
-    ).then((data) => {
-        res.status(200).json({
-            status: true,
-            message: 'Product Data Get Successfully',
-            data: data
-        })
-    })
-        .catch((err) => {
-            res.status(500).json({
-                status: false,
-                message: "Server error. Please try again.",
-                error: error,
-            });
-        })
-}
 
-const viewAllsubscription = async (req, res) => {
-    return Subsciption.aggregate(
-        [
-            {
-                $project: {
-                    _v: 0
-                }
-            }
-        ]
-    )
-        .then((data) => {
-            res.status(200).json({
-                status: true,
-                message: 'Subscription Data Get Successfully',
-                data: data
-            })
-        })
-        .catch((err) => {
-            res.status(500).json({
-                status: false,
-                message: "Server error. Please try again.",
-                error: error,
-            });
-        })
-}
-
-const viewBlogData = async (req, res) => {
-    let blogs = await BlogType.find().exec();
-
-    if (blogs.length > 0) {
-        return res.status(200).json({
-            status: true,
-            message: "All blogs successfully get.",
-            data: blogs
-        });
-    }
-    else {
-        return res.status(200).json({
-            status: true,
-            message: "No information to show.",
-            data: null
-        });
-    }
-
-}
 
 module.exports = {
     getTokenData,
     register,
     login,
-    viewProductList,
-    viewAllsubscription,
-    viewBlogData
+
 }

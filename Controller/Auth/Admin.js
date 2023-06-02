@@ -2,10 +2,7 @@ var mongoose = require("mongoose");
 var Admin = require("../../Models/admin");
 var passwordHash = require("password-hash");
 const Upload = require("../../service/upload");
-const BlogType = require("../../Models/blogType");
-// const { Validator } = require('node-input-validator');
-// var AdminDetails=require('../../Models/admin_details');
-var Curvalue = require("../../Models/currvalue");
+
 
 var jwt = require("jsonwebtoken");
 const { Validator } = require("node-input-validator");
@@ -132,19 +129,7 @@ const login = async (req, res) => {
     });
 };
 
-var uploadImage = async (req, res) => {
-  let imageUrl = "";
-  let image_url = await Upload.uploadFile(req, "admin");
-  if (req.file != null && req.file != "" && typeof req.file != "undefined") {
-    imageUrl = image_url;
-  }
 
-  res.status(200).json({
-    status: true,
-    data: imageUrl,
-    error: null,
-  });
-};
 var update = async (req, res) => {
   Admin.findOneAndUpdate(
     { _id: { $in: [mongoose.Types.ObjectId(req.params.id)] } },
@@ -168,137 +153,11 @@ var update = async (req, res) => {
   );
 };
 
-var viewAll = async (req, res) => {
-  let adminProfile = await Admin.find({
-    status: true,
-    admin_type: "Admin",
-  }).exec();
 
-  if (adminProfile.length > 0) {
-    res.status(200).json({
-      status: true,
-      message: "Data get successfully ",
-      data: adminProfile,
-    });
-  } else {
-    return res.status(200).json({
-      status: true,
-      message: "Currently no active data exists",
-      data: "",
-    });
-  }
-};
-
-var addBlogData = async (req, res) => {
-  console.log(req.body);
-  let blogData = {
-    _id: mongoose.Types.ObjectId(),
-    blog_type: req.body.blog_type,
-  };
-
-  const new_blog = new BlogType(blogData);
-  return new_blog.save((err, data) => {
-    if (!err) {
-      res.status(200).json({
-        status: true,
-        message: "New blog added successfully!",
-        data: data,
-      });
-    } else {
-      res.status(500).json({
-        status: false,
-        message: "Failed to add blog. Server error.",
-        error: err,
-      });
-    }
-  });
-};
-
-const viewBlogData = async (req, res) => {
-  let blogs = await BlogType.find().exec();
-
-  if (blogs.length > 0) {
-    return res.status(200).json({
-      status: true,
-      message: "All blogs successfully get.",
-      data: blogs,
-    });
-  } else {
-    return res.status(200).json({
-      status: true,
-      message: "No information to show.",
-      data: null,
-    });
-  }
-};
-
-const editBlogData = async (req, res) => {
-  return BlogType.findOneAndUpdate(
-    { _id: mongoose.Types.ObjectId(req.params.id) },
-    req.body,
-    { new: true },
-    (err, data) => {
-      if (!err) {
-        res.status(200).json({
-          status: true,
-          message: "Blog successfully edited.",
-          data: data,
-        });
-      } else {
-        res.status(500).json({
-          status: false,
-          message: "Invalid id.",
-          error: err,
-        });
-      }
-    }
-  );
-};
-
-const deleteBlogData = async (req, res) => {
-  return BlogType.findByIdAndDelete(
-    { _id: mongoose.Types.ObjectId(req.params.id) },
-    (err, data) => {
-      if (!err) {
-        res.status(200).json({
-          status: true,
-          message: "Blog deleted successfully.",
-          data: data,
-        });
-      } else {
-        res.status(500).json({
-          status: false,
-          message: "Invalid id.",
-          error: err,
-        });
-      }
-    }
-  );
-};
-
-const currencyVal = async (req, res) => {
-  let conVert = await Curvalue.find({
-    from: req.body.from,
-    to: req.body.to,
-  }).exec();
-
-  res.status(200).json({
-    status: true,
-    data: conVert[0].value,
-    error: null,
-  });
-};
 
 module.exports = {
   register,
   getTokenData,
   login,
   update,
-  uploadImage,
-  viewAll,
-  addBlogData,
-  viewBlogData,
-  editBlogData,
-  deleteBlogData,
-  currencyVal,
 };
