@@ -31,8 +31,8 @@ const Navigation = (props: props) => {
             </ul>
         </nav>
         <div className={style.buttons}>
-            {/* <Link onClick={toggleNav} href="login"><button type="button">Login</button></Link>
-            <Link onClick={toggleNav} href="/register"><button type="button">Register</button></Link> */}
+            {/* <Link onClick={toggleNav} href="login"><button type="button">Login</button></Link> */}
+            <Link onClick={toggleNav} href="/register"><button type="button">Register</button></Link>
             <Link
                 onClick={toggleNav}
                 href='https://art.us9.list-manage.com/subscribe?u=9d8dcd663984aed5841bb2b05&id=938d162999'

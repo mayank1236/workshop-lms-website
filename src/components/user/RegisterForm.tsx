@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import Section from '../Layout/Section'
 import Container from '../Layout/Container'
+import Router from 'next/router'
+
 
 import style from '@/styles/form.module.scss';
 import axios from 'axios';
@@ -39,18 +41,19 @@ const RegisterForm = () => {
             const config = {
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             }
             }
-            const i = await axios.post('http://localhost:3001/v1/user/register',obj, config)
+            const i = await axios.post('http://13.127.222.180:3001/v1/user/register',obj, config)
             console.log(i)
             if(i.data.status)
             {
                 alert('Registered successfully');
+                Router.push('/payment')
             }
             else
             {
-                alert('Server Error!!Please Try After Sometime')
+                alert(i.data.message)
             }
         }
         else
