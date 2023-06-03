@@ -10,7 +10,6 @@ var upload = multer({ storage: storage });
 const AdminController = require("../../Controller/Auth/Admin");
 const UserController = require("../../Controller/Auth/User");
 
-
 /**-----------------------Website info section end----------------------- */
 
 const middleware = require("../../service/middleware").middleware;
@@ -28,10 +27,9 @@ router.get("/", function (req, res, next) {
 router.post("/admin/register", AdminController.register);
 router.post("/admin/login", AdminController.login);
 
-
-
 router.post("/user/register", UserController.register); // add upload image option in future
 router.post("/user/login", UserController.login);
+router.post("/user/transaction", UserController.transaction);
 
 /** ================================= without login url section end ================================ */
 
