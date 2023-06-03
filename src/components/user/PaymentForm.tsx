@@ -26,20 +26,20 @@ const PaymentForm = () => {
         console.log(name,email)
         if(transactionid!='' && email!='')
         {
-            // let obj = {
-            //     name:name,
-            //     email:email,
+            let obj = {
+                transactionid:transactionid,
+                email:email,
                
-            // }
-            // console.log(obj)
-            // const config = {
-            // headers: {
-            //     "Access-Control-Allow-Origin": "*",
-            //     "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-            // }
-            // }
-            // const i = await axios.post('http://localhost:3001/v1/user/register',obj, config)
-            // console.log(i)
+            }
+            console.log(obj)
+            const config = {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+            }
+            }
+            const i = await axios.post('http://13.127.222.180:3001/v1/user/transaction',obj, config)
+            console.log(i)
             // if(i.data.status)
             // {
             //     alert('Registered successfully');
