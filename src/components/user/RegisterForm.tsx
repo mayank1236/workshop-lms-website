@@ -24,7 +24,7 @@ const RegisterForm = () => {
 
     const handlePayment = async () => {
         console.log(name,email)
-        if(name!='' && email!='')
+        if(name!='' && email!='' && patype!='')
         {
             // console.log('patype',patype);
             let obj = {
@@ -43,7 +43,7 @@ const RegisterForm = () => {
                 "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             }
             }
-            const i = await axios.post('http://13.127.222.180:3001/v1/user/register',obj, config)
+            const i = await axios.post('http://3.108.218.180:3001/v1/user/register',obj, config)
             console.log(i)
             if(i.data.status)
             {
@@ -172,6 +172,9 @@ const RegisterForm = () => {
                             />Credit/Debit Card<br/>
 
                         </label>
+                        <label>
+                        <b>Early Bird Price Rs. 6499/7999</b>
+                    </label>
                         <label>
                             <input style={{ marginRight: "10px", width: "auto", height: "12px" }} type="checkbox" name="agree" />
                             *Your email will be shared with all the instructors and partners who may reach out to you separately. You can choose to unsubscribe later if you do not wish to receive communication from them.

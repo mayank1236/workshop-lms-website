@@ -38,7 +38,7 @@ const PaymentForm = () => {
                     "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
                 }
             }
-            const i = await axios.post('http://13.127.222.180:3001/v1/user/transaction', obj, config)
+            const i = await axios.post('http://3.108.218.180:3001/v1/user/transaction', obj, config)
             console.log(i)
             // if(i.data.status)
             // {
@@ -83,6 +83,9 @@ const PaymentForm = () => {
                 <h2>Pay Now</h2>
                 <div className={style.form} style={{ maxWidth: "500px", margin: "0 auto" }}>
                     <Image src={'/mandalaconfluence/qr.jpeg'} alt={'Mandala Banner'} width='300' height='100' style={{ position: "relative", height: "300px", width: "100%", objectFit: "contain" }} />
+                    <label>
+                        <b>Early Bird Price Rs. 6499/7999</b>
+                    </label>
                     <label>
                         The price reflected here - Rs. 5999 ($74) - will only be valid until midnight tonight. After that, it should be Rs. 6499 ($79).
                     </label>
