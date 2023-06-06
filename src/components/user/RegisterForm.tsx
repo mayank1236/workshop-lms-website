@@ -174,7 +174,7 @@ const RegisterForm = () => {
 </label>
                         </label>
                         <label>
-                        <b>Early Bird Price Rs. 6499/7999</b>
+                        <b>Early Bird Price Rs. 6499 <span style={{textDecoration:"line-through",fontWeight:"200"}}>7999</span></b>
                     </label>
                         <label>
                             <input style={{ marginRight: "10px", width: "auto", height: "12px" }} type="checkbox" name="agree" />

@@ -102,7 +102,7 @@ const PaymentForm = () => {
                         }} />
                     </label>
                     <label>
-                        <b>Early Bird Price Rs. 6499/7999</b>
+                        <b>Early Bird Price Rs. 6499 <span style={{textDecoration:"line-through",fontWeight:"200"}}>7999</span></b>
                     </label>
                     <button style={{ width: "100%" }} type="button" onClick={handlePayment}>
                         Submit
