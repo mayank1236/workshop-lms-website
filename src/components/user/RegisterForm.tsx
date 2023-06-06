@@ -173,6 +173,7 @@ const RegisterForm = () => {
                             /><label style={{marginTop:"-22px"}}>Credit/Debit Card <br></br>(Indian and International)
 </label>
                         </label>
+                        
                         <label>
                         <b>Early Bird Price Rs. 6499 <span style={{textDecoration:"line-through",fontWeight:"200"}}>7999</span></b>
                     </label>
