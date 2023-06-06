@@ -173,6 +173,9 @@ const RegisterForm = () => {
 
                         </label>
                         <label>
+                            <b>Early Bird Price Rs. 6499/7999</b>
+                        </label>
+                        <label>
                             <input style={{ marginRight: "10px", width: "auto", height: "12px" }} type="checkbox" name="agree" />
                             *Your email will be shared with all the instructors and partners who may reach out to you separately. You can choose to unsubscribe later if you do not wish to receive communication from them.
                         </label>
