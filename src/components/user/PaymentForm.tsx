@@ -3,6 +3,7 @@ import Section from '../Layout/Section'
 import Container from '../Layout/Container'
 import Image from 'next/image';
 import Router from 'next/router'
+import Link from 'next/link'
 
 
 
@@ -68,6 +69,17 @@ const PaymentForm = () => {
     return (
         <Section>
             <Container>
+            <div style={{width:" 100%", maxWidth: "230px", height: "auto", overflow: "hidden", margin: "0 auto"}}>
+                    <Link href="/">
+                        <Image
+                            src="/mandalaconfluence/logo.png"
+                            alt="lms-logo"
+                            className={style.logoImg}
+                            width='200' height='100'
+                            // style={{ position: "relative", height: "100%", width: "100%", objectFit: "contain" }}
+                        ></Image>
+                    </Link>
+                </div>
                 <h2>Pay Now</h2>
                 <div className={style.form} style={{ maxWidth: "500px", margin: "0 auto" }}>
                     <Image src={'/mandalaconfluence/qr.jpeg'} alt={'Mandala Banner'} width='300' height='100' style={{ position: "relative", height: "300px", width: "100%", objectFit: "contain" }} />
