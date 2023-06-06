@@ -158,19 +158,20 @@ const RegisterForm = () => {
                                 placeholder='Enter Website'
                                 />
                         </label>
-                        <label>
+                        <label >
                             Register Via
                             <input type="radio" name="pay"
                             onClick={()=>{
                                 setPatype('upi')
                             }}
-                            />UPI<br/>
+                            style={{marginTop:"17px"}}
+                            /><label style={{marginTop:"-22px"}}>UPI (For Indian)</label>
                             <input type="radio" name="pay"
                             onClick={()=>{
                                 setPatype('credit')
                             }}
-                            />Credit/Debit Card<br/>
-
+                            /><label style={{marginTop:"-22px"}}>Credit/Debit Card <br></br>(Indian and International)
+</label>
                         </label>
                         <label>
                         <b>Early Bird Price Rs. 6499/7999</b>
