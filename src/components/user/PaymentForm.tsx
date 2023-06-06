@@ -38,7 +38,7 @@ const PaymentForm = () => {
                     "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
                 }
             }
-            const i = await axios.post('http://13.127.222.180:3001/v1/user/transaction', obj, config)
+            const i = await axios.post('http://3.108.218.180:3001/v1/user/transaction', obj, config)
             console.log(i)
             // if(i.data.status)
             // {
